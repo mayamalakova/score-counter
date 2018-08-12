@@ -5,8 +5,8 @@
     </head>
     <body>
         <div class="score-container" id="score-container">
-            <div  class="score-left">{{score1}}</div>
-            <div class="score-right">{{score2}}</div>
+            <div  class="score-left" v-on:click="increaseLeft">{{score1}} </div>
+            <div class="score-right" v-on:click="increaseRight">{{score2}}</div>
         </div>
 
     </body>
