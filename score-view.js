@@ -9,8 +9,20 @@ var app = new Vue({
             this.score1++;
         },
 
+        decreaseLeft: function () {
+            if (this.score1 > 0) {
+                this.score1--;
+            }
+        },
+
         increaseRight: function() {
             this.score2++;
+        },
+
+        decreaseRight: function() {
+            if (this.score2 > 0) {
+                this.score2--;
+            }
         }
         
       }

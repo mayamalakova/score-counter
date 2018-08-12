@@ -1,12 +1,12 @@
 .score-container {
     display: flex;
     font-size: 5em;
+    min-width: 600px;
 }
 
 .score-left {
     font-size: 5em;
     background-color: blue !important;
-    min-width: 300px;
     border-bottom-left-radius: 15px;
     border-top-left-radius: 15px;
     color: aliceblue;
@@ -17,7 +17,6 @@
 .score-right {
     font-size: 5em;
     background-color: red !important;
-    min-width: 300px;
     border-bottom-right-radius: 15px;
     border-top-right-radius: 15px;
     color: aliceblue;
@@ -27,5 +26,9 @@
 
 .score-group {
     line-height: 5;
-    
+}
+
+.btn-minus {
+    font-size: 0.3em;
+
 }
