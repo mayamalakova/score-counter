@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="score-view.css"/>
     </head>
-    <body >
-        <div class="container" id="score-container">
-            <div class="score-container">
+    <body>
+        <div id="content">
+            <div class="score-container" >
                 <div class="score-left" v-on:click="increaseLeft">
                     <div class="score-val">
                         {{score1}}
@@ -22,8 +22,8 @@
                     <div class="btn-minus" v-on:click.stop="decreaseRight">-</div>
                 </div>
             </div>
-            <div class="games">
-              {{games1}} : {{games2}}
+            <div id="game-scores" class="game-scores">
+                <div class="game-score" v-for="item of gameScores">({{item.left}} : {{item.right}})</div>
             </div>
         </div>
 
