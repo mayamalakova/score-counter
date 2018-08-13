@@ -4,21 +4,24 @@
         <link rel="stylesheet" href="score-view.css"/>
     </head>
     <body>
-        <div class="score-container" id="score-container">
-            <div class="score-left" v-on:click="increaseLeft">
-                <div>
-                    {{score1}} 
+        <div id="score-container">
+            <div> {{games1}} : {{games2}}</div>
+            <div class="score-container" >
+                <div class="score-left" v-on:click="increaseLeft">
+                    <div>
+                        {{score1}} 
+                    </div>
+                    <div class="btn-minus" v-on:click.stop="decreaseLeft">-</div>
                 </div>
-                <div class="btn-minus" v-on:click.stop="decreaseLeft">-</div>
-            </div>
-            <div class="score-right" v-on:click="increaseRight">
-                <div>
-                    {{score2}}
+                <div class="score-right" v-on:click="increaseRight">
+                    <div>
+                        {{score2}}
+                    </div>
+                    <div class="btn-minus" v-on:click.stop="decreaseRight">-</div>
                 </div>
-                <div class="btn-minus" v-on:click.stop="decreaseRight">-</div>
             </div>
         </div>
-
+            
     </body>
     <script src="score-view.js"></script>
 </html>

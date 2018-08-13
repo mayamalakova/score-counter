@@ -1,7 +1,6 @@
 .score-container {
     display: flex;
     font-size: 5em;
-    min-width: 600px;
 }
 
 .score-left {
@@ -12,6 +11,7 @@
     color: aliceblue;
     text-align: center;
     vertical-align: middle;
+    min-width: 300px;
 }
 
 .score-right {
@@ -22,6 +22,7 @@
     color: aliceblue;
     text-align: center;
     vertical-align: middle;
+    min-width: 300px;
 }
 
 .score-group {
