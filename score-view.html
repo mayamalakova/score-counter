@@ -1,27 +1,32 @@
 <html>
     <head>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <meta charset="utf-8">
+        <meta name="description" content="Table Tennis Scoring Application">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="score-view.css"/>
     </head>
-    <body>
-        <div id="score-container">
-            <div> {{games1}} : {{games2}}</div>
-            <div class="score-container" >
+    <body >
+        <div class="container" id="score-container">
+            <div class="score-container">
                 <div class="score-left" v-on:click="increaseLeft">
-                    <div>
-                        {{score1}} 
+                    <div class="score-val">
+                        {{score1}}
                     </div>
                     <div class="btn-minus" v-on:click.stop="decreaseLeft">-</div>
                 </div>
                 <div class="score-right" v-on:click="increaseRight">
-                    <div>
+                    <div class="score-val">
                         {{score2}}
                     </div>
                     <div class="btn-minus" v-on:click.stop="decreaseRight">-</div>
                 </div>
             </div>
+            <div class="games">
+              {{games1}} : {{games2}}
+            </div>
         </div>
-            
+
     </body>
     <script src="score-view.js"></script>
 </html>
