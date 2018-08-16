@@ -55,10 +55,6 @@ body {
   align-self: center;
 }
 
-.games {
-  font-size: 4vh;
-}
-
 .score-group {
   line-height: 5;
 }
@@ -69,7 +65,7 @@ body {
 
 .game-scores {
     display: flex;
-    font-size: 1.5em;
+    font-size: 4vh;
 }
 
 .game-score {
