@@ -1,10 +1,17 @@
+Vue.component('game-score', {
+    props: ['gameScore'],
+    template:
+    `<div class="game-score">
+        ({{gameScore.left}} : {{gameScore.right}})
+    </div>`
+});
 
 Vue.component('score-footer', {
   props: ['playerLeft', 'playerRight', 'gameScores'],
   template: `<div class="score-footer">
                  <div class="player-name">{{playerLeft}}</div>
                  <div class="game-scores">
-                     <div class="game-score" v-for="item of gameScores">({{item.left}} : {{item.right}})</div>
+                     <game-score v-for="item of gameScores" :game-score="item" />
                  </div>
                  <div class="player-name">{{playerRight}}</div>
              </div>`
