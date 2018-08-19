@@ -1,43 +1,62 @@
 var app = new Vue({ 
     el: '#content',
     data: {
-        score1: 0,
-        score2: 0,
+        scoreLeft: 0,
+        scoreRight: 0,
         games1: 0,
         games2: 0,
         gameScores: []
     },
     methods: {
         increaseLeft: function () {
-            this.score1++;
-            if (this.score1 >= 11 && this.score1 - this.score2 > 1) {
+            this.scoreLeft++;
+            if (this.leftWinsGame()) {
                 this.games1++;
-                this.gameScores.push({left: this.score1, right: this.score2});
-                this.score1 = 0;
-                this.score2 = 0;
+                this.finishGame();
             }
         },
 
         decreaseLeft: function () {
-            if (this.score1 > 0) {
-                this.score1--;
+            if (this.scoreLeft > 0) {
+                this.scoreLeft--;
             }
         },
 
         increaseRight: function() {
-            this.score2++;
-            if (this.score2 >= 11 && this.score2 - this.score1 > 1) {
+            this.scoreRight++;
+            if (this.rightWinsGame()) {
                 this.games2++;
-                this.gameScores.push({left: this.score1, right: this.score2});
-                this.score1 = 0;
-                this.score2 = 0;
+                this.finishGame();
             }
         },
 
         decreaseRight: function() {
-            if (this.score2 > 0) {
-                this.score2--;
+            if (this.scoreRight > 0) {
+                this.scoreRight--;
             }
+        },
+
+        resetScore: function() {
+            this.scoreLeft = 0;
+            this.scoreRight = 0;
+        },
+
+        finishGame: function() {
+            this.gameScores.push({left: this.scoreLeft, right: this.scoreRight});
+            this.swapSides();
+            this.resetScore();
+        },
+
+        swapSides: function() {
+            this.gameScores = this.gameScores.map(s => ({left: s.right, right: s.left}));
+        },
+
+        leftWinsGame: function() {
+            return this.scoreLeft >= 11 && this.scoreLeft - this.scoreRight > 1;
+        },
+
+        rightWinsGame: function() {
+            return this.scoreRight >= 11 && this.scoreRight - this.scoreLeft > 1
         }
         
       }
