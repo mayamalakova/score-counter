@@ -78,3 +78,7 @@ body {
 .game-score {
     margin-right: 10px;
 }
+
+.player-name {
+  text-transform: uppercase;
+}

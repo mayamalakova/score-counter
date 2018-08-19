@@ -7,7 +7,7 @@ var app = new Vue({
         games2: 0,
         gameScores: [],
         playerLeft: 'Harimoto T.',
-        playerRight: 'Zhang Z.'
+        playerRight: 'Zhang Z.',
     },
     methods: {
         increaseLeft: function () {
