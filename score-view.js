@@ -6,8 +6,8 @@ var app = new Vue({
         games1: 0,
         games2: 0,
         gameScores: [],
-        player1: 'Harimoto T.',
-        player2: 'Zhang Z.'
+        playerLeft: 'Harimoto T.',
+        playerRight: 'Zhang Z.'
     },
     methods: {
         increaseLeft: function () {
@@ -51,7 +51,7 @@ var app = new Vue({
 
         swapSides: function() {
             this.gameScores = this.gameScores.map(s => ({left: s.right, right: s.left}));
-            [this.player1, this.player2] = [this.player2, this.player1];
+            [this.playerLeft, this.playerRight] = [this.playerRight, this.playerLeft];
         },
 
         leftWinsGame: function() {
