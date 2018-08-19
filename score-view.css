@@ -63,10 +63,15 @@ body {
   font-size: 20vh;
 }
 
-.game-scores {
+.score-footer {
     width: 80%;
+    font-size: 4vh;
     display: flex;
     justify-content: space-between;
+}
+.game-scores {
+    display: flex;
+    justify-content: space-around;
     font-size: 4vh;
 }
 

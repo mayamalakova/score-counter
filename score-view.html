@@ -22,9 +22,11 @@
                     <div class="btn-minus" v-on:click.stop="decreaseRight">-</div>
                 </div>
             </div>
-            <div id="game-scores" class="game-scores">
+            <div class="score-footer">
                 <div>{{player1}}</div>
-                <div class="game-score" v-for="item of gameScores">({{item.left}} : {{item.right}})</div>
+                <div class="game-scores">
+                    <div class="game-score" v-for="item of gameScores">({{item.left}} : {{item.right}})</div>
+                </div>
                 <div>{{player2}}</div>
             </div>
         </div>
