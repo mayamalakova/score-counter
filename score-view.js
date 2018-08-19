@@ -5,7 +5,9 @@ var app = new Vue({
         scoreRight: 0,
         games1: 0,
         games2: 0,
-        gameScores: []
+        gameScores: [],
+        player1: 'Harimoto T.',
+        player2: 'Zhang Z.'
     },
     methods: {
         increaseLeft: function () {

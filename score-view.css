@@ -64,7 +64,9 @@ body {
 }
 
 .game-scores {
+    width: 80%;
     display: flex;
+    justify-content: space-between;
     font-size: 4vh;
 }
 
