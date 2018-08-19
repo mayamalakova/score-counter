@@ -8,24 +8,17 @@
     </head>
     <body>
         <div id="content" class="container">
-            <div class="score-container" >
-                <div class="score-left" v-on:click="increaseLeft">
-                    <div class="score-val">
-                        {{scoreLeft}}
-                    </div>
-                    <div class="btn-minus" v-on:click.stop="decreaseLeft">-</div>
-                </div>
-                <div class="score-right" v-on:click="increaseRight">
-                    <div class="score-val">
-                        {{scoreRight}}
-                    </div>
-                    <div class="btn-minus" v-on:click.stop="decreaseRight">-</div>
-                </div>
-            </div>
-            <score-footer :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores" />
+            <game-progress :score-left="scoreLeft" :score-right="scoreRight"
+                           v-on:increase-left="increaseLeft"
+                           v-on:decrease-left="decreaseLeft"
+                           v-on:increase-right="increaseRight"
+                           v-on:decrease-right="decreaseRight"></game-progress>
+
+            <score-footer :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"></score-footer>
         </div>
 
     </body>
+    <script src="game-progress.js"></script>
     <script src="score-footer.js"></script>
     <script src="score-view.js"></script>
 </html>
