@@ -1,0 +1,14 @@
+{
+  "name": "tt-score-view",
+  "version": "0.0.1",
+  "description": "A table tennis scoring app using Express js",
+  "author": "Maya Malakova",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+
+}
