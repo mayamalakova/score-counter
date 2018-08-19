@@ -1,4 +1,6 @@
-var app = new Vue({ 
+
+
+var app = new Vue({
     el: '#content',
     data: {
         scoreLeft: 0,
