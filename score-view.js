@@ -10,13 +10,17 @@ var app = new Vue({
         gameScores: [],
         playerLeft: 'Harimoto T.',
         playerRight: 'Zhang Z.',
+        gameWinner: false
     },
     methods: {
         increaseLeft: function () {
+            if (this.gameWinner) {
+                return;
+            }
             this.scoreLeft++;
             if (this.leftWinsGame()) {
-                this.games1++;
-                this.finishGame();
+                this.gameWinner = this.playerLeft;
+                this.gameScores.push({left: this.scoreLeft, right: this.scoreRight});
             }
         },
 
@@ -27,10 +31,13 @@ var app = new Vue({
         },
 
         increaseRight: function() {
+            if (this.gameWinner) {
+                return;
+            }
             this.scoreRight++;
             if (this.rightWinsGame()) {
-                this.games2++;
-                this.finishGame();
+                this.gameWinner = this.playerRight;
+                this.gameScores.push({left: this.scoreLeft, right: this.scoreRight});
             }
         },
 
@@ -45,10 +52,10 @@ var app = new Vue({
             this.scoreRight = 0;
         },
 
-        finishGame: function() {
-            this.gameScores.push({left: this.scoreLeft, right: this.scoreRight});
+        startGame: function() {
             this.swapSides();
             this.resetScore();
+            this.gameWinner = false;
         },
 
         swapSides: function() {
@@ -63,6 +70,6 @@ var app = new Vue({
         rightWinsGame: function() {
             return this.scoreRight >= 11 && this.scoreRight - this.scoreLeft > 1
         }
-        
+
       }
 });
