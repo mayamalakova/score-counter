@@ -82,3 +82,9 @@ body {
 .player-name {
   text-transform: uppercase;
 }
+
+score-summary  {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+}
