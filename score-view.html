@@ -17,7 +17,12 @@
 
             <score-footer v-if="!gameWinner"
                     :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"></score-footer>
-            <game-summary v-if="gameWinner"  :game-winner='gameWinner' :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"></game-summary>
+            <game-summary v-if="gameWinner"  
+                :game-winner='gameWinner' 
+                :player-left="playerLeft" 
+                :player-right="playerRight" 
+                :game-scores="gameScores"
+                v-on:next-game="startGame"></game-summary>
         </div>
 
     </body>

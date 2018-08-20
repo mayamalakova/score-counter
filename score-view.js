@@ -46,10 +46,10 @@ var app = new Vue({
             this.scoreRight = 0;
         },
 
-        finishGame: function() {
-            this.gameScores.push({left: this.scoreLeft, right: this.scoreRight});
+        startGame: function() {
             this.swapSides();
             this.resetScore();
+            this.gameWinner = false;
         },
 
         swapSides: function() {
