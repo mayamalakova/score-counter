@@ -14,6 +14,9 @@ var app = new Vue({
     },
     methods: {
         increaseLeft: function () {
+            if (this.gameWinner) {
+                return;
+            }
             this.scoreLeft++;
             if (this.leftWinsGame()) {
                 this.gameWinner = this.playerLeft;
@@ -28,6 +31,9 @@ var app = new Vue({
         },
 
         increaseRight: function() {
+            if (this.gameWinner) {
+                return;
+            }
             this.scoreRight++;
             if (this.rightWinsGame()) {
                 this.gameWinner = this.playerRight;
