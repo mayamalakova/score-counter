@@ -83,8 +83,15 @@ body {
   text-transform: uppercase;
 }
 
-score-summary  {
+.score-summary  {
     display: flex;
-    flex-direction: row;
-    width: 80%;
+    flex-direction: column;
+    width: 100%;
+}
+
+.game-winner {
+  width: 80%;
+  font-size: 8vh;
+  text-align: center;    
+  margin-bottom: 5rem;
 }
