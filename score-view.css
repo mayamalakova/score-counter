@@ -85,7 +85,6 @@ body {
 
 .score-summary  {
     display: flex;
-    flex-direction: column;
     width: 100%;
 }
 
@@ -93,7 +92,6 @@ body {
   width: 80%;
   font-size: 8vh;
   text-align: center;    
-  margin-bottom: 5rem;
 }
 
 .button-next {
