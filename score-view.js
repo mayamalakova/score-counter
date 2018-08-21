@@ -34,6 +34,12 @@ var app = new Vue({
             }
         },
 
+        finishMatch: function() {
+            this.gameScores = [];
+            this.matchWinner = false;
+            this.startGame();
+        },
+
         winsMatch: function() {
             let gamesLeft = this.gameScores.filter(g => g.left > g.right).length;
             if (gamesLeft == 3 || this.gameScores.length - gamesLeft == 3) {
