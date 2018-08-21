@@ -8,9 +8,14 @@
     </head>
     <body>
         <div id="content" class="container">
-            <div v-if="gameWinner" class='score-summary' >
-                <game-summary :game-winner='gameWinner'></game-summary>
+            <div v-if="(gameWinner && !matchWinner)" class='score-summary' >
+                <game-summary :game-winner='gameWinner' ></game-summary>
                 <button v-on:click="startGame" class="button-next">Next game</button>
+            </div>
+
+            <div v-if="matchWinner" class='score-summary' >
+                <match-summary :match-winner="matchWinner" ></match-summary>
+                <button v-on:click="finishMatch" class="button-next">Finish match</button>
             </div>
 
             <game-progress
@@ -30,5 +35,6 @@
     <script src="game-progress.js"></script>
     <script src="score-footer.js"></script>
     <script src="game-summary.js"></script>
+    <script src="match-summary.js"></script>
     <script src="score-view.js"></script>
 </html>
