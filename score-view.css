@@ -21,6 +21,7 @@ body {
   width: 75%;
   height: 90%;
   justify-content: center;
+  margin-bottom: 1.5vh;
 }
 
 .score-left {
@@ -65,7 +66,7 @@ body {
 }
 
 .score-footer {
-    width: 80%;
+    width: 75%;
     font-size: 4vh;
     display: flex;
     justify-content: space-between;
@@ -73,7 +74,7 @@ body {
 .game-scores {
     display: flex;
     justify-content: space-around;
-    font-size: 4vh;
+    font-size: 3vh;
 }
 
 .game-score {
