@@ -11,7 +11,8 @@ var app = new Vue({
         playerLeft: 'Harimoto T.',
         playerRight: 'Zhang Z.',
         gameWinner: false,
-        matchWinner: false
+        matchWinner: false,
+        server: 'left'
     },
     methods: {
         increaseLeft: function () {
@@ -22,6 +23,22 @@ var app = new Vue({
             if (this.leftWinsGame()) {
                 this.finishGame(this.playerLeft);
             }
+
+            this.updateServe();
+        },
+
+        updateServe: function() {
+            if (this.shouldSwapServe()) {
+                this.server = this.server === 'left' ? 'right' : 'left';
+            }
+        },
+
+        shouldSwapServe: function() {
+            if (this.scoreLeft >= 10 && this.scoreRight >= 10) {
+                return true;
+            }
+
+            return (this.scoreLeft + this.scoreRight) % 2 == 0;
         },
 
         finishGame: function(winner) {
@@ -30,7 +47,6 @@ var app = new Vue({
 
             if (this.winsMatch()) {
                 this.matchWinner = winner;
-                console.log(this.matchWinner + " wins match");
             }
         },
 
@@ -62,6 +78,8 @@ var app = new Vue({
             if (this.rightWinsGame()) {
                 this.finishGame(this.playerRight);
             }
+
+            this.updateServe();
         },
 
         decreaseRight: function() {
