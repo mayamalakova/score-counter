@@ -44,7 +44,7 @@ var app = new Vue({
         finishGame: function(winner) {
             this.gameWinner = winner;
             this.gameScores.push({left: this.scoreLeft, right: this.scoreRight});
-            this.server = 'left';
+            
 
             if (this.winsMatch()) {
                 this.matchWinner = winner;
@@ -94,9 +94,14 @@ var app = new Vue({
             this.scoreRight = 0;
         },
 
+        resetServer: function() {
+            this.server = 'left';
+        },
+
         startGame: function() {
             this.swapSides();
             this.resetScore();
+            this.resetServer();
             this.gameWinner = false;
         },
 
