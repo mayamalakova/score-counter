@@ -55,6 +55,12 @@ body {
 .score-val{
   display: flex;
   align-self: center;
+  width: 100%;
+}
+
+.score-val-number {
+  flex-basis: 90%;
+  text-align: center;
 }
 
 .score-group {
@@ -114,4 +120,8 @@ body {
   -webkit-font-smoothing: antialiased;
   word-break: normal;
   text-decoration: none !important;
+}
+
+.serve-indicator {
+  font-size: 20vh;
 }
