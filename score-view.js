@@ -44,6 +44,7 @@ var app = new Vue({
         finishGame: function(winner) {
             this.gameWinner = winner;
             this.gameScores.push({left: this.scoreLeft, right: this.scoreRight});
+            this.server = 'left';
 
             if (this.winsMatch()) {
                 this.matchWinner = winner;

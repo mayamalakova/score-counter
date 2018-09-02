@@ -115,3 +115,7 @@ body {
   word-break: normal;
   text-decoration: none !important;
 }
+
+.serve-indicator {
+  font-size: 20vh;
+}
