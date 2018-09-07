@@ -5,11 +5,21 @@
   "author": "Maya Malakova",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "webpack --config build/webpack.config.dev.js"
   },
   "dependencies": {
     "express": "^4.15.2",
-    "node-static": "^0.7.10"
+    "node-static": "^0.7.10",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
+    "webpack": "^4.17.2"
+  },
+  "devDependencies": {
+    "css-loader": "^1.0.0",
+    "vue-loader": "^15.4.1",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.5.17",
+    "webpack-cli": "^3.1.0"
   }
-
 }
