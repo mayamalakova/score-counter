@@ -21,10 +21,10 @@
     </div>
 </template>
 <script>
-    import gameProgress from './game-progress.vue';
-    import scoreFooter from './score-footer.vue';
-    import gameSummary from './game-summary.vue';
-    import matchSummary from './match-summary.vue';
+    import gameProgress from './components/game-progress.vue';
+    import scoreFooter from './components/score-footer.vue';
+    import gameSummary from './components/game-summary.vue';
+    import matchSummary from './components/match-summary.vue';
 
     export default {
         components: {
