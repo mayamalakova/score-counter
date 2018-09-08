@@ -5,7 +5,8 @@
   "author": "Maya Malakova",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node server.js",
+    "heroku-postbuild": "webpack -p --config build/webpack.config.dev.js",
     "build": "webpack --config build/webpack.config.dev.js",
     "dev": "webpack-dev-server --config build/webpack.config.dev.js"
   },
