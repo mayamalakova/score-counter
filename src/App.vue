@@ -1,5 +1,14 @@
 <template>
     <div>
+        <div v-if="(gameWinner && !matchWinner)" class='score-summary' >
+            <game-summary :game-winner='gameWinner' ></game-summary>
+            <button v-on:click="startGame" class="button-next">Next game</button>
+        </div>
+
+        <div v-if="matchWinner" class='score-summary' >
+            <match-summary :match-winner="matchWinner" ></match-summary>
+            <button v-on:click="finishMatch" class="button-next">Finish match</button>
+        </div>
         <game-progress
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
                 v-on:increase-left="increaseLeft"
@@ -14,11 +23,15 @@
 <script>
     import gameProgress from './game-progress.vue';
     import scoreFooter from './score-footer.vue';
+    import gameSummary from './game-summary.vue';
+    import matchSummary from './match-summary.vue';
 
     export default {
         components: {
             'game-progress': gameProgress,
-            'score-footer' : scoreFooter
+            'score-footer': scoreFooter,
+            'game-summary': gameSummary,
+            'match-summary': matchSummary
         },
 
         data: () => { return {
