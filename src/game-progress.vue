@@ -17,9 +17,8 @@
     </div>
 </template>
 <script>
-const gameProgress = {
+export default {
     props: ['scoreLeft', 'scoreRight','server']
 };
 
-export default gameProgress;
 </script>

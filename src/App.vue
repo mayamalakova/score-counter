@@ -6,14 +6,19 @@
                 v-on:decrease-left="decreaseLeft"
                 v-on:increase-right="increaseRight"
                 v-on:decrease-right="decreaseRight"></game-progress>
+
+        <score-footer
+                    :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"></score-footer>
     </div>
 </template>
 <script>
     import gameProgress from './game-progress.vue';
+    import scoreFooter from './score-footer.vue';
 
     export default {
         components: {
-            'game-progress': gameProgress
+            'game-progress': gameProgress,
+            'score-footer' : scoreFooter
         },
 
         data: () => { return {
