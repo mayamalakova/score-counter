@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A table tennis scoring app using Express js",
   "author": "Maya Malakova",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "heroku-postbuild": "webpack -p --config build/webpack.config.dev.js",
