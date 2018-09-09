@@ -1,19 +1,57 @@
+border-radius(val)
+  -webkit-border-radius: val
+  -moz-border-radius: val
+  border-radius: val
+
 * {
   box-sizing: border-box;
 }
 
-body {
-  background-color: #FFF8E3;
-}
-
-.container {
+.score-field {
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
-  flex-direction: column;;
-  justify-content: center;
+  font-size: 65vh;
+  color: aliceblue;
   align-items: center;
-  user-select: none;
+  justify-content: flex-end;
+}
+
+body {
+  background-color: #FFF8E3;
+
+  .container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+  }
+
+  .score-left {
+    @extend .score-field;
+    background-color: #336dc2 !important;
+    border-bottom-left-radius: 15px;
+    border-top-left-radius: 15px;
+  }
+
+  .score-right {
+    @extend .score-field 
+    background-color: #ff2828 !important;
+    border-bottom-right-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+
+  .btn-minus {
+    font-size: 20vh;
+  }
+
+  .serve-indicator {
+    font-size: 20vh;
+  }
 }
 
 .score-container {
@@ -24,33 +62,6 @@ body {
   margin-bottom: 1.5vh;
 }
 
-.score-left {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  font-size: 65vh;
-  background-color: #336dc2 !important;
-  border-bottom-left-radius: 15px;
-  border-top-left-radius: 15px;
-  color: aliceblue;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.score-right {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  font-size: 65vh;
-  background-color: #ff2828 !important;
-  border-bottom-right-radius: 15px;
-  border-top-right-radius: 15px;
-  color: aliceblue;
-  align-items: center;
-  justify-content: flex-end;
-}
 
 .score-val{
   display: flex;
@@ -67,9 +78,6 @@ body {
   line-height: 5;
 }
 
-.btn-minus {
-  font-size: 20vh;
-}
 
 .score-footer {
     width: 75%;
@@ -114,14 +122,10 @@ body {
   border-width: 0 !important;
   border-style: solid !important;
   border-color: rgba(0,0,0,0) !important;
-  border-radius: 5px;
+  border-radius(5px);
   font-weight: 500;
   display: inline-block;
   -webkit-font-smoothing: antialiased;
   word-break: normal;
   text-decoration: none !important;
-}
-
-.serve-indicator {
-  font-size: 20vh;
 }
