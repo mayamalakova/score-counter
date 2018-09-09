@@ -24,8 +24,8 @@ module.exports = {
             },
 
             {
-                test: /\.css$/,
-                loaders: [ 'style-loader', 'css-loader' ]
+                test: /\.styl(us)?$/,
+                loaders: [ 'style-loader', 'css-loader', 'stylus-loader' ]
             }
         ]
     },
