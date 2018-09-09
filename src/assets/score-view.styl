@@ -1,10 +1,19 @@
+canvas-blue = #336dc2
+canvas-red = #ff2828
+
 border-radius(val)
   -webkit-border-radius: val
   -moz-border-radius: val
   border-radius: val
 
-* {
-  box-sizing: border-box;
+right-radius(val) {
+    border-bottom-right-radius: val;
+    border-top-right-radius: val;
+}
+
+left-radius(val) {
+    border-bottom-left-radius: val;
+    border-top-left-radius: val;
 }
 
 .score-field {
@@ -33,16 +42,14 @@ body {
 
   .score-left {
     @extend .score-field;
-    background-color: #336dc2 !important;
-    border-bottom-left-radius: 15px;
-    border-top-left-radius: 15px;
+    background-color: canvas-blue;
+    left-radius(15px);
   }
 
   .score-right {
     @extend .score-field 
-    background-color: #ff2828 !important;
-    border-bottom-right-radius: 15px;
-    border-top-right-radius: 15px;
+    background-color: canvas-red;
+    right-radius(15px);
   }
 
   .btn-minus {
