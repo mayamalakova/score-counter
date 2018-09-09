@@ -25,7 +25,7 @@
     import scoreFooter from './components/score-footer.vue';
     import gameSummary from './components/game-summary.vue';
     import matchSummary from './components/match-summary.vue';
-    import "./assets/score-view.css";
+    import "./assets/score-view.styl";
 
     export default {
         components: {

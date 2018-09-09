@@ -1,0 +1,136 @@
+canvas-blue = #336dc2
+canvas-red = #ff2828
+
+border-radius(val)
+  -webkit-border-radius: val
+  -moz-border-radius: val
+  border-radius: val
+
+right-radius(val) {
+  border-bottom-right-radius: val;
+  border-top-right-radius: val;
+}
+
+left-radius(val) {
+  border-bottom-left-radius: val;
+  border-top-left-radius: val;
+}
+
+flex-column(horizontalLayout) {
+  display: flex;
+  flex-direction: column;;
+  justify-content: horizontalLayout;
+}
+
+flex-row(horizontalLayout) {
+  display: flex;
+  justify-content: horizontalLayout;
+}
+
+.score-field {
+  flex-column(flex-end)
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 65vh;
+  color: aliceblue;
+}
+
+body {
+  background-color: #FFF8E3;
+
+  .container {
+    flex-column(center);
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+  }
+
+  .score-container {
+    flex-row(center);
+    width: 75%;
+    height: 90%;
+    margin-bottom: 1.5vh;
+  }
+
+  .score-val{
+    flex-row(center);
+    width: 100%;
+
+    .score-val-number {
+      flex-basis: 90%;
+      text-align: center;
+    }
+
+    .serve-indicator {
+      font-size: 20vh;
+    }
+  }
+
+  .score-left {
+    @extend .score-field;
+    background-color: canvas-blue;
+    left-radius(15px);
+  }
+
+  .score-right {
+    @extend .score-field 
+    background-color: canvas-red;
+    right-radius(15px);
+  }
+
+  .btn-minus {
+    font-size: 20vh;
+  }
+
+  .score-footer {
+    flex-row(space-between)
+    width: 75%;
+    font-size: 4vh;
+
+    .player-name {
+      text-transform: uppercase;
+    }
+
+    .game-scores {
+      flex-row(space-around)
+      font-size: 3vh;
+
+      .game-score {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+.score-summary  {
+    display: flex;
+    width: 100%;
+}
+
+.game-winner {
+  width: 80%;
+  font-size: 8vh;
+  text-align: center;    
+}
+
+.button-next {
+  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 26px;
+  padding: 12px 18px !important;
+  background-color: #336dc2 !important;
+  color: #373737 !important;
+  border-width: 0 !important;
+  border-style: solid !important;
+  border-color: rgba(0,0,0,0) !important;
+  border-radius(5px);
+  font-weight: 500;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  word-break: normal;
+  text-decoration: none !important;
+}

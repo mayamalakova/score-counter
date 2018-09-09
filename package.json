@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A table tennis scoring app using Express js",
   "author": "Maya Malakova",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "heroku-postbuild": "webpack -p --config build/webpack.config.dev.js",
@@ -21,6 +21,8 @@
     "css-loader": "^1.0.0",
     "html-webpack-plugin": "^3.2.0",
     "style-loader": "^0.23.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
     "vue-loader": "^15.4.1",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.5.17",
