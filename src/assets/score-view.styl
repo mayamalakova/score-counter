@@ -84,31 +84,28 @@ body {
     font-size: 20vh;
   }
 
+  .score-footer {
+    flex-row(space-between)
+    width: 75%;
+    font-size: 4vh;
 
+    .player-name {
+      text-transform: uppercase;
+    }
+
+    .game-scores {
+      flex-row(space-around)
+      font-size: 3vh;
+
+      .game-score {
+        margin-right: 10px;
+      }
+    }
+  }
 }
-
 
 .score-group {
   line-height: 5;
-}
-
-.score-footer {
-  flex-row(space-between)
-  width: 75%;
-  font-size: 4vh;
-}
-
-.game-scores {
-  flex-row(space-around)
-  font-size: 3vh;
-}
-
-.game-score {
-  margin-right: 10px;
-}
-
-.player-name {
-  text-transform: uppercase;
 }
 
 .score-summary  {
