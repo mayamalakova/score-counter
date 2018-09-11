@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <div v-if="(gameWinner && !matchWinner)" class='score-summary' >
             <game-summary :game-winner='gameWinner' ></game-summary>
             <button v-on:click="startGame" class="button-next">Next game</button>
