@@ -30,14 +30,22 @@ flex-row(horizontalLayout) {
 .score-field {
   flex-column(flex-end)
   align-items: center;
-  width: 100%;
+  width: 50%;
   height: 100%;
-  font-size: 65vh;
+  font-size: 65vmin;
   color: aliceblue;
+}
+
+html {
+    height: 100%;
 }
 
 body {
   background-color: #FFF8E3;
+  box-sizing: border-box;
+  height:100%;
+  margin: 0px;
+  padding: 0px;
 
   .container {
     flex-column(center);
@@ -51,7 +59,7 @@ body {
     flex-row(center);
     width: 75%;
     height: 90%;
-    margin-bottom: 1.5vh;
+    margin-bottom: 1.520vmin;
   }
 
   .score-val{
@@ -64,7 +72,7 @@ body {
     }
 
     .serve-indicator {
-      font-size: 20vh;
+      font-size: 20vmin;
     }
   }
 
@@ -81,13 +89,14 @@ body {
   }
 
   .btn-minus {
-    font-size: 20vh;
+    font-size: 20vmin;
   }
 
   .score-footer {
     flex-row(space-between)
     width: 75%;
-    font-size: 4vh;
+    height: 10%;
+    font-size: 4vmin;
 
     .player-name {
       text-transform: uppercase;
@@ -95,7 +104,7 @@ body {
 
     .game-scores {
       flex-row(space-around)
-      font-size: 3vh;
+      font-size: 3vmin;
 
       .game-score {
         margin-right: 10px;
@@ -111,7 +120,7 @@ body {
 
 .game-winner {
   width: 80%;
-  font-size: 8vh;
+  font-size: 8vmin;
   text-align: center;    
 }
 
