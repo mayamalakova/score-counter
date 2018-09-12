@@ -1,5 +1,7 @@
 canvas-blue = #336dc2
 canvas-red = #ff2828
+score-font = 60vmin;
+minus-font = 20vmin;
 
 border-radius(val)
   -webkit-border-radius: val
@@ -32,7 +34,7 @@ flex-row(horizontalLayout) {
   align-items: center;
   width: 50%;
   height: 100%;
-  font-size: 65vmin;
+  font-size: score-font;
   color: aliceblue;
 }
 
@@ -57,7 +59,7 @@ body {
 
   .score-container {
     flex-row(center);
-    width: 75%;
+    width: 95%;
     height: 90%;
     margin-bottom: 1.520vmin;
   }
@@ -89,12 +91,12 @@ body {
   }
 
   .btn-minus {
-    font-size: 20vmin;
+    font-size: minus-font;
   }
 
   .score-footer {
     flex-row(space-between)
-    width: 75%;
+    width: 95%;
     height: 10%;
     font-size: 4vmin;
 
