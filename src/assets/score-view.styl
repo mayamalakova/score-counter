@@ -1,6 +1,6 @@
 canvas-blue = #336dc2
 canvas-red = #ff2828
-score-font = 60vmin;
+score-font = 50vmin;
 minus-font = 20vmin;
 
 border-radius(val)
@@ -32,6 +32,7 @@ flex-row(horizontalLayout) {
 .score-field {
   flex-column(flex-end)
   align-items: center;
+  justify-content space-evenly;
   width: 50%;
   height: 100%;
   font-size: score-font;
@@ -53,7 +54,8 @@ body {
     flex-column(center);
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: 95%;
+    margin-top: 10px;
     user-select: none;
   }
 
