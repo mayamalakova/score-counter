@@ -3,9 +3,9 @@
 <div class="score-footer">
     <div class="player-name">{{playerLeft}}</div>
    
-    <button v-if="matchWinner" v-on:click="finishMatch" class="button-next">Finish match</button>
+    <a href="#" v-if="matchWinner" v-on:click="finishMatch" >Finish match</a>
 
-    <button v-if="gameWinner && !matchWinner" v-on:click="startGame" class="button-next">Next game</button>
+    <a href="#" v-if="gameWinner && !matchWinner" v-on:click="startGame">Next game</a>
 
     <div v-if="!gameWinner && !matchWinner" class="game-scores">
         <game-score v-for="item of gameScores" :game-score="item" v-bind:key="item"/>

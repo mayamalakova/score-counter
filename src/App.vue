@@ -7,7 +7,7 @@
                 v-on:increase-right="increaseRight"
                 v-on:decrease-right="decreaseRight"></game-progress>
 
-        <score-footer class='score-summary'
+        <score-footer
                     :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"
                     :game-winner="gameWinner"
                     :match-winner="matchWinner"
