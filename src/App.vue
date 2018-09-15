@@ -1,12 +1,5 @@
 <template>
     <div class="container">
-        <div v-if="(gameWinner && !matchWinner)" class='score-summary' >
-            <button v-on:click="startGame" class="button-next">Next game</button>
-        </div>
-
-        <div v-if="matchWinner" class='score-summary' >
-            <button v-on:click="finishMatch" class="button-next">Finish match</button>
-        </div>
         <game-progress
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
                 v-on:increase-left="increaseLeft"
@@ -14,8 +7,13 @@
                 v-on:increase-right="increaseRight"
                 v-on:decrease-right="decreaseRight"></game-progress>
 
-        <score-footer
-                    :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"></score-footer>
+        <score-footer class='score-summary'
+                    :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"
+                    :game-winner="gameWinner"
+                    :match-winner="matchWinner"
+                    :start-game="startGame"
+                    :finish-match="finishMatch"
+                    ></score-footer>
     </div>
 </template>
 <script>

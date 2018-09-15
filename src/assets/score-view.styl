@@ -53,8 +53,8 @@ body {
   .container {
     flex-column(center);
     align-items: center;
-    width: 100%;
-    height: 95%;
+    width: 90wmin;
+    height: 90wmin;
     margin-top: 10px;
     user-select: none;
   }
@@ -83,7 +83,7 @@ body {
   .score-left {
     @extend .score-field;
     background-color: canvas-blue;
-    left-radius(15px);
+    left-radius(10px);
   }
 
   .score-right {
@@ -129,12 +129,8 @@ body {
 }
 
 .button-next {
-  margin-bottom: 20px;
-  margin-bottom: 1.25rem;
-  font-size: 16px;
-  font-size: 1rem;
-  line-height: 26px;
-  padding: 12px 18px !important;
+  font-size: 5vmin;
+  line-height: 3vmh;
   background-color: #336dc2 !important;
   color: #373737 !important;
   border-width: 0 !important;
@@ -145,5 +141,4 @@ body {
   display: inline-block;
   -webkit-font-smoothing: antialiased;
   word-break: normal;
-  text-decoration: none !important;
 }
