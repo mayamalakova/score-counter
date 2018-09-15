@@ -1,12 +1,10 @@
 <template>
     <div class="container">
         <div v-if="(gameWinner && !matchWinner)" class='score-summary' >
-            <game-summary :game-winner='gameWinner' ></game-summary>
             <button v-on:click="startGame" class="button-next">Next game</button>
         </div>
 
         <div v-if="matchWinner" class='score-summary' >
-            <match-summary :match-winner="matchWinner" ></match-summary>
             <button v-on:click="finishMatch" class="button-next">Finish match</button>
         </div>
         <game-progress
