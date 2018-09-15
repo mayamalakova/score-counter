@@ -3,11 +3,6 @@ canvas-red = #ff2828
 score-font = 50vmin;
 minus-font = 20vmin;
 
-border-radius(val)
-  -webkit-border-radius: val
-  -moz-border-radius: val
-  border-radius: val
-
 right-radius(val) {
   border-bottom-right-radius: val;
   border-top-right-radius: val;
@@ -83,13 +78,13 @@ body {
   .score-left {
     @extend .score-field;
     background-color: canvas-blue;
-    left-radius(10px);
+    left-radius(3vmin);
   }
 
   .score-right {
     @extend .score-field 
     background-color: canvas-red;
-    right-radius(15px);
+    right-radius(3vmin);
   }
 
   .btn-minus {
@@ -128,17 +123,3 @@ body {
   text-align: center;    
 }
 
-.button-next {
-  font-size: 5vmin;
-  line-height: 3vmh;
-  background-color: #336dc2 !important;
-  color: #373737 !important;
-  border-width: 0 !important;
-  border-style: solid !important;
-  border-color: rgba(0,0,0,0) !important;
-  border-radius(5px);
-  font-weight: 500;
-  display: inline-block;
-  -webkit-font-smoothing: antialiased;
-  word-break: normal;
-}
