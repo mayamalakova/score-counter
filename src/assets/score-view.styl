@@ -1,6 +1,7 @@
 canvas-blue = #336dc2
 canvas-red = #ff2828
 score-font = 50vmin;
+score-font-small = 40vmin;
 minus-font = 20vmin;
 
 right-radius(val) {
@@ -30,7 +31,6 @@ flex-row(horizontalLayout) {
   justify-content space-evenly;
   width: 50%;
   height: 100%;
-  font-size: score-font;
   color: aliceblue;
 }
 
@@ -44,12 +44,13 @@ body {
   height:100%;
   margin: 0px;
   padding: 0px;
+  font-family: 'Times New Roman', Times, serif;
 
   .container {
     flex-column(center);
     align-items: center;
-    width: 90wmin;
-    height: 90wmin;
+    width: 90vmin;
+    height: 90vmin;
     margin-top: 10px;
     user-select: none;
   }
@@ -68,6 +69,16 @@ body {
     .score-val-number {
       flex-basis: 90%;
       text-align: center;
+
+      &.small {
+        font-size: score-font-small;
+        padding-top: 10vmin;
+      }
+
+      &.normal {
+          font-size: score-font;
+          padding-top: 7vmin;
+      }
     }
 
     .serve-indicator {
