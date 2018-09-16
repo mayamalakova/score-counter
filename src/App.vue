@@ -1,14 +1,5 @@
 <template>
     <div class="container">
-        <div v-if="(gameWinner && !matchWinner)" class='score-summary' >
-            <game-summary :game-winner='gameWinner' ></game-summary>
-            <button v-on:click="startGame" class="button-next">Next game</button>
-        </div>
-
-        <div v-if="matchWinner" class='score-summary' >
-            <match-summary :match-winner="matchWinner" ></match-summary>
-            <button v-on:click="finishMatch" class="button-next">Finish match</button>
-        </div>
         <game-progress
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
                 v-on:increase-left="increaseLeft"
@@ -17,7 +8,12 @@
                 v-on:decrease-right="decreaseRight"></game-progress>
 
         <score-footer
-                    :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"></score-footer>
+                    :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"
+                    :game-winner="gameWinner"
+                    :match-winner="matchWinner"
+                    :start-game="startGame"
+                    :finish-match="finishMatch"
+                    ></score-footer>
     </div>
 </template>
 <script>
@@ -45,8 +41,20 @@
             playerRight: 'Zhang Z.',
             gameWinner: false,
             matchWinner: false,
-            server: 'left'
         }},
+
+        computed: {
+            server: function() {
+                let totalPoints = this.scoreLeft + this.scoreRight;
+                if (this.scoreLeft < 10 || this.scoreRight < 10) {
+                    let serveTurns = ~~(totalPoints /2);
+                    return serveTurns % 2 == 0 ? 'left' : 'right';
+                }
+
+                let totalSingleServes = this.scoreLeft - 10 + this.scoreRight - 10;
+                return totalSingleServes % 2 == 0 ? 'left' :'right';
+            }
+        },
 
         methods: {
             increaseLeft: function () {
@@ -57,22 +65,6 @@
                 if (this.leftWinsGame()) {
                     this.finishGame(this.playerLeft);
                 }
-
-                this.updateServe();
-            },
-
-            updateServe: function() {
-                if (this.shouldSwapServe()) {
-                    this.server = this.server === 'left' ? 'right' : 'left';
-                }
-            },
-
-            shouldSwapServe: function() {
-                if (this.scoreLeft >= 10 && this.scoreRight >= 10) {
-                    return true;
-                }
-
-                return (this.scoreLeft + this.scoreRight) % 2 == 0;
             },
 
             finishGame: function(winner) {
@@ -113,8 +105,6 @@
                 if (this.rightWinsGame()) {
                     this.finishGame(this.playerRight);
                 }
-
-                this.updateServe();
             },
 
             decreaseRight: function() {

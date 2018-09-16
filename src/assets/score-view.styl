@@ -1,12 +1,8 @@
 canvas-blue = #336dc2
 canvas-red = #ff2828
-score-font = 60vmin;
+score-font = 50vmin;
+score-font-small = 40vmin;
 minus-font = 20vmin;
-
-border-radius(val)
-  -webkit-border-radius: val
-  -moz-border-radius: val
-  border-radius: val
 
 right-radius(val) {
   border-bottom-right-radius: val;
@@ -32,9 +28,9 @@ flex-row(horizontalLayout) {
 .score-field {
   flex-column(flex-end)
   align-items: center;
+  justify-content space-evenly;
   width: 50%;
   height: 100%;
-  font-size: score-font;
   color: aliceblue;
 }
 
@@ -48,12 +44,17 @@ body {
   height:100%;
   margin: 0px;
   padding: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Times New Roman', Times, serif;
 
   .container {
     flex-column(center);
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: 90vmin;
+    margin-top: 10px;
     user-select: none;
   }
 
@@ -71,6 +72,16 @@ body {
     .score-val-number {
       flex-basis: 90%;
       text-align: center;
+
+      &.small {
+        font-size: score-font-small;
+        padding-top: 10vmin;
+      }
+
+      &.normal {
+          font-size: score-font;
+          padding-top: 7vmin;
+      }
     }
 
     .serve-indicator {
@@ -81,13 +92,13 @@ body {
   .score-left {
     @extend .score-field;
     background-color: canvas-blue;
-    left-radius(15px);
+    left-radius(3vmin);
   }
 
   .score-right {
     @extend .score-field 
     background-color: canvas-red;
-    right-radius(15px);
+    right-radius(3vmin);
   }
 
   .btn-minus {
@@ -115,33 +126,9 @@ body {
   }
 }
 
-.score-summary  {
-    display: flex;
-    width: 100%;
-}
-
 .game-winner {
   width: 80%;
   font-size: 8vmin;
   text-align: center;    
 }
 
-.button-next {
-  margin-bottom: 20px;
-  margin-bottom: 1.25rem;
-  font-size: 16px;
-  font-size: 1rem;
-  line-height: 26px;
-  padding: 12px 18px !important;
-  background-color: #336dc2 !important;
-  color: #373737 !important;
-  border-width: 0 !important;
-  border-style: solid !important;
-  border-color: rgba(0,0,0,0) !important;
-  border-radius(5px);
-  font-weight: 500;
-  display: inline-block;
-  -webkit-font-smoothing: antialiased;
-  word-break: normal;
-  text-decoration: none !important;
-}
