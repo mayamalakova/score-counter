@@ -8,7 +8,8 @@
                 v-on:increase-left="increaseLeft"
                 v-on:decrease-left="decreaseLeft"
                 v-on:increase-right="increaseRight"
-                v-on:decrease-right="decreaseRight"></game-progress>
+                v-on:decrease-right="decreaseRight"
+                :edit-mode="editMode"></game-progress>
 
         <score-footer
                     :player-left.sync="playerLeft"
