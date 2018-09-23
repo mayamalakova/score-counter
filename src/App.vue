@@ -1,8 +1,8 @@
 <template>
     <div class="container" @keyup.enter="toggleEdit">
-        <div class="edit-button">
-            <div v-on:click="toggleEdit">...</div>
-        </div>
+
+        <edit-button :toggle-edit="toggleEdit" :edit-mode="editMode"/>
+        
         <game-progress
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
                 v-on:increase-left="increaseLeft"
@@ -29,13 +29,15 @@
     import gameSummary from './components/game-summary.vue';
     import matchSummary from './components/match-summary.vue';
     import "./assets/score-view.styl";
+    import editButton from './components/edit-button.vue';
 
     export default {
         components: {
             'game-progress': gameProgress,
             'score-footer': scoreFooter,
             'game-summary': gameSummary,
-            'match-summary': matchSummary
+            'match-summary': matchSummary,
+            'edit-button': editButton
         },
 
         data: () => { return {
