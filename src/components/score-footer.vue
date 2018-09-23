@@ -1,24 +1,29 @@
 
 <template>
 <div class="score-footer">
+
     <input v-if="editMode" 
       :value="playerLeft" 
-      placeholder="player name" 
+      class="player-name-input"
+      placeholder="Player name" 
       @input="$emit('update:playerLeft', $event.target.value)">
+
     <div v-if="!editMode" class="player-name">{{playerLeft}}</div>
    
-    <a href="#" v-if="matchWinner" v-on:click="finishMatch" >Finish match</a>
+    <a href="#" v-if="matchWinner" @click="finishMatch" >Finish match</a>
 
-    <a href="#" v-if="gameWinner && !matchWinner" v-on:click="startGame">Next game</a>
+    <a href="#" v-if="gameWinner && !matchWinner" @click="startGame">Next game</a>
 
     <div v-if="!gameWinner && !matchWinner" class="game-scores">
         <game-score v-for="item of gameScores" :game-score="item" v-bind:key="item"/>
     </div>
 
     <input v-if="editMode" 
-      placeholder="player name"
       :value="playerRight" 
+      class="player-name-input"
+      placeholder="Player name"
       @input="$emit('update:playerRight', $event.target.value)">
+
     <div v-if="!editMode" class="player-name">{{playerRight}}</div>
 </div>
 
