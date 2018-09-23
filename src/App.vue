@@ -1,34 +1,48 @@
 <template>
-    <div class="container">
-        <game-progress
+    <div class="container" @keyup.enter="toggleEdit">
+
+        <edit-button :toggle-edit="toggleEdit" :edit-mode="editMode"/>
+        
+        <game-progress v-if="!editMode"
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
                 v-on:increase-left="increaseLeft"
                 v-on:decrease-left="decreaseLeft"
                 v-on:increase-right="increaseRight"
-                v-on:decrease-right="decreaseRight"></game-progress>
+                v-on:decrease-right="decreaseRight"/>
+
+        <game-progress-edit v-if="editMode"
+                :score-left="scoreLeft" 
+                :score-right="scoreRight"/>
 
         <score-footer
-                    :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"
+                    :player-left.sync="playerLeft"
+                    :player-right.sync="playerRight" 
+                    :game-scores="gameScores"
                     :game-winner="gameWinner"
                     :match-winner="matchWinner"
                     :start-game="startGame"
                     :finish-match="finishMatch"
+                    :edit-mode="editMode"
                     ></score-footer>
     </div>
 </template>
 <script>
     import gameProgress from './components/game-progress.vue';
+    import gameProgressEdit from './components/game-progress-edit.vue';
     import scoreFooter from './components/score-footer.vue';
     import gameSummary from './components/game-summary.vue';
     import matchSummary from './components/match-summary.vue';
+    import editButton from './components/edit-button.vue';
     import "./assets/score-view.styl";
 
     export default {
         components: {
             'game-progress': gameProgress,
+            'game-progress-edit': gameProgressEdit,
             'score-footer': scoreFooter,
             'game-summary': gameSummary,
-            'match-summary': matchSummary
+            'match-summary': matchSummary,
+            'edit-button': editButton
         },
 
         data: () => { return {
@@ -41,10 +55,21 @@
             playerRight: 'Zhang Z.',
             gameWinner: false,
             matchWinner: false,
+            editMode: false,
+            newServer: null,
+            swapServer: false
         }},
 
         computed: {
             server: function() {
+                let server = this.defaultServer;
+                if (this.swapServer) {
+                    return server == 'left' ? 'right' : 'left';
+                }
+                return server;
+            },
+
+            defaultServer: function() {
                 let totalPoints = this.scoreLeft + this.scoreRight;
                 if (this.scoreLeft < 10 || this.scoreRight < 10) {
                     let serveTurns = ~~(totalPoints /2);
@@ -118,14 +143,9 @@
                 this.scoreRight = 0;
             },
 
-            resetServer: function() {
-                this.server = 'left';
-            },
-
             startGame: function() {
                 this.swapSides();
                 this.resetScore();
-                this.resetServer();
                 this.gameWinner = false;
             },
 
@@ -140,7 +160,19 @@
 
             rightWinsGame: function() {
                 return this.scoreRight >= 11 && this.scoreRight - this.scoreLeft > 1
-            }
+            },
+
+            toggleEdit: function() {
+                this.editMode = !this.editMode;
+                if (this.editMode) {
+                    let currentServer = this.server;
+                    this.newServer = currentServer;
+                } else {
+                    this.swapServer = this.newServer != this.defaultServer;
+                }
+            },
+
+            
         }
     }
 
