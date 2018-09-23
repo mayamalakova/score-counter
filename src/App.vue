@@ -3,13 +3,16 @@
 
         <edit-button :toggle-edit="toggleEdit" :edit-mode="editMode"/>
         
-        <game-progress
+        <game-progress v-if="!editMode"
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
                 v-on:increase-left="increaseLeft"
                 v-on:decrease-left="decreaseLeft"
                 v-on:increase-right="increaseRight"
-                v-on:decrease-right="decreaseRight"
-                :edit-mode="editMode"></game-progress>
+                v-on:decrease-right="decreaseRight"/>
+
+        <game-progress-edit v-if="editMode"
+                :score-left="scoreLeft" 
+                :score-right="scoreRight"/>
 
         <score-footer
                     :player-left.sync="playerLeft"
@@ -25,15 +28,17 @@
 </template>
 <script>
     import gameProgress from './components/game-progress.vue';
+    import gameProgressEdit from './components/game-progress-edit.vue';
     import scoreFooter from './components/score-footer.vue';
     import gameSummary from './components/game-summary.vue';
     import matchSummary from './components/match-summary.vue';
-    import "./assets/score-view.styl";
     import editButton from './components/edit-button.vue';
+    import "./assets/score-view.styl";
 
     export default {
         components: {
             'game-progress': gameProgress,
+            'game-progress-edit': gameProgressEdit,
             'score-footer': scoreFooter,
             'game-summary': gameSummary,
             'match-summary': matchSummary,
@@ -50,11 +55,21 @@
             playerRight: 'Zhang Z.',
             gameWinner: false,
             matchWinner: false,
-            editMode: false
+            editMode: false,
+            newServer: null,
+            swapServer: false
         }},
 
         computed: {
             server: function() {
+                let server = this.defaultServer;
+                if (this.swapServer) {
+                    return server == 'left' ? 'right' : 'left';
+                }
+                return server;
+            },
+
+            defaultServer: function() {
                 let totalPoints = this.scoreLeft + this.scoreRight;
                 if (this.scoreLeft < 10 || this.scoreRight < 10) {
                     let serveTurns = ~~(totalPoints /2);
@@ -154,7 +169,15 @@
 
             toggleEdit: function() {
                 this.editMode = !this.editMode;
-            }
+                if (this.editMode) {
+                    let currentServer = this.server;
+                    this.newServer = currentServer;
+                } else {
+                    this.swapServer = this.newServer != this.defaultServer;
+                }
+            },
+
+            
         }
     }
 
