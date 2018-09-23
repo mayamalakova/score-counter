@@ -1,7 +1,11 @@
 
 <template>
 <div class="score-footer">
-    <div class="player-name">{{playerLeft}}</div>
+    <input v-if="editMode" 
+      :value="playerLeft" 
+      placeholder="player name" 
+      @input="$emit('update:playerLeft', $event.target.value)">
+    <div v-if="!editMode" class="player-name">{{playerLeft}}</div>
    
     <a href="#" v-if="matchWinner" v-on:click="finishMatch" >Finish match</a>
 
@@ -10,7 +14,12 @@
     <div v-if="!gameWinner && !matchWinner" class="game-scores">
         <game-score v-for="item of gameScores" :game-score="item" v-bind:key="item"/>
     </div>
-    <div class="player-name">{{playerRight}}</div>
+
+    <input v-if="editMode" 
+      placeholder="player name"
+      :value="playerRight" 
+      @input="$emit('update:playerRight', $event.target.value)">
+    <div v-if="!editMode" class="player-name">{{playerRight}}</div>
 </div>
 
 </template>
@@ -21,6 +30,6 @@ export default {
   components: {
     "game-score": gameScore
   },
-  props: ["playerLeft", "playerRight", "gameScores", "gameWinner", "matchWinner", "startGame", "finishMatch"]
+  props: ["playerLeft", "playerRight", "gameScores", "gameWinner", "matchWinner", "startGame", "finishMatch", "editMode"]
 };
 </script>

@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-    props: ['scoreLeft', 'scoreRight','server'],
+    props: ['scoreLeft', 'scoreRight','server', 'editMode'],
     computed: {
         valClass: function() {
             let valueSize = (this.scoreLeft > 9 || this.scoreRight > 9) ? "small" : "normal";

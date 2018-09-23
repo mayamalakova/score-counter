@@ -11,11 +11,14 @@
                 v-on:decrease-right="decreaseRight"></game-progress>
 
         <score-footer
-                    :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"
+                    :player-left.sync="playerLeft"
+                    :player-right.sync="playerRight" 
+                    :game-scores="gameScores"
                     :game-winner="gameWinner"
                     :match-winner="matchWinner"
                     :start-game="startGame"
                     :finish-match="finishMatch"
+                    :edit-mode="editMode"
                     ></score-footer>
     </div>
 </template>
