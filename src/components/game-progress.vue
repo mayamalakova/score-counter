@@ -3,14 +3,18 @@
         <div class="score-left" v-on:click="$emit('increase-left')">
             <div class="score-val">
                 <span :class="valClass">{{scoreLeft}} </span>
-                <span class="serve-indicator">{{server === 'left' ? "'" : ""}}</span>
+                
+                <span v-if="!editMode" class="serve-indicator">{{server === 'left' ? "'" : ""}}</span>
+                <input v-if="editMode" type="radio" name="server" value="left" v-model="server" class="server-option"/>
             </div>
             <div class="btn-minus" v-on:click.stop="$emit('decrease-left')">-</div>
         </div>
         <div class="score-right" v-on:click="$emit('increase-right')">
             <div class="score-val">
                 <span :class="valClass">{{scoreRight}} </span>
-                <span class="serve-indicator">{{server === 'right' ? "'" : ""}}</span>
+                
+                <span v-if="!editMode" class="serve-indicator">{{server === 'right' ? "'" : ""}}</span>
+                <input v-if="editMode" type="radio" name="server" value="right" v-model="server" class="server-option"/>
             </div>
             <div class="btn-minus" v-on:click.stop="$emit('decrease-right')">-</div>
         </div>
