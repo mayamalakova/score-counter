@@ -26,7 +26,7 @@
 </template>
 <script>
 export default {
-    props: ['scoreLeft', 'scoreRight', 'newServer'],
+    props: ['scoreLeft', 'scoreRight'],
     computed: {
         valClass: function() {
             let valueSize = (this.scoreLeft > 9 || this.scoreRight > 9) ? "small" : "normal";
