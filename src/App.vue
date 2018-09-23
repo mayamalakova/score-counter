@@ -1,7 +1,7 @@
 <template>
-    <div class="container">
+    <div class="container" @keyup.enter="toggleEdit">
         <div class="edit-button">
-            <div v-on:click="handleEdit">...</div>
+            <div v-on:click="toggleEdit">...</div>
         </div>
         <game-progress
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
@@ -150,7 +150,7 @@
                 return this.scoreRight >= 11 && this.scoreRight - this.scoreLeft > 1
             },
 
-            handleEdit: function() {
+            toggleEdit: function() {
                 this.editMode = !this.editMode;
             }
         }
