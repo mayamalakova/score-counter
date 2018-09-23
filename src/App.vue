@@ -143,14 +143,9 @@
                 this.scoreRight = 0;
             },
 
-            resetServer: function() {
-                this.server = 'left';
-            },
-
             startGame: function() {
                 this.swapSides();
                 this.resetScore();
-                this.resetServer();
                 this.gameWinner = false;
             },
 
