@@ -36,6 +36,7 @@ flex-row(horizontalLayout) {
 
 html {
     height: 100%;
+    text-align: right;
 }
 
 body {
@@ -53,9 +54,15 @@ body {
     flex-column(center);
     align-items: center;
     width: 100%;
-    height: 90vmin;
+    height: 100vmin;
     margin-top: 10px;
     user-select: none;
+  }
+
+  .edit-button {
+    font-size: 5vmin;
+    width: 90%;
+    flex-row(flex-end);
   }
 
   .score-container {

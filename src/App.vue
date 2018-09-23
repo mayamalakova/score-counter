@@ -1,5 +1,8 @@
 <template>
     <div class="container">
+        <div class="edit-button">
+            <div v-on:click="handleEdit">...</div>
+        </div>
         <game-progress
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
                 v-on:increase-left="increaseLeft"
@@ -41,6 +44,7 @@
             playerRight: 'Zhang Z.',
             gameWinner: false,
             matchWinner: false,
+            editMode: false
         }},
 
         computed: {
@@ -140,6 +144,10 @@
 
             rightWinsGame: function() {
                 return this.scoreRight >= 11 && this.scoreRight - this.scoreLeft > 1
+            },
+
+            handleEdit: function() {
+                this.editMode = !this.editMode;
             }
         }
     }
