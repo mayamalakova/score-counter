@@ -1,7 +1,7 @@
 <template>
     <div class="container" @keyup.enter="toggleEdit">
 
-        <edit-button :toggle-edit="toggleEdit" :edit-mode="editMode"/>
+        <edit-button :toggle-edit="toggleEdit" :edit-mode="editMode" :restart="restart"/>
         
         <game-progress v-if="!editMode"
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
@@ -32,7 +32,7 @@
     import scoreFooter from './components/score-footer.vue';
     import gameSummary from './components/game-summary.vue';
     import matchSummary from './components/match-summary.vue';
-    import editButton from './components/edit-button.vue';
+    import editButton from './components/top-toolbar.vue';
     import "./assets/score-view.styl";
 
     export default {
@@ -170,6 +170,11 @@
                 } else {
                     this.swapServer = this.newServer != this.defaultServer;
                 }
+            },
+
+            restart: function() {
+                this.resetScore();
+                this.swapServer = false;
             },
 
             
