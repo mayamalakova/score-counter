@@ -10,9 +10,11 @@
 
     <div v-if="!editMode" class="player-name">{{playerLeft}}</div>
    
-    <a href="#" v-if="matchWinner" @click="finishMatch" >Finish match</a>
+    <!--<a href="#" v-if="matchWinner" @click="finishMatch" >Finish match</a>-->
 
-    <a href="#" v-if="gameWinner && !matchWinner" @click="startGame">Next game</a>
+    <!--<a v-if="gameWinner && !matchWinner" @click="startGame">-->
+        <!--<span class="icon-chevron-right"> </span>-->
+    <!--</a>-->
 
     <div v-if="!gameWinner && !matchWinner" class="game-scores">
         <game-score v-for="item of gameScores" :game-score="item" v-bind:key="item"/>
