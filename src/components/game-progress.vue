@@ -18,7 +18,7 @@
         </div>
         <div :class="overlayClass">
             <div class="btn-continue" v-on:click.stop="$emit('new-game')">
-            <div>Next</div>
+            <div>{{overlayButtonLabel}}</div>
             <div class="icon-arrow-right"> </div>
             </div>
         </div>
@@ -36,6 +36,10 @@ export default {
         overlayClass: function() {
             let hidden = this.$parent.gameWinner ? "" : " hidden";
             return "cover-all" + hidden;
+        },
+
+        overlayButtonLabel: function() {
+            return this.$parent.matchWinner ? "Finish" : "Next";
         }
   }
 };

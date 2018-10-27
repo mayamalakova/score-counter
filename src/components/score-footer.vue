@@ -9,18 +9,9 @@
       @input="$emit('update:playerLeft', $event.target.value)">
 
     <div v-if="!editMode" class="player-name left">{{playerLeft}}</div>
-   
-    <!--<a href="#" v-if="matchWinner" @click="finishMatch" >Finish match</a>-->
 
-    <!--<a v-if="gameWinner && !matchWinner" @click="startGame">-->
-        <!--<span class="icon-chevron-right"> </span>-->
-    <!--</a>-->
-
-    <div v-if="!matchWinner" class="game-scores">
+    <div>
         {{this.gamesLeft}} : {{this.gamesRight}}
-    </div>
-    <div v-if="matchWinner" class="game-scores">
-        <game-score v-for="item of gameScores" :game-score="item" v-bind:key="item"/>
     </div>
 
     <input v-if="editMode" 
