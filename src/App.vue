@@ -8,11 +8,13 @@
                 v-on:increase-left="increaseLeft"
                 v-on:decrease-left="decreaseLeft"
                 v-on:increase-right="increaseRight"
-                v-on:decrease-right="decreaseRight"/>
+                v-on:decrease-right="decreaseRight"
+                v-on:new-game="startGame"/>
 
         <game-progress-edit v-if="editMode"
                 :score-left="scoreLeft" 
-                :score-right="scoreRight"/>
+                :score-right="scoreRight"
+                />
 
         <score-footer
                     :player-left.sync="playerLeft"

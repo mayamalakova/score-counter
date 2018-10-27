@@ -162,3 +162,35 @@ body {
   text-align: center;    
 }
 
+.cover-all {
+    position: fixed; /* Sit on top of the page content */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    font-size: 4vmin;
+    top: 0; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.hidden {
+      display: none; /* Hidden by default */
+    }
+
+    .btn-continue {
+      background-color: #FFF8E3;
+      border-radius: 0.5vmin;
+      padding: 3vmin;
+      text-transform: uppercase;
+      display flex
+
+      div {
+        margin-right: 2vmin
+      }
+    }
+}

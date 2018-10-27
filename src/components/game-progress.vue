@@ -16,6 +16,12 @@
             </div>
             <div class="btn-minus" v-on:click.stop="$emit('decrease-right')">-</div>
         </div>
+        <div :class="overlayClass">
+            <div class="btn-continue" v-on:click.stop="$emit('new-game')">
+            <div>Next</div>
+            <div class="icon-arrow-right"> </div>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -25,6 +31,11 @@ export default {
         valClass: function() {
             let valueSize = (this.scoreLeft > 9 || this.scoreRight > 9) ? "small" : "normal";
             return "score-val-number " + valueSize;
+        },
+
+        overlayClass: function() {
+            let hidden = this.$parent.gameWinner ? "" : " hidden";
+            return "cover-all" + hidden;
         }
   }
 };
