@@ -1,23 +1,23 @@
 <template>
     <div class="score-container" >
-        <div class="score-left" v-on:click="$emit('increase-left')">
+        <div class="score-left" @click="$emit('increase-left')">
             <div class="score-val">
                 <span :class="valClass">{{scoreLeft}} </span>
 
                 <span class="serve-indicator">{{server === 'left' ? "'" : ""}}</span>
             </div>
-            <div class="btn-minus" v-on:click.stop="$emit('decrease-left')">-</div>
+            <div class="btn-minus" @click.stop="$emit('decrease-left')">-</div>
         </div>
-        <div class="score-right" v-on:click="$emit('increase-right')">
+        <div class="score-right" @click="$emit('increase-right')">
             <div class="score-val">
                 <span :class="valClass">{{scoreRight}} </span>
                 
                 <span class="serve-indicator">{{server === 'right' ? "'" : ""}}</span>
             </div>
-            <div class="btn-minus" v-on:click.stop="$emit('decrease-right')">-</div>
+            <div class="btn-minus" @click.stop="$emit('decrease-right')">-</div>
         </div>
         <div :class="overlayClass">
-            <div class="btn-continue" v-on:click.stop="$emit('new-game')">
+            <div class="btn-continue" @click.stop="$emit('new-game')">
             <div>{{overlayButtonLabel}}</div>
             <div class="icon-arrow-right"> </div>
             </div>

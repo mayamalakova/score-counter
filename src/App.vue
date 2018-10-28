@@ -5,11 +5,11 @@
         
         <game-progress v-if="!editMode"
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
-                v-on:increase-left="increaseLeft"
-                v-on:decrease-left="decreaseLeft"
-                v-on:increase-right="increaseRight"
-                v-on:decrease-right="decreaseRight"
-                v-on:new-game="startGame"/>
+                @increase-left="increaseLeft"
+                @decrease-left="decreaseLeft"
+                @increase-right="increaseRight"
+                @decrease-right="decreaseRight"
+                @new-game="startGame"/>
 
         <game-progress-edit v-if="editMode"
                 :score-left="scoreLeft" 
