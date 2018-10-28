@@ -16,12 +16,6 @@
             </div>
             <div class="btn-minus" @click.stop="$emit('decrease-right')">-</div>
         </div>
-        <div :class="overlayClass">
-            <div class="btn-continue" @click.stop="$emit('new-game')">
-                <div>{{overlayButtonLabel}}</div>
-                <div class="icon-arrow-right"></div>
-            </div>
-        </div>
         <div class="cover-all" v-if="$parent.gameWinner && !$parent.matchWinner">
             <div class="btn-continue" @click.stop="$emit('new-game')">
                 <div>Next</div>
@@ -29,7 +23,7 @@
             </div>
         </div>
         <div class="cover-all" v-if="$parent.matchWinner">
-            <div class="btn-continue" @click.stop="$emit('new-game')">
+            <div class="btn-continue" @click.stop="$emit('finish-game')">
                 <div>Finish</div>
                 <div class="icon-arrow-right"></div>
             </div>

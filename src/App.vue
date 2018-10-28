@@ -9,7 +9,9 @@
                 @decrease-left="decreaseLeft"
                 @increase-right="increaseRight"
                 @decrease-right="decreaseRight"
-                @new-game="startGame"/>
+                @new-game="startGame"
+                @finish-game="finishMatch"
+        />
 
         <game-progress-edit v-if="editMode"
                 :score-left="scoreLeft" 
