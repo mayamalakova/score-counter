@@ -22,12 +22,6 @@
                 <div class="icon-arrow-right"></div>
             </div>
         </div>
-        <div class="cover-all" v-if="$parent.matchWinner">
-            <div class="btn-continue" @click.stop="$emit('finish-game')">
-                <div>Finish</div>
-                <div class="icon-arrow-right"></div>
-            </div>
-        </div>
     </div>
 </template>
 <script>
