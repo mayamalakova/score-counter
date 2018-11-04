@@ -1,20 +1,26 @@
 <template>
     <div class="container" @keyup.enter="toggleEdit">
 
-        <edit-button :toggle-edit="toggleEdit" :edit-mode="editMode" :restart="restart"/>
+        <edit-button v-if="!matchWinner" :toggle-edit="toggleEdit" :edit-mode="editMode" :restart="restart"/>
         
-        <game-progress v-if="!editMode"
+        <game-progress v-if="!editMode && !matchWinner"
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"
-                v-on:increase-left="increaseLeft"
-                v-on:decrease-left="decreaseLeft"
-                v-on:increase-right="increaseRight"
-                v-on:decrease-right="decreaseRight"/>
+                @increase-left="increaseLeft"
+                @decrease-left="decreaseLeft"
+                @increase-right="increaseRight"
+                @decrease-right="decreaseRight"
+                @new-game="startGame"
+        />
 
-        <game-progress-edit v-if="editMode"
+        <game-progress-edit v-if="editMode && !matchWinner"
                 :score-left="scoreLeft" 
-                :score-right="scoreRight"/>
+                :score-right="scoreRight"
+                />
 
-        <score-footer
+        <match-summary v-if="matchWinner" :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"
+            @finish-game="finishMatch"/>
+
+        <score-footer v-if="!matchWinner"
                     :player-left.sync="playerLeft"
                     :player-right.sync="playerRight" 
                     :game-scores="gameScores"
