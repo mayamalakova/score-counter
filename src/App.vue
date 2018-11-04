@@ -17,7 +17,8 @@
                 :score-right="scoreRight"
                 />
 
-        <match-summary v-if="matchWinner" :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"/>
+        <match-summary v-if="matchWinner" :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"
+            @finish-game="finishMatch"/>
 
         <score-footer v-if="!matchWinner"
                     :player-left.sync="playerLeft"
