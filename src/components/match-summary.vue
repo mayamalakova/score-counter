@@ -1,16 +1,16 @@
 <template>
     <div class="cover-all" v-if="$parent.matchWinner">
-        <div>
+        <div class="match-summary-box">
             <table class="match-result">
                 <tr>
-                    <thead>{{playerLeft}}</thead>
+                    <thead class="player-name">{{playerLeft}}</thead>
                     <td v-for="score in gameScores">{{score.left}}</td>
-                    <td>{{gameScores.filter(s => s.left > s.right).length}}</td>
+                    <td class="games-result">{{gameScores.filter(s => s.left > s.right).length}}</td>
                 </tr>
                 <tr>
-                    <thead>{{playerRight}}</thead>
+                    <thead class="player-name">{{playerRight}}</thead>
                     <td v-for="score in gameScores">{{score.right}}</td>
-                    <td>{{gameScores.filter(s => s.right > s.left).length}}</td>
+                    <td class="games-result">{{gameScores.filter(s => s.right > s.left).length}}</td>
                 </tr>
             </table>
             <div class="btn-continue" @click.stop="$emit('finish-game')">

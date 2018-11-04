@@ -163,39 +163,53 @@ body {
 }
 
 .cover-all {
-    position: fixed; /* Sit on top of the page content */
-    width: 100%; /* Full width (cover the whole page) */
-    height: 100%; /* Full height (cover the whole page) */
-    font-size: 4vmin;
-    top: 0; 
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.3); /* Black background with opacity */
-    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
-    cursor: pointer; /* Add a pointer on hover */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  font-size: 4vmin;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    .btn-continue {
-      background-color: #FFF8E3;
-      border-radius: 0.5vmin;
-      padding: 3vmin;
-      text-transform: uppercase;
-      display flex
-      width 30vmin
+  .btn-continue {
+    background-color: #FFF8E3;
+    border-radius: 0.5vmin;
+    padding: 3vmin;
+    text-transform: uppercase;
+    display flex
+    width 30vmin
 
-      div {
-        margin-right: 2vmin
-      }
+    div {
+      margin-right: 2vmin
     }
+  }
 
-  .match-result {
-    td {
-      padding-right 2vmin
-      padding-bottom 5vmin
-      width 10vmin
+  .match-summary-box {
+    .match-result {
+      font-size: 7vmin;
+      cursor default
+
+      td, thead {
+        padding-right 2vmin
+        padding-bottom 5vmin
+        width 10vmin
+
+        &.player-name {
+          font-weight bold;
+          padding-right 10vmin
+          text-transform: uppercase
+        }
+        &.games-result {
+          font-weight bold
+        }
+      }
     }
   }
 }
