@@ -1,7 +1,7 @@
 <template>
     <div class="container" @keyup.enter="toggleEdit">
 
-        <edit-button v-if="!matchWinner" :toggle-edit="toggleEdit" :edit-mode="editMode" :restart="restart"/>
+        <edit-button v-if="!matchWinner" :toggle-edit="toggleEdit" :restart="restart"/>
         
         <game-progress v-if="!editMode && !matchWinner"
                 :score-left="scoreLeft" :score-right="scoreRight" :server="server"

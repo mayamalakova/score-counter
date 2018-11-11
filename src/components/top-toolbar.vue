@@ -7,6 +7,6 @@
 
 <script>
 export default {
-    props: ["toggleEdit", "restart", "editMode"]
+    props: ["toggleEdit", "restart"]
 }
 </script>
