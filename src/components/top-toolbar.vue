@@ -1,12 +1,17 @@
 <template>
     <div class="top-toolbar">
-        <div @click="restart" class="icon-rotate-ccw"> </div>
-        <div @click="toggleEdit" class="icon-menu1"> </div>
+        <div class="icon-rotate-ccw" @click="$emit(Events.RESTART)"></div>
+        <div class="icon-menu1" @click="$emit(Events.TOGGLE_EDIT)"></div>
     </div>
 </template>
 
 <script>
-export default {
-    props: ["toggleEdit", "restart", "editMode"]
-}
+    import Events from '../utils/events';
+
+    export default {
+        props: [],
+        data: function () {
+            return {Events: Events};
+        }
+    }
 </script>

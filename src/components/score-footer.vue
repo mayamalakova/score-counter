@@ -6,7 +6,7 @@
       :value="playerLeft" 
       class="player-name-input"
       placeholder="Player name" 
-      @input="$emit('update:playerLeft', $event.target.value)">
+      @input="$emit(Events.UPDATE_PLAYER_LEFT, $event.target.value)">
 
     <div v-if="!editMode" class="player-name left">{{playerLeft}}</div>
 
@@ -18,7 +18,7 @@
       :value="playerRight" 
       class="player-name-input"
       placeholder="Player name"
-      @input="$emit('update:playerRight', $event.target.value)">
+      @input="$emit(Events.UPDATE_PLAYER_RIGHT, $event.target.value)">
 
     <div v-if="!editMode" class="player-name right">{{playerRight}}</div>
 </div>
@@ -26,12 +26,18 @@
 </template>
 <script>
 import gameScore from "./game-score.vue";
+import Events from '../utils/events'
 
 export default {
   components: {
     "game-score": gameScore
   },
-  props: ["playerLeft", "playerRight", "gameScores", "gameWinner", "matchWinner", "startGame", "finishMatch", "editMode"],
+  props: ["playerLeft", "playerRight", "gameScores", "editMode"],
+    data: function() {
+      return {
+          Events: Events
+      }
+    },
 
   computed: {
       gamesLeft: function() {
