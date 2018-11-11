@@ -62,7 +62,7 @@
             server: function() {
                 let server = this.defaultServer;
                 if (this.swapServer) {
-                    return server == 'left' ? 'right' : 'left';
+                    return server === 'left' ? 'right' : 'left';
                 }
                 return server;
             },
@@ -71,11 +71,11 @@
                 let totalPoints = this.scoreLeft + this.scoreRight;
                 if (this.scoreLeft < 10 || this.scoreRight < 10) {
                     let serveTurns = ~~(totalPoints /2);
-                    return serveTurns % 2 == 0 ? 'left' : 'right';
+                    return serveTurns % 2 === 0 ? 'left' : 'right';
                 }
 
                 let totalSingleServes = this.scoreLeft - 10 + this.scoreRight - 10;
-                return totalSingleServes % 2 == 0 ? 'left' :'right';
+                return totalSingleServes % 2 === 0 ? 'left' :'right';
             }
         },
 
@@ -108,10 +108,8 @@
 
             winsMatch: function() {
                 let gamesLeft = this.gameScores.filter(g => g.left > g.right).length;
-                if (gamesLeft == 3 || this.gameScores.length - gamesLeft == 3) {
-                    return true;
-                }
-                return false;
+                return gamesLeft === 3 || this.gameScores.length - gamesLeft === 3;
+
             },
 
             decreaseLeft: function () {
@@ -163,10 +161,9 @@
             toggleEdit: function() {
                 this.editMode = !this.editMode;
                 if (this.editMode) {
-                    let currentServer = this.server;
-                    this.newServer = currentServer;
+                    this.newServer = this.server;
                 } else {
-                    this.swapServer = this.newServer != this.defaultServer;
+                    this.swapServer = this.newServer !== this.defaultServer;
                 }
             },
 
