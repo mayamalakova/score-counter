@@ -13,7 +13,7 @@
                     <td class="games-result">{{gameScores.filter(s => s.right > s.left).length}}</td>
                 </tr>
             </table>
-            <div class="btn-continue" @click.stop="$emit('finish-game')">
+            <div class="btn-continue" @click.stop="$emit(Events.FINISH_GAME)">
                 <div>New game</div>
                 <div class="icon-arrow-right"></div>
             </div>
@@ -21,7 +21,11 @@
     </div>
 </template>
 <script>
+    import Events from '../utils/events'
     export default {
-        props: ['playerLeft', 'playerRight', 'gameScores']
+        props: ['playerLeft', 'playerRight', 'gameScores'],
+        data: function() {
+            return {Events: Events};
+        }
     }
 </script>
