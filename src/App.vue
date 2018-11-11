@@ -48,8 +48,6 @@
         data: () => { return {
             scoreLeft: 0,
             scoreRight: 0,
-            games1: 0,
-            games2: 0,
             gameScores: [],
             playerLeft: 'Harimoto T.',
             playerRight: 'Zhang Z.',
