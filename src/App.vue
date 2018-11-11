@@ -32,7 +32,6 @@
     import gameProgress from './components/game-progress.vue';
     import gameProgressEdit from './components/game-progress-edit.vue';
     import scoreFooter from './components/score-footer.vue';
-    import gameSummary from './components/game-summary.vue';
     import matchSummary from './components/match-summary.vue';
     import editButton from './components/top-toolbar.vue';
     import "./assets/score-view.styl";
@@ -42,7 +41,6 @@
             'game-progress': gameProgress,
             'game-progress-edit': gameProgressEdit,
             'score-footer': scoreFooter,
-            'game-summary': gameSummary,
             'match-summary': matchSummary,
             'edit-button': editButton
         },
