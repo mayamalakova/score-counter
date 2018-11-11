@@ -24,10 +24,6 @@
                     :player-left.sync="playerLeft"
                     :player-right.sync="playerRight" 
                     :game-scores="gameScores"
-                    :game-winner="gameWinner"
-                    :match-winner="matchWinner"
-                    :start-game="startGame"
-                    :finish-match="finishMatch"
                     :edit-mode="editMode"
                     ></score-footer>
     </div>

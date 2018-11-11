@@ -31,7 +31,7 @@ export default {
   components: {
     "game-score": gameScore
   },
-  props: ["playerLeft", "playerRight", "gameScores", "gameWinner", "matchWinner", "startGame", "finishMatch", "editMode"],
+  props: ["playerLeft", "playerRight", "gameScores", "editMode"],
 
   computed: {
       gamesLeft: function() {
