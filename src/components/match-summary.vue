@@ -13,7 +13,7 @@
                     <td class="games-result">{{gameScores.filter(s => s.right > s.left).length}}</td>
                 </tr>
             </table>
-            <div class="btn-continue" @click.stop="$emit(Events.NEW_MATCH)">
+            <div class="btn-continue" @click.stop="$emit(Events.NEXT_MATCH)">
                 <div>New match</div>
                 <div class="icon-arrow-right"></div>
             </div>

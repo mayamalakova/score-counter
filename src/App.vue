@@ -9,7 +9,7 @@
                        @decrease-left="decreaseLeft"
                        @increase-right="increaseRight"
                        @decrease-right="decreaseRight"
-                       @new-game="nextGame"
+                       @next-game="nextGame"
         />
 
         <game-progress-edit v-if="editMode && !matchWinner && gameStarted"
@@ -19,7 +19,7 @@
 
         <match-summary v-if="matchWinner && gameStarted" :player-left="playerLeft" :player-right="playerRight"
                        :game-scores="gameScores"
-                       @new-match="nextMatch"/>
+                       @next-match="nextMatch"/>
 
         <score-footer v-if="!matchWinner && gameStarted"
                       :player-left.sync="playerLeft"
@@ -32,7 +32,7 @@
                      :player-left.sync="playerLeft"
                      :player-right.sync="playerRight"
                      :server="server"
-                     @start-game="startMatch"/>
+                     @start-match="startMatch"/>
 
     </div>
 </template>

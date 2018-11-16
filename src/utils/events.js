@@ -2,9 +2,9 @@ const INCREASE_LEFT = 'increase-left';
 const DECREASE_LEFT = 'decrease-left';
 const INCREASE_RIGHT = 'increase-right';
 const DECREASE_RIGHT = 'decrease-right';
-const NEW_GAME = 'new-game';
-const START_GAME = 'start-game';
-const NEW_MATCH = 'new-match';
+const NEXT_GAME = 'next-game';
+const START_MATCH = 'start-match';
+const NEXT_MATCH = 'next-match';
 const RESTART = 'restart';
 const TOGGLE_EDIT = 'toggle-edit';
 
@@ -17,9 +17,9 @@ export default {
     INCREASE_RIGHT,
     DECREASE_LEFT,
     DECREASE_RIGHT,
-    NEW_GAME,
-    NEW_MATCH,
-    START_GAME,
+    NEXT_GAME,
+    NEXT_MATCH,
+    START_MATCH,
     UPDATE_PLAYER_LEFT,
     UPDATE_PLAYER_RIGHT,
     RESTART,

@@ -29,7 +29,7 @@
             </div>
 
         </div>
-        <div class="btn-large" @click.stop="$emit(Events.START_GAME)">
+        <div class="btn-large" @click.stop="$emit(Events.START_MATCH)">
             <div>Start</div>
             <div class="icon-arrow-right"></div>
         </div>
