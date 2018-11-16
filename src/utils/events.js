@@ -4,7 +4,7 @@ const INCREASE_RIGHT = 'increase-right';
 const DECREASE_RIGHT = 'decrease-right';
 const NEW_GAME = 'new-game';
 const START_GAME = 'start-game';
-const FINISH_GAME = 'finish-game';
+const NEW_MATCH = 'new-match';
 const RESTART = 'restart';
 const TOGGLE_EDIT = 'toggle-edit';
 
@@ -18,7 +18,7 @@ export default {
     DECREASE_LEFT,
     DECREASE_RIGHT,
     NEW_GAME,
-    FINISH_GAME,
+    NEW_MATCH,
     START_GAME,
     UPDATE_PLAYER_LEFT,
     UPDATE_PLAYER_RIGHT,

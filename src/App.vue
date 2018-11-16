@@ -19,7 +19,7 @@
 
         <match-summary v-if="matchWinner && gameStarted" :player-left="playerLeft" :player-right="playerRight"
                        :game-scores="gameScores"
-                       @finish-game="finishMatch"/>
+                       @new-match="newMatch"/>
 
         <score-footer v-if="!matchWinner && gameStarted"
                       :player-left.sync="playerLeft"
@@ -113,10 +113,10 @@
                 }
             },
 
-            finishMatch: function () {
+            newMatch: function () {
                 this.gameScores = [];
                 this.matchWinner = false;
-                this.startGame();
+                this.gameStarted = false;
             },
 
             startMatch: function () {
