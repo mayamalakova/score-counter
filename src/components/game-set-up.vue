@@ -11,7 +11,9 @@
 
                 <label class="label-small for-inlined-input">
                     Serving
-                    <input type="radio" name="server" class="input-radio" value="left" v-model="$parent.newServer"/>
+                    <input type="radio" name="server" class="input-radio"
+                           value="false"
+                           @input="$emit(Events.UPDATE_SERVER, $event.target.value)"/>
                 </label>
             </div>
             <span>against</span>
@@ -24,9 +26,13 @@
 
                 <label class="label-small for-inlined-input">
                     Serving
-                    <input type="radio" name="server" class="input-radio" value="right" v-model="$parent.newServer"/>
+                    <input type="radio" name="server" class="input-radio"
+                           value="true"
+                           @input="$emit(Events.UPDATE_SERVER, $event.target.value)"/>
                 </label>
             </div>
+
+            <span>Picked: {{ swapServer }}</span>
 
         </div>
         <div class="btn-large" @click.stop="$emit(Events.START_MATCH)">
@@ -43,7 +49,7 @@
 
     export default {
         name: "game-set-up",
-        props: ["playerLeft", "playerRight"],
+        props: ["playerLeft", "playerRight", "swapServer"],
         data: function () {
             return {
                 Events: Events

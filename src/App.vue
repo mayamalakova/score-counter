@@ -31,7 +31,7 @@
         <game-set-up v-if="!gameStarted"
                      :player-left.sync="playerLeft"
                      :player-right.sync="playerRight"
-                     :server="server"
+                     :swap-server.sync="swapServer"
                      @start-match="startMatch"/>
 
     </div>
@@ -66,7 +66,7 @@
                 gameWinner: false,
                 matchWinner: false,
                 editMode: false,
-                newServer: null,
+                newServer: "left",
                 swapServer: false
             }
         },
