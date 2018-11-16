@@ -9,7 +9,7 @@
                        @decrease-left="decreaseLeft"
                        @increase-right="increaseRight"
                        @decrease-right="decreaseRight"
-                       @new-game="startGame"
+                       @new-game="nextGame"
         />
 
         <game-progress-edit v-if="editMode && !matchWinner && gameStarted"
@@ -19,7 +19,7 @@
 
         <match-summary v-if="matchWinner && gameStarted" :player-left="playerLeft" :player-right="playerRight"
                        :game-scores="gameScores"
-                       @new-match="newMatch"/>
+                       @new-match="nextMatch"/>
 
         <score-footer v-if="!matchWinner && gameStarted"
                       :player-left.sync="playerLeft"
@@ -93,27 +93,7 @@
         },
 
         methods: {
-            increaseLeft: function () {
-                if (this.gameWinner) {
-                    return;
-                }
-                this.scoreLeft++;
-                if (this.leftWinsGame()) {
-                    this.finishGame(this.playerLeft);
-                }
-            },
-
-            finishGame: function (winner) {
-                this.gameWinner = winner;
-                this.gameScores.push({left: this.scoreLeft, right: this.scoreRight});
-
-
-                if (this.winsMatch()) {
-                    this.matchWinner = winner;
-                }
-            },
-
-            newMatch: function () {
+            nextMatch: function () {
                 this.gameScores = [];
                 this.matchWinner = false;
                 this.gameStarted = false;
@@ -123,10 +103,20 @@
                 this.gameStarted = true;
             },
 
-            winsMatch: function () {
-                let gamesLeft = this.gameScores.filter(g => g.left > g.right).length;
-                return gamesLeft === 3 || this.gameScores.length - gamesLeft === 3;
+            nextGame: function () {
+                this._swapSides();
+                this._resetScore();
+                this.gameWinner = false;
+            },
 
+            increaseLeft: function () {
+                if (this.gameWinner) {
+                    return;
+                }
+                this.scoreLeft++;
+                if (this._leftWinsGame()) {
+                    this._finishGame(this.playerLeft);
+                }
             },
 
             decreaseLeft: function () {
@@ -140,8 +130,8 @@
                     return;
                 }
                 this.scoreRight++;
-                if (this.rightWinsGame()) {
-                    this.finishGame(this.playerRight);
+                if (this._rightWinsGame()) {
+                    this._finishGame(this.playerRight);
                 }
             },
 
@@ -149,30 +139,6 @@
                 if (this.scoreRight > 0) {
                     this.scoreRight--;
                 }
-            },
-
-            resetScore: function () {
-                this.scoreLeft = 0;
-                this.scoreRight = 0;
-            },
-
-            startGame: function () {
-                this.swapSides();
-                this.resetScore();
-                this.gameWinner = false;
-            },
-
-            swapSides: function () {
-                this.gameScores = this.gameScores.map(s => ({left: s.right, right: s.left}));
-                [this.playerLeft, this.playerRight] = [this.playerRight, this.playerLeft];
-            },
-
-            leftWinsGame: function () {
-                return this.scoreLeft >= 11 && this.scoreLeft - this.scoreRight > 1;
-            },
-
-            rightWinsGame: function () {
-                return this.scoreRight >= 11 && this.scoreRight - this.scoreLeft > 1
             },
 
             toggleEdit: function () {
@@ -185,8 +151,41 @@
             },
 
             restart: function () {
-                this.resetScore();
+                this._resetScore();
                 this.swapServer = false;
+            },
+
+            _leftWinsGame: function () {
+                return this.scoreLeft >= 11 && this.scoreLeft - this.scoreRight > 1;
+            },
+
+            _rightWinsGame: function () {
+                return this.scoreRight >= 11 && this.scoreRight - this.scoreLeft > 1
+            },
+
+            _winsMatch: function () {
+                let gamesLeft = this.gameScores.filter(g => g.left > g.right).length;
+                return gamesLeft === 3 || this.gameScores.length - gamesLeft === 3;
+
+            },
+
+            _swapSides: function () {
+                this.gameScores = this.gameScores.map(s => ({left: s.right, right: s.left}));
+                [this.playerLeft, this.playerRight] = [this.playerRight, this.playerLeft];
+            },
+
+            _resetScore: function () {
+                this.scoreLeft = 0;
+                this.scoreRight = 0;
+            },
+
+            _finishGame: function (winner) {
+                this.gameWinner = winner;
+                this.gameScores.push({left: this.scoreLeft, right: this.scoreRight});
+
+                if (this._winsMatch()) {
+                    this.matchWinner = winner;
+                }
             },
         }
     }
