@@ -9,7 +9,7 @@
 
             <label class="label-small for-inlined-input">
                 Serving
-            <input type="radio" name="server" class="input-radio"/>
+                <input type="radio" name="server" class="input-radio" value="left" v-model="$parent.newServer"/>
             </label>
         </div>
         <span >against</span>
@@ -22,7 +22,7 @@
 
             <label class="label-small for-inlined-input">
                 Serving
-                <input type="radio" name="server" class="input-radio"/>
+                <input type="radio" name="server" class="input-radio" value="right" v-model="$parent.newServer"/>
             </label>
         </div>
 
