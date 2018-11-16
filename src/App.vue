@@ -1,35 +1,39 @@
 <template>
     <div class="container" @keyup.enter="toggleEdit">
 
-        <!--<edit-button v-if="!matchWinner" @toggle-edit="toggleEdit" @restart="restart"/>-->
-        <!---->
-        <!--<game-progress v-if="!editMode && !matchWinner"-->
-                <!--:score-left="scoreLeft" :score-right="scoreRight" :server="server"-->
-                <!--@increase-left="increaseLeft"-->
-                <!--@decrease-left="decreaseLeft"-->
-                <!--@increase-right="increaseRight"-->
-                <!--@decrease-right="decreaseRight"-->
-                <!--@new-game="startGame"-->
-        <!--/>-->
+        <edit-button v-if="!matchWinner&&gameStarted" @toggle-edit="toggleEdit" @restart="restart"/>
 
-        <!--<game-progress-edit v-if="editMode && !matchWinner"-->
-                <!--:score-left="scoreLeft" -->
-                <!--:score-right="scoreRight"-->
-                <!--/>-->
-
-        <!--<match-summary v-if="matchWinner" :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"-->
-            <!--@finish-game="finishMatch"/>-->
-
-        <!--<score-footer v-if="!matchWinner"-->
-                    <!--:player-left.sync="playerLeft"-->
-                    <!--:player-right.sync="playerRight" -->
-                    <!--:game-scores="gameScores"-->
-                    <!--:edit-mode="editMode"-->
-                    <!--&gt;</score-footer>-->
-        <game-set-up
-        :player-left.sync="playerLeft"
-        :player-right.sync="playerRight"
+        <game-progress v-if="!editMode && !matchWinner && gameStarted"
+                       :score-left="scoreLeft" :score-right="scoreRight" :server="server"
+                       @increase-left="increaseLeft"
+                       @decrease-left="decreaseLeft"
+                       @increase-right="increaseRight"
+                       @decrease-right="decreaseRight"
+                       @new-game="startGame"
         />
+
+        <game-progress-edit v-if="editMode && !matchWinner && gameStarted"
+                            :score-left="scoreLeft"
+                            :score-right="scoreRight"
+        />
+
+        <match-summary v-if="matchWinner && gameStarted" :player-left="playerLeft" :player-right="playerRight"
+                       :game-scores="gameScores"
+                       @finish-game="finishMatch"/>
+
+        <score-footer v-if="!matchWinner && gameStarted"
+                      :player-left.sync="playerLeft"
+                      :player-right.sync="playerRight"
+                      :game-scores="gameScores"
+                      :edit-mode="editMode"
+        ></score-footer>
+
+        <game-set-up v-if="!gameStarted"
+                     :player-left.sync="playerLeft"
+                     :player-right.sync="playerRight"
+                     :server="server"
+                     @start-game="startMatch"/>
+
     </div>
 </template>
 <script>
@@ -51,21 +55,24 @@
             'game-set-up': gameSetUp
         },
 
-        data: () => { return {
-            scoreLeft: 0,
-            scoreRight: 0,
-            gameScores: [],
-            playerLeft: 'Harimoto T.',
-            playerRight: 'Zhang Z.',
-            gameWinner: false,
-            matchWinner: false,
-            editMode: false,
-            newServer: null,
-            swapServer: false
-        }},
+        data: () => {
+            return {
+                gameStarted: false,
+                scoreLeft: 0,
+                scoreRight: 0,
+                gameScores: [],
+                playerLeft: 'Harimoto T.',
+                playerRight: 'Zhang Z.',
+                gameWinner: false,
+                matchWinner: false,
+                editMode: false,
+                newServer: null,
+                swapServer: false
+            }
+        },
 
         computed: {
-            server: function() {
+            server: function () {
                 let server = this.defaultServer;
                 if (this.swapServer) {
                     return server === 'left' ? 'right' : 'left';
@@ -73,15 +80,15 @@
                 return server;
             },
 
-            defaultServer: function() {
+            defaultServer: function () {
                 let totalPoints = this.scoreLeft + this.scoreRight;
                 if (this.scoreLeft < 10 || this.scoreRight < 10) {
-                    let serveTurns = ~~(totalPoints /2);
+                    let serveTurns = ~~(totalPoints / 2);
                     return serveTurns % 2 === 0 ? 'left' : 'right';
                 }
 
                 let totalSingleServes = this.scoreLeft - 10 + this.scoreRight - 10;
-                return totalSingleServes % 2 === 0 ? 'left' :'right';
+                return totalSingleServes % 2 === 0 ? 'left' : 'right';
             }
         },
 
@@ -96,23 +103,27 @@
                 }
             },
 
-            finishGame: function(winner) {
+            finishGame: function (winner) {
                 this.gameWinner = winner;
                 this.gameScores.push({left: this.scoreLeft, right: this.scoreRight});
-                
+
 
                 if (this.winsMatch()) {
                     this.matchWinner = winner;
                 }
             },
 
-            finishMatch: function() {
+            finishMatch: function () {
                 this.gameScores = [];
                 this.matchWinner = false;
                 this.startGame();
             },
 
-            winsMatch: function() {
+            startMatch: function () {
+                this.gameStarted = true;
+            },
+
+            winsMatch: function () {
                 let gamesLeft = this.gameScores.filter(g => g.left > g.right).length;
                 return gamesLeft === 3 || this.gameScores.length - gamesLeft === 3;
 
@@ -124,7 +135,7 @@
                 }
             },
 
-            increaseRight: function() {
+            increaseRight: function () {
                 if (this.gameWinner) {
                     return;
                 }
@@ -134,37 +145,37 @@
                 }
             },
 
-            decreaseRight: function() {
+            decreaseRight: function () {
                 if (this.scoreRight > 0) {
                     this.scoreRight--;
                 }
             },
 
-            resetScore: function() {
+            resetScore: function () {
                 this.scoreLeft = 0;
                 this.scoreRight = 0;
             },
 
-            startGame: function() {
+            startGame: function () {
                 this.swapSides();
                 this.resetScore();
                 this.gameWinner = false;
             },
 
-            swapSides: function() {
+            swapSides: function () {
                 this.gameScores = this.gameScores.map(s => ({left: s.right, right: s.left}));
                 [this.playerLeft, this.playerRight] = [this.playerRight, this.playerLeft];
             },
 
-            leftWinsGame: function() {
+            leftWinsGame: function () {
                 return this.scoreLeft >= 11 && this.scoreLeft - this.scoreRight > 1;
             },
 
-            rightWinsGame: function() {
+            rightWinsGame: function () {
                 return this.scoreRight >= 11 && this.scoreRight - this.scoreLeft > 1
             },
 
-            toggleEdit: function() {
+            toggleEdit: function () {
                 this.editMode = !this.editMode;
                 if (this.editMode) {
                     this.newServer = this.server;
@@ -173,7 +184,7 @@
                 }
             },
 
-            restart: function() {
+            restart: function () {
                 this.resetScore();
                 this.swapServer = false;
             },
