@@ -1,29 +1,37 @@
 <template>
-    <div class="set-up-game">
-        <div class="player-field">
-            <label class="label-small for-bottom-input">Player Name</label>
-            <input :value="playerLeft"
-                   class="player-name-input"
-                   placeholder="Player name"
-                   @input="$emit(Events.UPDATE_PLAYER_LEFT, $event.target.value)">
+    <div>
 
-            <label class="label-small for-inlined-input">
-                Serving
-                <input type="radio" name="server" class="input-radio" value="left" v-model="$parent.newServer"/>
-            </label>
+        <div class="set-up-game">
+            <div class="player-field">
+                <label class="label-small for-bottom-input">Player Name</label>
+                <input :value="playerLeft"
+                       class="player-name-input"
+                       placeholder="Player name"
+                       @input="$emit(Events.UPDATE_PLAYER_LEFT, $event.target.value)">
+
+                <label class="label-small for-inlined-input">
+                    Serving
+                    <input type="radio" name="server" class="input-radio" value="left" v-model="$parent.newServer"/>
+                </label>
+            </div>
+            <span>against</span>
+            <div class="player-field">
+                <label class="label-small for-bottom-input">Player Name</label>
+                <input :value="playerRight"
+                       class="player-name-input"
+                       placeholder="Player name"
+                       @input="$emit(Events.UPDATE_PLAYER_RIGHT, $event.target.value)">
+
+                <label class="label-small for-inlined-input">
+                    Serving
+                    <input type="radio" name="server" class="input-radio" value="right" v-model="$parent.newServer"/>
+                </label>
+            </div>
+
         </div>
-        <span >against</span>
-        <div class="player-field">
-            <label class="label-small for-bottom-input">Player Name</label>
-            <input :value="playerRight"
-                   class="player-name-input"
-                   placeholder="Player name"
-                   @input="$emit(Events.UPDATE_PLAYER_RIGHT, $event.target.value)">
-
-            <label class="label-small for-inlined-input">
-                Serving
-                <input type="radio" name="server" class="input-radio" value="right" v-model="$parent.newServer"/>
-            </label>
+        <div class="btn-large" @click.stop="$emit(Events.START_GAME)">
+            <div>Start</div>
+            <div class="icon-arrow-right"></div>
         </div>
 
     </div>
