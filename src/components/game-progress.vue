@@ -1,36 +1,27 @@
 <template>
     <div class="score-container">
-        <div class="score-left" @click="$emit(Events.INCREASE_LEFT)">
-            <div class="score-val">
-                <span :class="valClass">{{scoreLeft}} </span>
+        <player-score :val-class="valClass"
+            :score="scoreLeft" :server="server" side="left"
+            @increase="$emit(Events.INCREASE_LEFT)"
+            @decrease="$emit(Events.DECREASE_LEFT)"/>
 
-                <server-indicator :server="server" side="left"/>
-            </div>
-            <div class="btn-minus" @click.stop="$emit(Events.DECREASE_LEFT)">-</div>
-        </div>
-        <div class="score-right" @click="$emit(Events.INCREASE_RIGHT)">
-            <div class="score-val">
-                <span :class="valClass">{{scoreRight}} </span>
+        <player-score :val-class="valClass"
+            :score="scoreRight" :server="server" side="right"
+            @increase="$emit(Events.INCREASE_RIGHT)"
+            @decrease="$emit(Events.DECREASE_RIGHT)"/>
 
-                <server-indicator :server="server" side="right"/>
-            </div>
-            <div class="btn-minus" @click.stop="$emit(Events.DECREASE_RIGHT)">-</div>
-        </div>
-        <div class="cover-all" v-if="$parent.gameWinner && !$parent.matchWinner">
-            <div class="btn-continue" @click.stop="$emit(Events.NEXT_GAME)">
-                <div>Next</div>
-                <div class="icon-arrow-right"></div>
-            </div>
-        </div>
+        <btn-next-game v-if="$parent.gameWinner && !$parent.matchWinner"
+            @click="$emit(Events.NEXT_GAME)"/>
     </div>
 </template>
 <script>
 
     import Events from '../utils/events';
-    import ServerIndicator from "./ServerIndicator.vue";
+    import PlayerScore from "./PlayerScore.vue";
+    import BtnNextGame from "./BtnNextGame.vue";
 
     export default {
-        components: {ServerIndicator},
+        components: {BtnNextGame, PlayerScore},
         props: ['scoreLeft', 'scoreRight', 'server'],
         data: function () {
             return {
@@ -44,7 +35,5 @@
             }
         }
     };
-
-    export {Events};
 
 </script>
