@@ -4,7 +4,7 @@
             <div class="score-val">
                 <span :class="valClass">{{scoreLeft}} </span>
 
-                <span class="serve-indicator">{{server === 'left' ? "'" : ""}}</span>
+                <server-indicator :server="server" side="left"/>
             </div>
             <div class="btn-minus" @click.stop="$emit(Events.DECREASE_LEFT)">-</div>
         </div>
@@ -12,7 +12,7 @@
             <div class="score-val">
                 <span :class="valClass">{{scoreRight}} </span>
 
-                <span class="serve-indicator">{{server === 'right' ? "'" : ""}}</span>
+                <server-indicator :server="server" side="right"/>
             </div>
             <div class="btn-minus" @click.stop="$emit(Events.DECREASE_RIGHT)">-</div>
         </div>
@@ -27,7 +27,10 @@
 <script>
 
     import Events from '../utils/events';
+    import ServerIndicator from "./ServerIndicator.vue";
+
     export default {
+        components: {ServerIndicator},
         props: ['scoreLeft', 'scoreRight', 'server'],
         data: function () {
             return {
