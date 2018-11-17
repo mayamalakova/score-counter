@@ -1,40 +1,23 @@
 <template>
-    <div class="container" @keyup.enter="toggleEdit">
 
-        <edit-button v-if="!matchWinner&&gameStarted" @toggle-edit="toggleEdit" @restart="restart"/>
+    <game-set-up v-if="!gameStarted"
+                 :player-left.sync="playerLeft"
+                 :player-right.sync="playerRight"
+                 :swap-server.sync="swapServer"
+                 @start-match="startMatch"/>
 
-        <game-progress v-if="!editMode && !matchWinner && gameStarted"
-                       :score-left="scoreLeft" :score-right="scoreRight" :server="server"
-                       @increase-left="increaseLeft"
-                       @decrease-left="decreaseLeft"
-                       @increase-right="increaseRight"
-                       @decrease-right="decreaseRight"
-                       @next-game="nextGame"
-        />
+    <match-summary v-else-if="matchWinner"
+                   :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"
+                   @next-match="nextMatch"/>
 
-        <game-progress-edit v-if="editMode && !matchWinner && gameStarted"
-                            :score-left="scoreLeft"
-                            :score-right="scoreRight"
-        />
-
-        <match-summary v-if="matchWinner && gameStarted" :player-left="playerLeft" :player-right="playerRight"
-                       :game-scores="gameScores"
-                       @next-match="nextMatch"/>
-
-        <score-footer v-if="!matchWinner && gameStarted"
-                      :player-left.sync="playerLeft"
-                      :player-right.sync="playerRight"
-                      :game-scores="gameScores"
-                      :edit-mode="editMode"
-        ></score-footer>
-
-        <game-set-up v-if="!gameStarted"
-                     :player-left.sync="playerLeft"
-                     :player-right.sync="playerRight"
-                     :swap-server.sync="swapServer"
-                     @start-match="startMatch"/>
-
-    </div>
+    <game-progress v-else
+                   :score-left="scoreLeft" :score-right="scoreRight" :server="server"
+                   @increase-left="increaseLeft"
+                   @decrease-left="decreaseLeft"
+                   @increase-right="increaseRight"
+                   @decrease-right="decreaseRight"
+                   @toggle-edit="toggleEdit" @restart="restart"
+                   @next-game="nextGame"/>
 </template>
 <script>
     import gameProgress from './components/game-progress.vue';
