@@ -186,7 +186,7 @@
                 if (this._winsMatch()) {
                     this.matchWinner = winner;
                 }
-            },
+            }
         }
     }
 
