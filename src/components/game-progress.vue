@@ -17,7 +17,7 @@
             <div class="btn-minus" @click.stop="$emit(Events.DECREASE_RIGHT)">-</div>
         </div>
         <div class="cover-all" v-if="$parent.gameWinner && !$parent.matchWinner">
-            <div class="btn-continue" @click.stop="$emit(Events.NEW_GAME)">
+            <div class="btn-continue" @click.stop="$emit(Events.NEXT_GAME)">
                 <div>Next</div>
                 <div class="icon-arrow-right"></div>
             </div>
