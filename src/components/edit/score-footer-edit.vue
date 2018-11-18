@@ -19,7 +19,7 @@
 
 </template>
 <script>
-    import Events from '../utils/events'
+    import Events from '../../utils/events'
 
     export default {
         name: 'score-footer-edit',

@@ -20,10 +20,10 @@
 
 </template>
 <script>
-    import Events from '../utils/events';
-    import actionsBar from './top-toolbar.vue';
+    import Events from '../../utils/events';
+    import actionsBar from '../top-toolbar.vue';
     import ScoreFooterEdit from "./score-footer-edit.vue";
-    import PlayerScore from "./PlayerScore.vue";
+    import PlayerScore from "../PlayerScore.vue";
 
     export default {
         components: {PlayerScore, actionsBar, ScoreFooterEdit},

@@ -25,7 +25,7 @@
 </template>
 <script>
     import gameProgress from './components/game-progress.vue';
-    import gameProgressEdit from './components/game-progress-edit.vue';
+    import gameProgressEdit from './components/edit/game-progress-edit.vue';
     import scoreFooter from './components/score-footer.vue';
     import matchSummary from './components/match-summary.vue';
     import editButton from './components/top-toolbar.vue';
