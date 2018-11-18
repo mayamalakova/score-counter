@@ -1,38 +1,31 @@
 <template>
     <div class="score-footer">
 
-        <input v-if="editMode"
+        <input class="player-name-input"
                :value="playerLeft"
-               class="player-name-input"
                placeholder="Player name"
-               @input="$emit(Events.UPDATE_PLAYER_LEFT, $event.target.value)">
-
-        <div v-if="!editMode" class="player-name left">{{playerLeft}}</div>
+               @input="$emit('updateLeft', $event.target.value)">
 
         <div>
             {{this.gamesLeft}} : {{this.gamesRight}}
         </div>
 
-        <input v-if="editMode"
+        <input class="player-name-input"
                :value="playerRight"
-               class="player-name-input"
                placeholder="Player name"
-               @input="$emit(Events.UPDATE_PLAYER_RIGHT, $event.target.value)">
+               @input="$emit('updateRight', $event.target.value)">
 
-        <div v-if="!editMode" class="player-name right">{{playerRight}}</div>
     </div>
 
 </template>
 <script>
-    import gameScore from "./game-score.vue";
     import Events from '../utils/events'
 
     export default {
         name: 'score-footer-edit',
         components: {
-            "game-score": gameScore
         },
-        props: ["playerLeft", "playerRight", "gameScores", "editMode"],
+        props: ["playerLeft", "playerRight", "gameScores"],
         data: function () {
             return {
                 Events: Events

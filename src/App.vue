@@ -10,7 +10,7 @@
                    :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"
                    @next-match="nextMatch"/>
 
-    <game-progress v-else
+    <game-progress v-else-if="!editMode"
                    :score-left="scoreLeft" :score-right="scoreRight" :server="server"
                    @increase-left="increaseLeft"
                    @decrease-left="decreaseLeft"
@@ -18,6 +18,10 @@
                    @decrease-right="decreaseRight"
                    @toggle-edit="toggleEdit" @restart="restart"
                    @next-game="nextGame"/>
+
+    <game-progress-edit v-else
+                        :score-left="scoreLeft" :score-right="scoreRight" :server="server"
+                        @toggle-edit="toggleEdit" @restart="restart"/>
 </template>
 <script>
     import gameProgress from './components/game-progress.vue';

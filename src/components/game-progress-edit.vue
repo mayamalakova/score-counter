@@ -1,38 +1,44 @@
 <template>
-    <div class="score-container" >
-        <div class="score-left">
-            <div class="score-val">
-                <span :class="valClass">{{scoreLeft}} </span>
-                <input type="radio" 
-                    name="server" value="left"
-                    class="server-option"
-                    v-model="$parent.newServer"
-                    />
-            </div>
-            <div class="btn-minus">-</div>
+    <div class="container" @keyup.enter="$emit(Events.TOGGLE_EDIT)">
+        <actions-bar @toggle-edit="$emit(Events.TOGGLE_EDIT)" @restart="$emit(Events.RESTART)"/>
+
+        <div class="score-container">
+            <player-score :val-class="valClass"
+                          :score="scoreLeft" :server="server" side="left"/>
+
+            <player-score :val-class="valClass"
+                          :score="scoreRight" :server="server" side="right"/>
         </div>
-        <div class="score-right">
-            <div class="score-val">
-                <span :class="valClass">{{scoreRight}}</span>
-                <input type="radio" 
-                    name="server" value="right" 
-                    class="server-option"
-                    v-model="$parent.newServer"
-                    />
-            </div>
-            <div class="btn-minus">-</div>
-        </div>
+
+        <score-footer-edit
+                :player-left="$parent.playerLeft"
+                :player-right="$parent.playerRight"
+                :game-scores="$parent.gameScores"
+                @updateLeft="$emit(Events.UPDATE_PLAYER_LEFT)"
+                @updateRight="$emit(Events.UPDATE_PLAYER_RIGHT)"/>
     </div>
+
 </template>
 <script>
-export default {
-    props: ['scoreLeft', 'scoreRight'],
-    computed: {
-        valClass: function() {
-            let valueSize = (this.scoreLeft > 9 || this.scoreRight > 9) ? "small" : "normal";
-            return "score-val-number " + valueSize;
+    import Events from '../utils/events';
+    import actionsBar from './top-toolbar.vue';
+    import ScoreFooterEdit from "./score-footer-edit.vue";
+    import PlayerScore from "./PlayerScore.vue";
+
+    export default {
+        components: {PlayerScore, actionsBar, ScoreFooterEdit},
+        props: ['scoreLeft', 'scoreRight', 'server'],
+        data: function () {
+            return {
+                Events: Events
+            };
+        },
+        computed: {
+            valClass: function () {
+                let valueSize = (this.scoreLeft > 9 || this.scoreRight > 9) ? "small" : "normal";
+                return "score-val-number " + valueSize;
+            }
         }
-    }
-};
+    };
 
 </script>
