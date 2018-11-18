@@ -1,6 +1,5 @@
 <template>
     <div>
-        <label class="label-small for-bottom-input">Player Name</label>
         <input class="player-name-input"
                placeholder="Player name"
                v-bind:value="playerName"

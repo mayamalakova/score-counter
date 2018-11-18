@@ -9,6 +9,7 @@
     import Events from '../utils/events';
 
     export default {
+        name: 'actions-bar',
         props: [],
         data: function () {
             return {Events: Events};

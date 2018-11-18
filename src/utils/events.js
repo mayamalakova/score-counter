@@ -11,6 +11,7 @@ const TOGGLE_EDIT = 'toggle-edit';
 const UPDATE_PLAYER_LEFT = 'update:playerLeft';
 const UPDATE_PLAYER_RIGHT = 'update:playerRight';
 const UPDATE_SERVER = 'update:swapServer';
+const UPDATE_NEW_SERVER = 'update:newServer';
 
 
 export default {
@@ -24,6 +25,7 @@ export default {
     UPDATE_PLAYER_LEFT,
     UPDATE_PLAYER_RIGHT,
     UPDATE_SERVER,
+    UPDATE_NEW_SERVER,
     RESTART,
     TOGGLE_EDIT
 };

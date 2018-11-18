@@ -1,44 +1,34 @@
 <template>
-    <div class="container" @keyup.enter="toggleEdit">
 
-        <edit-button v-if="!matchWinner&&gameStarted" @toggle-edit="toggleEdit" @restart="restart"/>
+    <game-set-up v-if="!gameStarted"
+                 :player-left.sync="playerLeft"
+                 :player-right.sync="playerRight"
+                 :swap-server.sync="swapServer"
+                 @start-match="startMatch"/>
 
-        <game-progress v-if="!editMode && !matchWinner && gameStarted"
-                       :score-left="scoreLeft" :score-right="scoreRight" :server="server"
-                       @increase-left="increaseLeft"
-                       @decrease-left="decreaseLeft"
-                       @increase-right="increaseRight"
-                       @decrease-right="decreaseRight"
-                       @next-game="nextGame"
-        />
+    <match-summary v-else-if="matchWinner"
+                   :player-left="playerLeft" :player-right="playerRight" :game-scores="gameScores"
+                   @next-match="nextMatch"/>
 
-        <game-progress-edit v-if="editMode && !matchWinner && gameStarted"
-                            :score-left="scoreLeft"
-                            :score-right="scoreRight"
-        />
+    <game-progress v-else-if="!editMode"
+                   :score-left="scoreLeft" :score-right="scoreRight" :server="server"
+                   @increase-left="increaseLeft"
+                   @decrease-left="decreaseLeft"
+                   @increase-right="increaseRight"
+                   @decrease-right="decreaseRight"
+                   @toggle-edit="toggleEdit" @restart="restart"
+                   @next-game="nextGame"/>
 
-        <match-summary v-if="matchWinner && gameStarted" :player-left="playerLeft" :player-right="playerRight"
-                       :game-scores="gameScores"
-                       @next-match="nextMatch"/>
-
-        <score-footer v-if="!matchWinner && gameStarted"
-                      :player-left.sync="playerLeft"
-                      :player-right.sync="playerRight"
-                      :game-scores="gameScores"
-                      :edit-mode="editMode"
-        ></score-footer>
-
-        <game-set-up v-if="!gameStarted"
-                     :player-left.sync="playerLeft"
-                     :player-right.sync="playerRight"
-                     :swap-server.sync="swapServer"
-                     @start-match="startMatch"/>
-
-    </div>
+    <game-progress-edit v-else
+                        :score-left="scoreLeft" :score-right="scoreRight"
+                        :player-left.sync="playerLeft"
+                        :player-right.sync="playerRight"
+                        :newServer.sync="newServer"
+                        @toggle-edit="toggleEdit" @restart="restart"/>
 </template>
 <script>
     import gameProgress from './components/game-progress.vue';
-    import gameProgressEdit from './components/game-progress-edit.vue';
+    import gameProgressEdit from './components/edit/game-progress-edit.vue';
     import scoreFooter from './components/score-footer.vue';
     import matchSummary from './components/match-summary.vue';
     import editButton from './components/top-toolbar.vue';
