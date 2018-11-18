@@ -1,5 +1,5 @@
 <template>
-    <div class="container" @keyup.enter="toggleEdit">
+    <div class="container" @keyup.enter="$emit(Events.TOGGLE_EDIT)">
         <actions-bar @toggle-edit="$emit(Events.TOGGLE_EDIT)" @restart="$emit(Events.RESTART)"/>
 
         <div class="score-container">
