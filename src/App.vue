@@ -84,7 +84,9 @@
 
         methods: {
             nextMatch: function () {
+                this._resetScore();
                 this.gameScores = [];
+                this.gameWinner = false;
                 this.matchWinner = false;
                 this.gameStarted = false;
             },
