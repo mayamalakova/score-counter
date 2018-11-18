@@ -27,7 +27,7 @@
     import Events from '../utils/events';
     import "../assets/score-view.styl";
     import PlayerNameInput from "./shared/PlayerNameInput.vue";
-    import ServerInput from "./ServerInput.vue";
+    import ServerInput from "./shared/ServerInput.vue";
 
     export default {
         name: "game-set-up",
