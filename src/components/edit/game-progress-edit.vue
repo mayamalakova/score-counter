@@ -14,8 +14,8 @@
                 :player-left="playerLeft"
                 :player-right="playerRight"
                 :game-scores="$parent.gameScores"
-                @updateLeft="$emit(Events.UPDATE_PLAYER_LEFT, $event)"
-                @updateRight="$emit(Events.UPDATE_PLAYER_RIGHT, $event)"/>
+                @update:playerLeft="$emit(Events.UPDATE_PLAYER_LEFT, $event)"
+                @update:playerRight="$emit(Events.UPDATE_PLAYER_RIGHT, $event)"/>
     </div>
 
 </template>

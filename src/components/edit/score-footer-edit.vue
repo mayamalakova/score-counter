@@ -1,29 +1,27 @@
 <template>
     <div class="score-footer">
 
-        <input class="player-name-input"
-               :value="playerLeft"
-               placeholder="Player name"
-               @input="$emit('updateLeft', $event.target.value)">
+        <player-name-input :player-name="playerLeft"
+                           @update="$emit(Events.UPDATE_PLAYER_LEFT, $event)"/>
 
         <div>
             {{this.gamesLeft}} : {{this.gamesRight}}
         </div>
 
-        <input class="player-name-input"
-               :value="playerRight"
-               placeholder="Player name"
-               @input="$emit('updateRight', $event.target.value)">
+        <player-name-input :player-name="playerRight"
+                           @update="$emit(Events.UPDATE_PLAYER_RIGHT, $event)"/>
 
     </div>
 
 </template>
 <script>
-    import Events from '../../utils/events'
+    import Events from '../../utils/events';
+    import PlayerNameInput from '../shared/PlayerNameInput.vue';
 
     export default {
         name: 'score-footer-edit',
         components: {
+            PlayerNameInput
         },
         props: ["playerLeft", "playerRight", "gameScores"],
         data: function () {
