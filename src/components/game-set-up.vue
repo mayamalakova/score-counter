@@ -4,14 +4,14 @@
         <div class="set-up-game">
             <div class="player-field">
                 <player-name-input :playerName="playerLeft" @update="$emit(Events.UPDATE_PLAYER_LEFT, $event)"/>
-                <server-input server="left" :checked="true" @update="$emit(Events.UPDATE_SERVER, false)"/>
+                <server-input :checked="true" @update="$emit(Events.UPDATE_SERVER, false)"/>
             </div>
 
             <span>against</span>
 
             <div class="player-field">
                 <player-name-input :playerName="playerRight" @update="$emit(Events.UPDATE_PLAYER_RIGHT, $event)"/>
-                <server-input server="right" :checked="false" @update="$emit(Events.UPDATE_SERVER, true)"/>
+                <server-input :checked="false" @update="$emit(Events.UPDATE_SERVER, true)"/>
             </div>
 
         </div>
