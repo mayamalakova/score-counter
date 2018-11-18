@@ -2,14 +2,14 @@
     <div class="score-footer">
         <player-name-input :player-name="playerLeft"
                            @update="$emit(Events.UPDATE_PLAYER_LEFT, $event)"/>
-        <server-input :checked="true" @update="$emit(Events.UPDATE_SERVER, false)"/>
+        <server-input :checked="newServer === 'left'" @update="$emit(Events.UPDATE_NEW_SERVER, 'left')"/>
         <div>
             {{this.gamesLeft}} : {{this.gamesRight}}
         </div>
 
         <player-name-input :player-name="playerRight"
                            @update="$emit(Events.UPDATE_PLAYER_RIGHT, $event)"/>
-        <server-input :checked="true" @update="$emit(Events.UPDATE_SERVER, true)"/>
+        <server-input :checked="newServer === 'right'" @update="$emit(Events.UPDATE_NEW_SERVER, 'right')"/>
 
     </div>
 
@@ -25,7 +25,7 @@
             ServerInput,
             PlayerNameInput
         },
-        props: ["playerLeft", "playerRight", "gameScores"],
+        props: ["playerLeft", "playerRight", "gameScores", 'newServer'],
         data: function () {
             return {
                 Events: Events

@@ -20,10 +20,10 @@
                    @next-game="nextGame"/>
 
     <game-progress-edit v-else
-                        :score-left="scoreLeft" :score-right="scoreRight" :server="server"
+                        :score-left="scoreLeft" :score-right="scoreRight"
                         :player-left.sync="playerLeft"
                         :player-right.sync="playerRight"
-                        :swap-server.sync="swapServer"
+                        :newServer.sync="newServer"
                         @toggle-edit="toggleEdit" @restart="restart"/>
 </template>
 <script>
