@@ -26,7 +26,7 @@
 <script>
     import Events from '../utils/events';
     import "../assets/score-view.styl";
-    import PlayerNameInput from "./PlayerNameInput.vue";
+    import PlayerNameInput from "./shared/PlayerNameInput.vue";
     import ServerInput from "./ServerInput.vue";
 
     export default {
