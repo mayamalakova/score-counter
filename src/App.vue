@@ -21,6 +21,8 @@
 
     <game-progress-edit v-else
                         :score-left="scoreLeft" :score-right="scoreRight" :server="server"
+                        :player-left.sync="playerLeft"
+                        :player-right.sync="playerRight"
                         @toggle-edit="toggleEdit" @restart="restart"/>
 </template>
 <script>
