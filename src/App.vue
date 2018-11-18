@@ -23,6 +23,7 @@
                         :score-left="scoreLeft" :score-right="scoreRight" :server="server"
                         :player-left.sync="playerLeft"
                         :player-right.sync="playerRight"
+                        :swap-server.sync="swapServer"
                         @toggle-edit="toggleEdit" @restart="restart"/>
 </template>
 <script>
