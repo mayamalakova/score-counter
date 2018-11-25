@@ -5,7 +5,7 @@
             <server-input :checked="newServer === 'left'" @update="$emit(Events.UPDATE_NEW_SERVER, 'left')"/>
         </div>
 
-        <div>
+        <div class="game-score">
             {{this.gamesLeft}} : {{this.gamesRight}}
         </div>
 
