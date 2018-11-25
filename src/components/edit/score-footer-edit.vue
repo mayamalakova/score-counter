@@ -1,6 +1,6 @@
 <template>
     <div class="score-footer">
-        <div class="player-field_horizontal">
+        <div class="player-field">
             <player-name-input :player-name="playerLeft" @update="$emit(Events.UPDATE_PLAYER_LEFT, $event)"/>
             <server-input :checked="newServer === 'left'" @update="$emit(Events.UPDATE_NEW_SERVER, 'left')"/>
         </div>
@@ -9,7 +9,7 @@
             {{this.gamesLeft}} : {{this.gamesRight}}
         </div>
 
-        <div class="player-field_horizontal">
+        <div class="player-field">
             <player-name-input :player-name="playerRight" @update="$emit(Events.UPDATE_PLAYER_RIGHT, $event)"/>
             <server-input :checked="newServer === 'right'" @update="$emit(Events.UPDATE_NEW_SERVER, 'right')"/>
         </div>

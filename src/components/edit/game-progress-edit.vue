@@ -2,7 +2,7 @@
     <div class="container" @keyup.enter="$emit(Events.TOGGLE_EDIT)">
         <actions-bar @toggle-edit="$emit(Events.TOGGLE_EDIT)" @restart="$emit(Events.RESTART)"/>
 
-        <div class="score-container">
+        <div class="score-container-edit">
             <player-score :val-class="valClass"
                           :score="scoreLeft" :server="newServer" side="left"/>
 
