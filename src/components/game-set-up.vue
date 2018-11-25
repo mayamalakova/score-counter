@@ -7,8 +7,6 @@
                 <server-input :checked="true" @update="$emit(Events.UPDATE_SERVER, false)"/>
             </div>
 
-            <span>against</span>
-
             <div class="player-field">
                 <player-name-input :playerName="playerRight" @update="$emit(Events.UPDATE_PLAYER_RIGHT, $event)"/>
                 <server-input :checked="false" @update="$emit(Events.UPDATE_SERVER, true)"/>
