@@ -1,5 +1,5 @@
 <template>
-    <label class="label-small for-inlined-input">
+    <label class="label-small_serving">
         Serving
         <input type="radio" class="input-radio" name="server"
                :checked="checked"
