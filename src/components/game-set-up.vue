@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        <h1>Start a new match</h1>
         <div class="set-up-game">
             <div class="player-field">
                 <player-name-input :playerName="playerLeft" @update="$emit(Events.UPDATE_PLAYER_LEFT, $event)"/>
