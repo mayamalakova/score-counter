@@ -9,7 +9,7 @@
     "heroku-postbuild": "webpack -p --config build/webpack.config.dev.js",
     "build": "webpack --config build/webpack.config.dev.js",
     "dev": "webpack-dev-server --config build/webpack.config.dev.js",
-    "test": "mocha-webpack test/**/*.js --reporter spec"
+    "test": "mocha-webpack test/**/*.js --reporter nyan"
   },
   "dependencies": {
     "express": "^4.15.2",
