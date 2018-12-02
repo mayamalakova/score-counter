@@ -11,7 +11,9 @@
     "dev": "webpack-dev-server --config build/webpack.config.dev.js"
   },
   "dependencies": {
+    "@vue/test-utils": "^1.0.0-beta.26",
     "express": "^4.15.2",
+    "jest": "^23.6.0",
     "node-static": "^0.7.10",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
