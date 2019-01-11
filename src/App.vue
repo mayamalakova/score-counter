@@ -114,6 +114,11 @@
             decreaseLeft: function () {
                 if (this.scoreLeft > 0) {
                     this.scoreLeft--;
+                } else if (this._leftWonLastGame()) {
+                    let gameScore = this.gameScores.pop();
+                    this.scoreLeft = gameScore.right;
+                    this.scoreRight = gameScore.left - 1;
+                    this._swapSides();
                 }
             },
 
@@ -130,7 +135,22 @@
             decreaseRight: function () {
                 if (this.scoreRight > 0) {
                     this.scoreRight--;
+                } else if (this._rightWonLastGame()){
+                    let gameScore = this.gameScores.pop();
+                    this.scoreLeft = gameScore.right - 1;
+                    this.scoreRight = gameScore.left;
+                    this._swapSides();
                 }
+            },
+
+            _leftWonLastGame: function() {
+                let gamesCount = this.gameScores.length;
+                return gamesCount > 0 && this.gameScores[gamesCount -1].left > this.gameScores[gamesCount - 1].right;
+            },
+
+            _rightWonLastGame: function() {
+                let gamesCount = this.gameScores.length;
+                return gamesCount > 0 && this.gameScores[gamesCount -1].left < this.gameScores[gamesCount - 1].right;
             },
 
             toggleEdit: function () {
