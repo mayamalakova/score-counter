@@ -2,7 +2,7 @@
  * Table tennis scoring engine.
  *
  * A match is its settings plus a log of events. Everything else (score,
- * winners, server) is derived from the log by pure functions, so undo is just
+ * winners, server, ends) is derived from the log by pure functions, so undo is just
  * dropping events and there is no separate state to get out of sync.
  *
  * Players are A and B, never sides or names: A is the player who starts the
@@ -31,6 +31,11 @@ export interface Match {
 }
 
 export type Score = Record<Player, number>
+
+export interface Ends {
+    left: Player
+    right: Player
+}
 
 export interface Game {
     score: Score
@@ -94,6 +99,23 @@ export function matchWinner(match: Match): Player | null {
 /** Who serves the next point of the current game. */
 export function server(match: Match): Player {
     return serverIn(currentGame(match), match.settings.pointsToWin)
+}
+
+/**
+ * Which end each player is at. Players change ends after each game, and in the
+ * last possible game of the match when the first player reaches 5 (10 in games
+ * to 21).
+ */
+export function ends(match: Match): Ends {
+    const all = games(match)
+    const index = all.length - 1
+    const { score } = all[index]
+    const { bestOf, pointsToWin } = match.settings
+    let left: Player = index % 2 === 0 ? 'A' : 'B'
+    if (index === bestOf - 1 && Math.max(score.A, score.B) >= (pointsToWin === 21 ? 10 : 5)) {
+        left = other(left)
+    }
+    return { left, right: other(left) }
 }
 
 /** Records that `player` is actually serving now, if the derived server says otherwise. */
