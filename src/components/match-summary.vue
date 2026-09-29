@@ -24,6 +24,7 @@
     import Events from '../utils/events'
     export default {
         props: ['playerLeft', 'playerRight', 'gameScores'],
+        emits: [Events.NEXT_MATCH],
         data: function() {
             return {Events: Events};
         }

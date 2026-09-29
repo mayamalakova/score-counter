@@ -4,31 +4,20 @@
   "description": "A table tennis scoreboard for a phone or tablet next to the table",
   "author": "Maya Malakova",
   "scripts": {
-    "build": "webpack --config build/webpack.config.dev.js",
-    "dev": "webpack-dev-server --config build/webpack.config.dev.js",
-    "test": "mocha-webpack test/**/*.js --webpack-config build/webpack.config.test.js --reporter nyan"
+    "build": "vite build",
+    "dev": "vite",
+    "test": "vitest run",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^2.5.17",
-    "webpack": "^4.17.2"
+    "vue": "^3.5.43"
   },
   "devDependencies": {
-    "@vue/test-utils": "^1.0.0-beta.26",
-    "chai": "^4.2.0",
-    "css-loader": "^1.0.0",
-    "file-loader": "^2.0.0",
-    "html-webpack-plugin": "^3.2.0",
-    "mocha": "^5.2.0",
-    "mocha-webpack": "^2.0.0-beta.0",
-    "null-loader": "^0.1.1",
-    "style-loader": "^0.23.0",
-    "stylus": "^0.54.5",
-    "stylus-loader": "^3.0.2",
-    "vue-loader": "^15.4.1",
-    "vue-style-loader": "^4.1.2",
-    "vue-template-compiler": "^2.5.17",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.8",
-    "webpack-node-externals": "^1.7.2"
+    "@vitejs/plugin-vue": "^6.0.9",
+    "@vue/test-utils": "^2.5.1",
+    "jsdom": "^30.1.1",
+    "stylus": "^0.64.0",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2"
   }
 }

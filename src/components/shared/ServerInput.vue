@@ -9,6 +9,7 @@
 <script>
     export default {
         name: 'server-input',
-        props: ["checked"]
+        props: ["checked"],
+        emits: ['update']
     }
 </script>

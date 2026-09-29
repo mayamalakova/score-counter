@@ -10,6 +10,7 @@
     export default {
         name: 'btn-next-game',
         props: {
-        }
+        },
+        emits: ['click']
     }
 </script>

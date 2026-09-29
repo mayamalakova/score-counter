@@ -15,6 +15,7 @@
         name: 'player-score',
         components: {ServerIndicator},
         props: ["score", "server", "side", "valClass"],
+        emits: ['increase', 'decrease'],
         computed: {
             containerClass: function() {return `score-${this.side}`;}
         }

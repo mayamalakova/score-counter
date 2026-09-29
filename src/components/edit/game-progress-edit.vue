@@ -31,6 +31,8 @@
     export default {
         components: {PlayerScore, actionsBar, ScoreFooterEdit},
         props: ['scoreLeft', 'scoreRight', 'playerLeft', 'playerRight', 'newServer'],
+        emits: [Events.TOGGLE_EDIT, Events.RESTART, Events.UPDATE_PLAYER_LEFT, Events.UPDATE_PLAYER_RIGHT,
+            Events.UPDATE_NEW_SERVER],
         data: function () {
             return {
                 Events: Events
