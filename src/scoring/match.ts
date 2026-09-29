@@ -164,3 +164,47 @@ function gameWinner(score: Score, pointsToWin: PointsToWin): Player | null {
 function append(match: Match, event: MatchEvent): Match {
     return { ...match, events: [...match.events, event] }
 }
+
+/** Drops the last event, whatever it was. */
+export function undo(match: Match): Match {
+    if (match.events.length === 0) return match
+    return { ...match, events: match.events.slice(0, -1) }
+}
+
+/** Clears the current game back to 0-0, including any server corrections made in it. */
+export function restart(match: Match): Match {
+    return { ...match, events: match.events.slice(0, currentGameStart(match)) }
+}
+
+/**
+ * Takes back the player's last point in the current game. At 0-0, if the
+ * player won the previous game, that game is reopened without its winning
+ * point, so a game that was ended by mistake can be corrected.
+ */
+export function removePoint(match: Match, player: Player): Match {
+    const start = currentGameStart(match)
+    const inGame = lastPointIndex(match.events, player, start)
+    if (inGame >= 0) return withoutEvent(match, inGame)
+
+    const gameHasPoints = match.events.slice(start).some(event => event.type === 'point')
+    if (gameHasPoints || start === 0) return match
+
+    const all = games(match)
+    if (all[all.length - 2].winner !== player) return match
+    const reopened = { ...match, events: match.events.slice(0, start - 1) }
+    return withoutEvent(reopened, lastPointIndex(reopened.events, player, 0))
+}
+
+/** Index of the first event of the current game. */
+function currentGameStart(match: Match): number {
+    return match.events.findLastIndex(event => event.type === 'nextGame') + 1
+}
+
+function lastPointIndex(events: readonly MatchEvent[], player: Player, from: number): number {
+    const index = events.findLastIndex(event => event.type === 'point' && event.player === player)
+    return index >= from ? index : -1
+}
+
+function withoutEvent(match: Match, index: number): Match {
+    return { ...match, events: match.events.filter((_, i) => i !== index) }
+}
