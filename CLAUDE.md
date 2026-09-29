@@ -14,6 +14,8 @@ now being modernized.
 - Ask before adding a dependency that isn't listed under "Target stack".
 - Keep the known-bugs list below up to date: add bugs you find, strike them when fixed,
   and say in the PR which ones it fixes.
+- Claude may push feature branches and open PRs; only Maya merges. Claude never merges,
+  enables auto-merge, pushes to the default branch or changes repository settings.
 
 ## Target stack (decided)
 
