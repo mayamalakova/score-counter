@@ -1,0 +1,104 @@
+# Score Counter
+
+A table tennis scoreboard for a phone or tablet propped next to the table. Two players,
+tap a half of the screen to add a point, minus to take one back. Tracks service, games,
+ends and the match result. Personal project by Maya Malakova, first written in 2018–2019,
+now being modernized.
+
+## Working agreements
+
+- Work one phase at a time, one PR per phase (or per feature from Phase 6 on). Don't
+  pull work forward from later phases, even when it's tempting.
+- Small, focused commits with messages that explain why, not just what.
+- Behaviour changes need a test. Refactors must keep existing tests green.
+- Ask before adding a dependency that isn't listed under "Target stack".
+- Keep the known-bugs list below up to date: add bugs you find, strike them when fixed,
+  and say in the PR which ones it fixes.
+
+## Target stack (decided)
+
+- Vue 3 (latest 3.x), Composition API with `<script setup lang="ts">` for new code
+- Vite for dev server and build
+- TypeScript, pinned to 6.0.x: `vue-tsc` relies on the TypeScript JS API, which the
+  7.x native port doesn't provide the same way. Revisit when vue-tsc supports 7.
+- Vitest + @vue/test-utils + jsdom for tests
+- Node 22 (see `.nvmrc`)
+- Hosting: Netlify (static site, deploy on push to `main`, preview URL per PR),
+  configured through `netlify.toml` in the repo. Why:
+  - After Phase 1 the app is purely static, so it needs no server. The old Heroku
+    setup is gone anyway (free dynos were discontinued in 2022).
+  - Netlify is the closest to the Heroku workflow Maya liked: connect the repo once,
+    push to deploy.
+  - Every PR gets its own preview URL, so each change can be tried on a phone next to
+    a real table before merging. This fits the one-PR-per-phase/feature workflow.
+  - Build settings live in `netlify.toml`, in code rather than in a dashboard.
+  - The free tier comfortably covers a hobby app.
+  - Alternatives considered: GitHub Pages (no extra account, but no PR previews
+    without extra setup); Vercel and Cloudflare Pages (roughly equivalent, Netlify
+    chosen for the Heroku-like feel). Render, Railway or Fly.io only become relevant
+    if a backend is added later (e.g. shared history or a live second screen).
+- CI: GitHub Actions running typecheck, tests and build on every PR
+
+## Roadmap
+
+1. **Toolchain migration (current).** Move the existing app to Vue 3, Vite, TypeScript
+   and Vitest with no intentional behaviour or visual changes. Scope:
+   - Replace webpack 4 configs, mocha-webpack, chai and the Heroku setup
+     (`server.js`, `Procfile`, `node-static`, `express`, `heroku-postbuild`).
+   - Remove unused dependencies (`express`, `vue-router`).
+   - Port components to Vue 3 with the smallest changes that work: `.sync` becomes
+     `v-model:prop`, `emits` declared, `new Vue()` becomes `createApp`. Keeping Options
+     API and Stylus is fine in this phase; converting files to TypeScript is optional.
+   - Port `test/appSpec.js` to Vitest and keep all its cases passing.
+   - Add `netlify.toml` and a GitHub Actions workflow (typecheck, test, build).
+   - Update the README with setup, scripts and deploy notes.
+   - Known bugs are **not** fixed in this phase unless the port forces it; note any
+     that the port happens to change.
+2. **Scoring engine.** Extract all rules from `App.vue` into a pure TypeScript module
+   that stores the match as an event log (point / next game / server correction) and
+   derives score, server, ends and winner. Undo = drop the last event. Adds configurable
+   11 or 21 points, best of 1/3/5/7, and the deciding-game change of ends.
+3. **UI rebuild and redesign.** Typed props and emits, no `$parent`, real `<button>`s,
+   keyboard shortcuts, SVG icons instead of the icomoon font. Design direction: ITTF
+   table blue background with white edge and net lines; player colours (blue #2e6bc6,
+   red #df373d) follow the player, not the side; Big Shoulders Display for scores,
+   Atkinson Hyperlegible for UI text (self-hosted via @fontsource); the server indicator
+   is a ball that hops over the net when service changes.
+4. **Resilience.** Autosave the match to localStorage, screen wake lock during play,
+   installable offline PWA.
+5. **Repo hygiene.** Component tests for the main flows, contributor docs.
+6. **Features, one PR each.** Match history and rematch, timeouts, doubles serving
+   order, optional spoken score, second-screen display mode.
+
+## Scoring rules (ITTF)
+
+- A game is won at 11 (or 21) with a two-point lead.
+- Service changes every 2 points (every 5 in games to 21), and every point once both
+  players reach 10–10 (20–20).
+- The player who served first in a game receives first in the next.
+- Players change ends after each game, and in the last possible game of the match
+  when the first player reaches 5 (10 in games to 21).
+
+## Known bugs (legacy app)
+
+- Empty player names break the match. The game winner is stored as the player's name,
+  so `''` is falsy: the game never ends, scoring continues past 11, and every point
+  after 11 pushes a duplicate entry into `gameScores`. The match can never finish.
+- New match doesn't reset `swapServer`, while setup always shows the left player
+  serving, so a new match can silently start with the wrong server.
+- Restart sets `swapServer = false`, but the flag is match-wide, so restarting a game
+  can flip the server for the rest of the match.
+- Match point can't be undone: the summary only offers "New match".
+- The winning point of a game can't be corrected in place; the full-screen Next overlay
+  blocks the minus buttons.
+- `match-summary.vue` puts `<thead>` inside `<tr>` (invalid HTML).
+- `@keyup.enter` on the container `div` never fires (a div isn't focusable).
+- Missing rules: no deciding-game change of ends; 11 points and best of 5 are hardcoded.
+
+## Legacy code notes
+
+- All game logic lives in `src/App.vue`; children read parent state via `$parent`.
+- Dead code: `game-score.vue` is registered but unused, `App.vue` imports
+  `score-footer` and `top-toolbar` without using them, `src/assets/demo.html`, and most
+  of the icomoon font (only about four icons are used).
+- Stray closing brace in `score-view.styl` inside `.score-footer .player-name-input`.
