@@ -43,7 +43,7 @@ now being modernized.
 
 ## Roadmap
 
-1. **Toolchain migration (current).** Move the existing app to Vue 3, Vite, TypeScript
+1. **Toolchain migration (done).** Move the existing app to Vue 3, Vite, TypeScript
    and Vitest with no intentional behaviour or visual changes. Scope:
    - Replace webpack 4 configs, mocha-webpack, chai and the Heroku setup
      (`server.js`, `Procfile`, `node-static`, `express`, `heroku-postbuild`).
@@ -56,7 +56,7 @@ now being modernized.
    - Update the README with setup, scripts and deploy notes.
    - Known bugs are **not** fixed in this phase unless the port forces it; note any
      that the port happens to change.
-2. **Scoring engine.** Extract all rules from `App.vue` into a pure TypeScript module
+2. **Scoring engine (current).** Extract all rules from `App.vue` into a pure TypeScript module
    that stores the match as an event log (point / next game / server correction) and
    derives score, server, ends and winner. Undo = drop the last event. Adds configurable
    11 or 21 points, best of 1/3/5/7, and the deciding-game change of ends.
