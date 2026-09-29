@@ -95,22 +95,22 @@ now being modernized.
 - ~~Minus at 0 reopens the previous game even when the other player has points in the
   current game (e.g. at 0-3), throwing those points away.~~ Found and fixed in Phase 2:
   it only reopens at 0-0.
-- Match point can't be undone: the summary only offers "New match".
-- The winning point of a game can't be corrected in place; the full-screen Next overlay
-  blocks the minus buttons.
-- `match-summary.vue` puts `<thead>` inside `<tr>` (invalid HTML). Since Phase 1 the Vue
-  compiler warns about it in every build and test run.
-- `@keyup.enter` on the container `div` never fires (a div isn't focusable).
+- ~~Match point can't be undone: the summary only offers "New match".~~ Fixed in Phase 3:
+  the summary has "Undo last point".
+- ~~The winning point of a game can't be corrected in place; the full-screen Next overlay
+  blocks the minus buttons.~~ Fixed in Phase 3: a small bar with Undo and Next game
+  replaces the overlay.
+- ~~`match-summary.vue` puts `<thead>` inside `<tr>` (invalid HTML).~~ Fixed in Phase 3.
+- ~~`@keyup.enter` on the container `div` never fires (a div isn't focusable).~~ Removed in
+  Phase 3; keyboard shortcuts are planned separately.
 - ~~Missing rules: no deciding-game change of ends; 11 points and best of 5 are hardcoded.~~
   Fixed in Phase 2: the engine changes ends in the deciding game, and set-up offers 11
   or 21 points and best of 1/3/5/7.
 
-## Legacy code notes
+## Code notes
 
-- Since Phase 2 the rules live in `src/scoring/match.ts` (event log, pure functions,
-  players A/B). `App.vue` holds the match and maps players to left/right for the
-  components, which still read parent state via `$parent`.
-- Dead code: `game-score.vue` is registered but unused, `App.vue` imports
-  `score-footer` and `top-toolbar` without using them, `src/assets/demo.html`, and most
-  of the icomoon font (only about four icons are used).
-- Stray closing brace in `score-view.styl` inside `.score-footer .player-name-input`.
+- The rules live in `src/scoring/match.ts` (event log, pure functions, players A/B).
+- `App.vue` holds the match and maps players to left/right for the components, which
+  get everything through typed props and emits.
+- Global tokens (colours, fonts) are in `src/assets/app.css`; component styles are
+  scoped. Layout switches on `(orientation: portrait)`.
