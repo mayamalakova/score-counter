@@ -1,23 +1,27 @@
-<template>
-    <div :class="containerClass" @click="$emit('increase')">
-        <div class="score-val">
-            <span :class="valClass">{{score}} </span>
+<script setup lang="ts">
+import ServerIndicator from './ServerIndicator.vue'
+import type { Side } from './types'
 
-            <server-indicator :server="server" :side="side"/>
+defineProps<{
+    score: number
+    server: Side
+    side: Side
+    valClass: string
+}>()
+
+const emit = defineEmits<{
+    increase: []
+    decrease: []
+}>()
+</script>
+
+<template>
+    <div :class="`score-${side}`" @click="emit('increase')">
+        <div class="score-val">
+            <span :class="valClass">{{ score }} </span>
+
+            <ServerIndicator :server="server" :side="side"/>
         </div>
-        <div class="btn-minus" @click.stop="$emit('decrease')">-</div>
+        <div class="btn-minus" @click.stop="emit('decrease')">-</div>
     </div>
 </template>
-<script>
-    import ServerIndicator from "./ServerIndicator.vue"
-
-    export default {
-        name: 'player-score',
-        components: {ServerIndicator},
-        props: ["score", "server", "side", "valClass"],
-        emits: ['increase', 'decrease'],
-        computed: {
-            containerClass: function() {return `score-${this.side}`;}
-        }
-    }
-</script>
