@@ -1,236 +1,66 @@
-/* Global styles. Converted from score-view.styl when Stylus was dropped; the redesign replaces them. */
-@import "style.css";
-.score-field,
-body .score-left,
-body .score-right {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 50%;
-  height: 100%;
-  color: #f0f8ff;
+/* Global tokens and base styles. Component styles live in each component. */
+
+/* Self-hosted fonts: Big Shoulders Display for scores, Atkinson Hyperlegible for everything else. */
+@import '@fontsource/big-shoulders-display/900';
+@import '@fontsource/atkinson-hyperlegible/400';
+@import '@fontsource/atkinson-hyperlegible/700';
+
+:root {
+    --table: #1d4e89;
+    --line: #fff;
+    --ink: #16325a;
+    --player-a: #2e6bc6;
+    --player-b: #df373d;
+    --ball: #ff9f1c;
+    --font-score: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+    --font-ui: 'Atkinson Hyperlegible', system-ui, sans-serif;
+    --radius: 10px;
 }
-html {
-  height: 100%;
-  text-align: right;
+
+*, *::before, *::after {
+    box-sizing: border-box;
 }
-#content {
-  display: contents;
+
+html, body, #content {
+    height: 100%;
+    margin: 0;
 }
+
 body {
-  background-color: #fff8e3;
-  box-sizing: border-box;
-  height: 100%;
-  margin: 0px;
-  padding: 0px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Catamaran, sans-serif;
+    background: var(--table);
+    color: #fff;
+    font-family: var(--font-ui);
+    -webkit-tap-highlight-color: transparent;
 }
-body h1 {
-  text-align: left;
+
+button, input {
+    font: inherit;
+    color: inherit;
 }
-body .container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100vmin;
-  margin-top: 10px;
-  user-select: none;
+
+button {
+    cursor: pointer;
 }
-body .top-toolbar {
-  font-size: 5vmin;
-  width: 95%;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
+
+:focus-visible {
+    outline: 3px solid var(--ball);
+    outline-offset: 2px;
 }
-body .score-container {
-  display: flex;
-  justify-content: center;
-  width: 95%;
-  height: 85%;
-  margin-bottom: 1.52vmin;
+
+/* Buttons on white cards and bars. */
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--ink);
+    font-weight: 700;
 }
-body .score-container-edit {
-  display: flex;
-  justify-content: center;
-  width: 95%;
-  height: 70%;
-  margin-bottom: 1.52vmin;
-}
-body .score-val {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-body .score-val .score-val-number {
-  flex-basis: 90%;
-  text-align: center;
-}
-body .score-val .score-val-number.small {
-  font-size: 40vmin;
-  padding-top: 10vmin;
-}
-body .score-val .score-val-number.normal {
-  font-size: 50vmin;
-  padding-top: 7vmin;
-}
-body .score-val .serve-indicator {
-  font-size: 20vmin;
-}
-body .score-val .server-option {
-  width: 4vmin;
-  height: 4vmin;
-  margin-right: 2vmin;
-}
-body .score-left {
-  background-color: #336dc2;
-  border-bottom-left-radius: 3vmin;
-  border-top-left-radius: 3vmin;
-}
-body .score-right {
-  background-color: #ff2828;
-  border-bottom-right-radius: 3vmin;
-  border-top-right-radius: 3vmin;
-}
-body .btn-minus {
-  font-size: 20vmin;
-}
-body .score-footer {
-  display: flex;
-  justify-content: space-between;
-  width: 95%;
-  height: 10%;
-  font-size: 4vmin;
-}
-body .score-footer .player-name {
-  text-transform: uppercase;
-  width: 35%;
-}
-body .score-footer .player-name.left {
-  text-align: left;
-}
-body .score-footer .player-name.right {
-  text-align: right;
-}
-body .score-footer .game-scores {
-  display: flex;
-  justify-content: space-around;
-  font-size: 3vmin;
-}
-body .score-footer .game-scores .game-score {
-  margin-right: 10px;
-}
-body .score-footer .player-name-input {
-  font-size: 4vmin;
-  width: 40vmin;
-  margin-bottom: 2vmin;
-}
-.game-winner {
-  width: 80%;
-  font-size: 8vmin;
-  text-align: center;
-}
-.cover-all {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  font-size: 4vmin;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,0,0,0.3);
-  z-index: 2;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.cover-all .btn-continue {
-  background-color: #fff8e3;
-  border-radius: 0.5vmin;
-  padding: 3vmin;
-  text-transform: uppercase;
-  display: flex;
-  width: 30vmin;
-}
-.cover-all .btn-continue div {
-  margin-right: 2vmin;
-}
-.cover-all .match-summary-box .match-result {
-  font-size: 7vmin;
-  cursor: default;
-}
-.cover-all .match-summary-box .match-result td,
-.cover-all .match-summary-box .match-result thead {
-  padding-right: 2vmin;
-  padding-bottom: 5vmin;
-  width: 10vmin;
-}
-.cover-all .match-summary-box .match-result td.player-name,
-.cover-all .match-summary-box .match-result thead.player-name {
-  font-weight: bold;
-  padding-right: 10vmin;
-  text-transform: uppercase;
-}
-.cover-all .match-summary-box .match-result td.games-result,
-.cover-all .match-summary-box .match-result thead.games-result {
-  font-weight: bold;
-}
-.set-up-game {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.player-name-input {
-  margin-top: 2vmin;
-  height: 4vmin;
-  font-size: 3vmin;
-  width: 100%;
-}
-.label-small_serving {
-  font-size: 2vmin;
-  margin-top: 1vmin;
-  float: left;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-.match-settings {
-  display: flex;
-  justify-content: flex-start;
-  gap: 4vmin;
-  margin-top: 4vmin;
-  font-size: 2vmin;
-}
-.match-settings label {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 1vmin;
-}
-.match-settings .setting-select {
-  font-size: 2vmin;
-}
-.btn-large {
-  background-color: #336dc2;
-  font-weight: bold;
-  margin-top: 5vmin;
-  border-radius: 0.7vmin;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 30px;
-  display: flex;
-  justify-content: space-around;
-}
-.game-score {
-  margin-top: 2vmin;
+
+.button.primary {
+    background: var(--ink);
+    color: #fff;
 }
