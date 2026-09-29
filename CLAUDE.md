@@ -116,5 +116,8 @@ now being modernized.
 - The rules live in `src/scoring/match.ts` (event log, pure functions, players A/B).
 - `App.vue` holds the match and maps players to left/right for the components, which
   get everything through typed props and emits.
+- `src/storage.ts` saves the app state to localStorage after every change and restores it
+  on start. The save is versioned: bump `VERSION` when its shape changes, and older saves
+  are ignored. Tests clear localStorage in `test/setup.ts`.
 - Global tokens (colours, fonts) are in `src/assets/app.css`; component styles are
   scoped. Layout switches on `(orientation: portrait)`.
