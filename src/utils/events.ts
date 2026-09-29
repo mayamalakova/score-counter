@@ -12,6 +12,8 @@ const UPDATE_PLAYER_LEFT = 'update:playerLeft';
 const UPDATE_PLAYER_RIGHT = 'update:playerRight';
 const UPDATE_SERVER = 'update:swapServer';
 const UPDATE_NEW_SERVER = 'update:newServer';
+const UPDATE_POINTS_TO_WIN = 'update:pointsToWin';
+const UPDATE_BEST_OF = 'update:bestOf';
 
 
 export default {
@@ -26,6 +28,8 @@ export default {
     UPDATE_PLAYER_RIGHT,
     UPDATE_SERVER,
     UPDATE_NEW_SERVER,
+    UPDATE_POINTS_TO_WIN,
+    UPDATE_BEST_OF,
     RESTART,
     TOGGLE_EDIT
 };

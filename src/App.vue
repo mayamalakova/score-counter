@@ -4,6 +4,8 @@
                  v-model:player-left="playerLeft"
                  v-model:player-right="playerRight"
                  v-model:swap-server="swapServer"
+                 v-model:points-to-win="pointsToWin"
+                 v-model:best-of="bestOf"
                  @start-match="startMatch"/>
 
     <match-summary v-else-if="matchWinner"

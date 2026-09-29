@@ -161,3 +161,45 @@ describe("The table tennis scoring app", function () {
         }
     });
 });
+
+describe('Match settings on the set-up screen', function () {
+    async function startWith(points, bestOf) {
+        const wrapper = mount(App);
+        const [pointsSelect, bestOfSelect] = wrapper.findAll('select.setting-select');
+        await pointsSelect.setValue(String(points));
+        await bestOfSelect.setValue(String(bestOf));
+        await wrapper.find('.btn-large').trigger('click');
+        return wrapper.vm;
+    }
+
+    function score(times, action) {
+        for (let i = 0; i < times; i++) {
+            action();
+        }
+    }
+
+    it('should play games to 21 when chosen', async function () {
+        const app = await startWith(21, 3);
+        score(11, app.increaseLeft);
+        expect(app.gameWinner).toBeFalsy();
+
+        score(10, app.increaseLeft);
+        expect(app.gameScores).toEqual([{left: 21, right: 0}]);
+        expect(app.matchWinner).toBeFalsy();
+    });
+
+    it('should end a best of 1 after one game', async function () {
+        const app = await startWith(11, 1);
+        // The only game is the deciding game: at 5 the players change ends.
+        score(5, app.increaseLeft);
+        score(6, app.increaseRight);
+        expect(app.matchWinner).toBeTruthy();
+    });
+
+    it('should default to games to 11, best of 5', function () {
+        const wrapper = mount(App);
+        const [points, bestOf] = wrapper.findAll('select.setting-select');
+        expect(points.element.value).toBe('11');
+        expect(bestOf.element.value).toBe('5');
+    });
+});
