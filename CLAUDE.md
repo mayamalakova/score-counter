@@ -61,16 +61,18 @@ now being modernized.
    derives score, server, ends and winner. Undo = drop the last event. Adds configurable
    11 or 21 points, best of 1/3/5/7, and the deciding-game change of ends.
 3. **UI rebuild and redesign (current).** Typed props and emits, no `$parent`, real `<button>`s,
-   keyboard shortcuts, SVG icons instead of the icomoon font. Design direction: ITTF
+   SVG icons instead of the icomoon font. Design direction: ITTF
    table blue background with white edge and net lines; player colours (blue #2e6bc6,
    red #df373d) follow the player, not the side; Big Shoulders Display for scores,
    Atkinson Hyperlegible for UI text (self-hosted via @fontsource); the server indicator
-   is a ball that hops over the net when service changes.
+   is a ball that hops over the net when service changes. Held upright, the halves stack
+   with the net across the middle.
 4. **Resilience.** Autosave the match to localStorage, screen wake lock during play,
    installable offline PWA.
 5. **Repo hygiene.** Component tests for the main flows, contributor docs.
-6. **Features, one PR each.** Match history and rematch, timeouts, doubles serving
-   order, optional spoken score, second-screen display mode.
+6. **Features, one PR each.** Keyboard shortcuts (moved from Phase 3), match history and
+   rematch, timeouts, doubles serving order, optional spoken score, second-screen display
+   mode.
 
 ## Scoring rules (ITTF)
 
@@ -102,7 +104,7 @@ now being modernized.
   replaces the overlay.
 - ~~`match-summary.vue` puts `<thead>` inside `<tr>` (invalid HTML).~~ Fixed in Phase 3.
 - ~~`@keyup.enter` on the container `div` never fires (a div isn't focusable).~~ Removed in
-  Phase 3; keyboard shortcuts are planned separately.
+  Phase 3; keyboard shortcuts are planned for Phase 6.
 - ~~Missing rules: no deciding-game change of ends; 11 points and best of 5 are hardcoded.~~
   Fixed in Phase 2: the engine changes ends in the deciding game, and set-up offers 11
   or 21 points and best of 1/3/5/7.
