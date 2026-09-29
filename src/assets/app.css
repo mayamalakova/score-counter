@@ -1,0 +1,66 @@
+/* Global tokens and base styles. Component styles live in each component. */
+
+/* Self-hosted fonts: Big Shoulders Display for scores, Atkinson Hyperlegible for everything else. */
+@import '@fontsource/big-shoulders-display/900';
+@import '@fontsource/atkinson-hyperlegible/400';
+@import '@fontsource/atkinson-hyperlegible/700';
+
+:root {
+    --table: #1d4e89;
+    --line: #fff;
+    --ink: #16325a;
+    --player-a: #2e6bc6;
+    --player-b: #df373d;
+    --ball: #ff9f1c;
+    --font-score: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+    --font-ui: 'Atkinson Hyperlegible', system-ui, sans-serif;
+    --radius: 10px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body, #content {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background: var(--table);
+    color: #fff;
+    font-family: var(--font-ui);
+    -webkit-tap-highlight-color: transparent;
+}
+
+button, input {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+:focus-visible {
+    outline: 3px solid var(--ball);
+    outline-offset: 2px;
+}
+
+/* Buttons on white cards and bars. */
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--ink);
+    font-weight: 700;
+}
+
+.button.primary {
+    background: var(--ink);
+    color: #fff;
+}

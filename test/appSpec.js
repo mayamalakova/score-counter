@@ -165,10 +165,9 @@ describe("The table tennis scoring app", function () {
 describe('Match settings on the set-up screen', function () {
     async function startWith(points, bestOf) {
         const wrapper = mount(App);
-        const [pointsSelect, bestOfSelect] = wrapper.findAll('select.setting-select');
-        await pointsSelect.setValue(String(points));
-        await bestOfSelect.setValue(String(bestOf));
-        await wrapper.find('.btn-large').trigger('click');
+        await wrapper.find(`input[name="points-to-win"][value="${points}"]`).setValue();
+        await wrapper.find(`input[name="best-of"][value="${bestOf}"]`).setValue();
+        await wrapper.find('form.setup').trigger('submit');
         return wrapper.vm;
     }
 
@@ -198,8 +197,7 @@ describe('Match settings on the set-up screen', function () {
 
     it('should default to games to 11, best of 5', function () {
         const wrapper = mount(App);
-        const [points, bestOf] = wrapper.findAll('select.setting-select');
-        expect(points.element.value).toBe('11');
-        expect(bestOf.element.value).toBe('5');
+        expect(wrapper.find('input[name="points-to-win"]:checked').element.value).toBe('11');
+        expect(wrapper.find('input[name="best-of"]:checked').element.value).toBe('5');
     });
 });
