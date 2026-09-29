@@ -7,7 +7,8 @@
     "build": "vite build",
     "dev": "vite",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "vue-tsc"
   },
   "dependencies": {
     "vue": "^3.5.43"
@@ -17,7 +18,9 @@
     "@vue/test-utils": "^2.5.1",
     "jsdom": "^30.1.1",
     "stylus": "^0.64.0",
+    "typescript": "~6.0",
     "vite": "^8.3.1",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.2",
+    "vue-tsc": "^3.3.11"
   }
 }
