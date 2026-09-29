@@ -128,3 +128,42 @@ describe('after a reload', () => {
         expect(wrapper.find('form.setup').exists()).toBe(true)
     })
 })
+
+describe('ending a match', () => {
+    beforeEach(async () => {
+        await wrapper.find('input[name="best-of"][value="3"]').setValue()
+        await start()
+        await tap('.point', 0, 5)
+        await wrapper.find('[aria-label="Edit players and server"]').trigger('click')
+        await wrapper.find('.panel .end-match').trigger('click')
+    })
+
+    it('asks for confirmation first', () => {
+        expect(wrapper.find('[role="alertdialog"]').text()).toContain('End this match?')
+        expect(wrapper.find('form.setup').exists()).toBe(false)
+    })
+
+    it('can be cancelled, keeping the match', async () => {
+        await wrapper.find('.cancel-end').trigger('click')
+        expect(wrapper.find('[role="alertdialog"]').exists()).toBe(false)
+        await wrapper.find('.panel .done').trigger('click')
+        expect(scores()).toEqual(['5', '0'])
+    })
+
+    it('returns to set-up with the names and settings kept', async () => {
+        await wrapper.find('.confirm-end').trigger('click')
+
+        const inputs = wrapper.findAll('.setup .name-input').map(input => (input.element as HTMLInputElement).value)
+        expect(inputs).toEqual(['Ana', 'Ben'])
+        expect(wrapper.find('input[name="best-of"]:checked').attributes('value')).toBe('3')
+    })
+
+    it('is not undone by a reload', async () => {
+        await wrapper.find('.confirm-end').trigger('click')
+        await reload()
+
+        expect(wrapper.find('form.setup').exists()).toBe(true)
+        await wrapper.find('form.setup').trigger('submit')
+        expect(scores()).toEqual(['0', '0'])
+    })
+})

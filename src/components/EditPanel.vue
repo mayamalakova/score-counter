@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { Side } from './types'
 
 defineProps<{
@@ -8,16 +9,29 @@ defineProps<{
 
 const emit = defineEmits<{
     done: []
+    'end-match': []
 }>()
 
 const playerLeft = defineModel<string>('playerLeft', { required: true })
 const playerRight = defineModel<string>('playerRight', { required: true })
 const server = defineModel<Side>('server', { required: true })
+
+// Ending a match throws the score away, so it takes a second, deliberate tap.
+const confirmingEnd = ref(false)
 </script>
 
 <template>
     <div class="backdrop">
-        <form class="panel" aria-label="Edit players and server" @submit.prevent="emit('done')">
+        <section v-if="confirmingEnd" class="panel" role="alertdialog" aria-labelledby="end-title"
+                 aria-describedby="end-message">
+            <h2 id="end-title">End this match?</h2>
+            <p id="end-message">The score will be lost.</p>
+            <div class="actions">
+                <button class="button cancel-end" type="button" @click="confirmingEnd = false">Cancel</button>
+                <button class="button danger confirm-end" type="button" @click="emit('end-match')">End match</button>
+            </div>
+        </section>
+        <form v-else class="panel" aria-label="Edit players and server" @submit.prevent="emit('done')">
             <h2>Players</h2>
             <div class="row">
                 <input v-model="playerLeft" class="name-input" aria-label="Left player"
@@ -36,6 +50,7 @@ const server = defineModel<Side>('server', { required: true })
                 </label>
             </div>
             <button class="button primary done" type="submit">Done</button>
+            <button class="end-match" type="button" @click="confirmingEnd = true">End match</button>
         </form>
     </div>
 </template>
@@ -95,5 +110,32 @@ h2 {
     width: 100%;
     justify-content: center;
     margin-top: 6px;
+}
+
+.end-match {
+    display: block;
+    margin: 12px auto 0;
+    padding: 6px 10px;
+    border: 0;
+    background: none;
+    color: var(--player-b);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+p {
+    margin: 0 0 16px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.button.danger {
+    border-color: var(--player-b);
+    background: var(--player-b);
+    color: #fff;
 }
 </style>

@@ -93,6 +93,11 @@ function nextMatch() {
     gameStarted.value = false
 }
 
+function endMatch() {
+    editMode.value = false
+    nextMatch()
+}
+
 function startMatch() {
     match.value = scoring.newMatch({
         firstServer: firstServer.value,
@@ -171,6 +176,6 @@ function undo() {
                    v-model:player-right="playerRight"
                    v-model:server="newServer"
                    :color-left="left.color" :color-right="right.color"
-                   @done="toggleEdit"/>
+                   @done="toggleEdit" @end-match="endMatch"/>
     </template>
 </template>
