@@ -1,21 +1,15 @@
 {
   "name": "tt-score-view",
   "version": "0.0.1",
-  "description": "A table tennis scoring app using Express js",
+  "description": "A table tennis scoreboard for a phone or tablet next to the table",
   "author": "Maya Malakova",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "heroku-postbuild": "webpack -p --config build/webpack.config.dev.js",
     "build": "webpack --config build/webpack.config.dev.js",
     "dev": "webpack-dev-server --config build/webpack.config.dev.js",
     "test": "mocha-webpack test/**/*.js --webpack-config build/webpack.config.test.js --reporter nyan"
   },
   "dependencies": {
-    "express": "^4.15.2",
-    "node-static": "^0.7.10",
     "vue": "^2.5.17",
-    "vue-router": "^3.0.1",
     "webpack": "^4.17.2"
   },
   "devDependencies": {
