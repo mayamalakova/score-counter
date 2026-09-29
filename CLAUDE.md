@@ -56,11 +56,11 @@ now being modernized.
    - Update the README with setup, scripts and deploy notes.
    - Known bugs are **not** fixed in this phase unless the port forces it; note any
      that the port happens to change.
-2. **Scoring engine (current).** Extract all rules from `App.vue` into a pure TypeScript module
+2. **Scoring engine (done).** Extract all rules from `App.vue` into a pure TypeScript module
    that stores the match as an event log (point / next game / server correction) and
    derives score, server, ends and winner. Undo = drop the last event. Adds configurable
    11 or 21 points, best of 1/3/5/7, and the deciding-game change of ends.
-3. **UI rebuild and redesign.** Typed props and emits, no `$parent`, real `<button>`s,
+3. **UI rebuild and redesign (current).** Typed props and emits, no `$parent`, real `<button>`s,
    keyboard shortcuts, SVG icons instead of the icomoon font. Design direction: ITTF
    table blue background with white edge and net lines; player colours (blue #2e6bc6,
    red #df373d) follow the player, not the side; Big Shoulders Display for scores,
