@@ -2,7 +2,7 @@
  * Table tennis scoring engine.
  *
  * A match is its settings plus a log of events. Everything else (score,
- * winners) is derived from the log by pure functions, so undo is just
+ * winners, server) is derived from the log by pure functions, so undo is just
  * dropping events and there is no separate state to get out of sync.
  *
  * Players are A and B, never sides or names: A is the player who starts the
@@ -22,6 +22,8 @@ export interface MatchSettings {
 export type MatchEvent =
     | { type: 'point'; player: Player }
     | { type: 'nextGame' }
+    /** The server at this moment is actually `server`; the game's first server was recorded wrongly. */
+    | { type: 'serverCorrection'; server: Player }
 
 export interface Match {
     readonly settings: MatchSettings
@@ -33,6 +35,8 @@ export type Score = Record<Player, number>
 export interface Game {
     score: Score
     winner: Player | null
+    /** Who served the first point, after any corrections. */
+    firstServer: Player
 }
 
 export const DEFAULT_SETTINGS: MatchSettings = { pointsToWin: 11, bestOf: 5, firstServer: 'A' }
@@ -47,11 +51,17 @@ export function newMatch(settings: Partial<MatchSettings> = {}): Match {
 
 /** Every game so far; the last one is the game in progress (or just won). */
 export function games(match: Match): Game[] {
-    const result: Game[] = [newGame()]
+    const result: Game[] = [newGame(match.settings.firstServer)]
     for (const event of match.events) {
         const game = result[result.length - 1]
         if (event.type === 'nextGame') {
-            result.push(newGame())
+            // The player who served first in a game receives first in the next.
+            result.push(newGame(other(game.firstServer)))
+        } else if (event.type === 'serverCorrection') {
+            // Corrections carry forward: the next game follows the corrected first server.
+            if (serverIn(game, match.settings.pointsToWin) !== event.server) {
+                game.firstServer = other(game.firstServer)
+            }
         } else {
             game.score[event.player]++
             game.winner = gameWinner(game.score, match.settings.pointsToWin)
@@ -81,6 +91,17 @@ export function matchWinner(match: Match): Player | null {
     return null
 }
 
+/** Who serves the next point of the current game. */
+export function server(match: Match): Player {
+    return serverIn(currentGame(match), match.settings.pointsToWin)
+}
+
+/** Records that `player` is actually serving now, if the derived server says otherwise. */
+export function correctServer(match: Match, player: Player): Match {
+    if (server(match) === player) return match
+    return append(match, { type: 'serverCorrection', server: player })
+}
+
 /** Adds a point, unless the current game is already won. */
 export function addPoint(match: Match, player: Player): Match {
     if (currentGame(match).winner) return match
@@ -93,8 +114,22 @@ export function nextGame(match: Match): Match {
     return append(match, { type: 'nextGame' })
 }
 
-function newGame(): Game {
-    return { score: { A: 0, B: 0 }, winner: null }
+function newGame(firstServer: Player): Game {
+    return { score: { A: 0, B: 0 }, winner: null, firstServer }
+}
+
+/**
+ * Service changes every 2 points (every 5 in games to 21), and every point once
+ * both players reach 10-10 (20-20).
+ */
+function serverIn(game: Game, pointsToWin: PointsToWin): Player {
+    const every = pointsToWin === 21 ? 5 : 2
+    const deuce = pointsToWin - 1
+    const { A, B } = game.score
+    const changes = A >= deuce && B >= deuce
+        ? (2 * deuce) / every + (A + B - 2 * deuce)
+        : Math.floor((A + B) / every)
+    return changes % 2 === 0 ? game.firstServer : other(game.firstServer)
 }
 
 function gameWinner(score: Score, pointsToWin: PointsToWin): Player | null {

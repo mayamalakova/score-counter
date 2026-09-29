@@ -11,7 +11,7 @@ describe('a new match', () => {
 
     it('starts at 0-0 in the first game with no winner', () => {
         const match = newMatch()
-        expect(games(match)).toEqual([{ score: { A: 0, B: 0 }, winner: null }])
+        expect(games(match)).toEqual([{ score: { A: 0, B: 0 }, winner: null, firstServer: 'A' }])
         expect(matchWinner(match)).toBeNull()
     })
 })
@@ -62,8 +62,8 @@ describe('moving to the next game', () => {
     it('starts a new game at 0-0 and keeps the finished one', () => {
         const match = winGame(newMatch(), 'A')
         expect(games(match)).toEqual([
-            { score: { A: 11, B: 0 }, winner: 'A' },
-            { score: { A: 0, B: 0 }, winner: null }
+            { score: { A: 11, B: 0 }, winner: 'A', firstServer: 'A' },
+            { score: { A: 0, B: 0 }, winner: null, firstServer: 'B' }
         ])
         expect(gamesWon(match)).toEqual({ A: 1, B: 0 })
     })
