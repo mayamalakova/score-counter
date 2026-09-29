@@ -35,6 +35,8 @@
 
         components: {BtnNextGame, PlayerScore, actionsBar, scoreFooter},
         props: ['scoreLeft', 'scoreRight', 'server'],
+        emits: [Events.INCREASE_LEFT, Events.DECREASE_LEFT, Events.INCREASE_RIGHT, Events.DECREASE_RIGHT,
+            Events.TOGGLE_EDIT, Events.RESTART, Events.NEXT_GAME],
         data: function () {
             return {
                 Events: Events

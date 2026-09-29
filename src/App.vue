@@ -1,9 +1,9 @@
 <template>
 
     <game-set-up v-if="!gameStarted"
-                 :player-left.sync="playerLeft"
-                 :player-right.sync="playerRight"
-                 :swap-server.sync="swapServer"
+                 v-model:player-left="playerLeft"
+                 v-model:player-right="playerRight"
+                 v-model:swap-server="swapServer"
                  @start-match="startMatch"/>
 
     <match-summary v-else-if="matchWinner"
@@ -21,9 +21,9 @@
 
     <game-progress-edit v-else
                         :score-left="scoreLeft" :score-right="scoreRight"
-                        :player-left.sync="playerLeft"
-                        :player-right.sync="playerRight"
-                        :newServer.sync="newServer"
+                        v-model:player-left="playerLeft"
+                        v-model:player-right="playerRight"
+                        v-model:newServer="newServer"
                         @toggle-edit="toggleEdit" @restart="restart"/>
 </template>
 <script>

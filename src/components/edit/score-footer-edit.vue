@@ -29,6 +29,7 @@
             PlayerNameInput
         },
         props: ["playerLeft", "playerRight", "gameScores", 'newServer'],
+        emits: [Events.UPDATE_PLAYER_LEFT, Events.UPDATE_PLAYER_RIGHT, Events.UPDATE_NEW_SERVER],
         data: function () {
             return {
                 Events: Events

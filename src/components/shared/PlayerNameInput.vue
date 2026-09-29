@@ -9,6 +9,7 @@
 <script>
     export default {
         name: 'player-name-input',
-        props: ["playerName"]
+        props: ["playerName"],
+        emits: ['update']
     }
 </script>

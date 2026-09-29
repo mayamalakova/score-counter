@@ -31,6 +31,7 @@
         name: "game-set-up",
         components: {ServerInput, PlayerNameInput},
         props: ["playerLeft", "playerRight", "newServer"],
+        emits: [Events.UPDATE_PLAYER_LEFT, Events.UPDATE_PLAYER_RIGHT, Events.UPDATE_SERVER, Events.START_MATCH],
         data: function () {
             return {
                 Events: Events,

@@ -11,6 +11,7 @@
     export default {
         name: 'actions-bar',
         props: [],
+        emits: [Events.RESTART, Events.TOGGLE_EDIT],
         data: function () {
             return {Events: Events};
         }

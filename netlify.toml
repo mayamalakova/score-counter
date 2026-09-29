@@ -1,0 +1,7 @@
+# Netlify builds main on every push and a deploy preview for every PR.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"

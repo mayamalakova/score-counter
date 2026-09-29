@@ -41,6 +41,12 @@ html {
     text-align: right;
 }
 
+// Vue 3 mounts inside #content instead of replacing it like Vue 2 did.
+// display: contents keeps the app's root a layout child of body, as before.
+#content {
+  display: contents;
+}
+
 body {
   background-color: #FFF8E3;
   box-sizing: border-box;
