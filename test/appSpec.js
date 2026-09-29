@@ -11,6 +11,12 @@ describe("The table tennis scoring app", function () {
             app = mount(App).vm;
         });
 
+        function score(times, action) {
+            for (let i = 0; i < times; i++) {
+                action();
+            }
+        }
+
         it('should initialize app', function () {
             expect(app.gameStarted).toBe(false);
             expect(app.scoreLeft).toBe(0);
@@ -18,11 +24,11 @@ describe("The table tennis scoring app", function () {
             expect(app.gameScores).toEqual([]);
             expect(app.playerLeft).toBe('');
             expect(app.playerRight).toBe('');
-            expect(app.gameWinner).toBe(false);
-            expect(app.matchWinner).toBe(false);
+            expect(app.gameWinner).toBeFalsy();
+            expect(app.matchWinner).toBeFalsy();
             expect(app.editMode).toBe(false);
             expect(app.newServer).toBe("left");
-            expect(app.swapServer).toBe(false);
+            expect(app.server).toBe("left");
         });
 
         it('should increase score', function () {
@@ -33,14 +39,18 @@ describe("The table tennis scoring app", function () {
 
         describe('when decreasing', function() {
             it('should decrease score', function () {
-                app.scoreLeft = 1;
+                app.increaseLeft();
                 app.decreaseLeft();
                 expect(app.scoreLeft).toBe(0);
             });
 
             describe('when score is 0-0', function() {
+                // After a game the players change ends, so the player who
+                // won on the left is on the right in the next game.
+
                 it('should ignore if player did not win last game', function () {
-                    app.gameScores.push({left: 0, right: 11});
+                    score(11, app.increaseLeft);
+                    app.nextGame();
                     app.decreaseLeft();
 
                     expect(app.gameScores.length).toBe(1);
@@ -49,7 +59,8 @@ describe("The table tennis scoring app", function () {
                 });
 
                 it('should reduce left player games if they won last game', function () {
-                    app.gameScores.push({left: 11, right: 0});
+                    score(11, app.increaseRight);
+                    app.nextGame();
                     app.decreaseLeft();
 
                     expect(app.gameScores).toEqual([]);
@@ -58,7 +69,8 @@ describe("The table tennis scoring app", function () {
                 });
 
                 it('should reduce right player games if they won last game', function () {
-                    app.gameScores.push({left: 0, right: 11});
+                    score(11, app.increaseLeft);
+                    app.nextGame();
                     app.decreaseRight();
 
                     expect(app.gameScores).toEqual([]);
