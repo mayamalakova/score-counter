@@ -93,7 +93,8 @@ now being modernized.
 - Match point can't be undone: the summary only offers "New match".
 - The winning point of a game can't be corrected in place; the full-screen Next overlay
   blocks the minus buttons.
-- `match-summary.vue` puts `<thead>` inside `<tr>` (invalid HTML).
+- `match-summary.vue` puts `<thead>` inside `<tr>` (invalid HTML). Since Phase 1 the Vue
+  compiler warns about it in every build and test run.
 - `@keyup.enter` on the container `div` never fires (a div isn't focusable).
 - Missing rules: no deciding-game change of ends; 11 points and best of 5 are hardcoded.
 
