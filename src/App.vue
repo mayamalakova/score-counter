@@ -37,8 +37,6 @@ watchEffect(() => save({
 
 const ends = computed(() => scoring.ends(match.value))
 const currentGame = computed(() => scoring.currentGame(match.value))
-const scoreLeft = computed(() => currentGame.value.score[ends.value.left])
-const scoreRight = computed(() => currentGame.value.score[ends.value.right])
 const server = computed<Side>(() => scoring.server(match.value) === ends.value.left ? 'left' : 'right')
 const gameWinner = computed(() => currentGame.value.winner)
 const matchWinner = computed(() => scoring.matchWinner(match.value))
