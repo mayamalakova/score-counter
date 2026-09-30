@@ -67,12 +67,12 @@ now being modernized.
    Atkinson Hyperlegible for UI text (self-hosted via @fontsource); the server indicator
    is a ball that hops over the net when service changes. Held upright, the halves stack
    with the net across the middle.
-4. **Resilience (current).** Ships in two PRs:
-   - 4a: autosave the match to localStorage and restore it on reload, plus an "End
-     match" action (with confirmation) to abandon a match, since reloading no longer does.
-   - 4b: screen wake lock during play, installable offline PWA.
-5. **Repo hygiene.** Component tests for the main flows, contributor docs.
-6. **Features, one PR each.** Keyboard shortcuts (moved from Phase 3), match history and
+4. **Resilience (done).** Autosave the match to localStorage and restore it on reload,
+   plus an "End match" action (with confirmation) to abandon a match, since reloading no
+   longer does. Wake lock and the PWA moved to Phase 6.
+5. **Repo hygiene (current).** Component tests for the main flows, contributor docs.
+6. **Features, one PR each.** Keyboard shortcuts (moved from Phase 3), screen wake lock
+   during play and installable offline PWA (both moved from Phase 4), match history and
    rematch, timeouts, doubles serving order, optional spoken score, second-screen display
    mode.
 
