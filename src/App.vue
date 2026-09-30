@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import EditPanel from './components/EditPanel.vue'
 import MatchSummary from './components/MatchSummary.vue'
 import Scoreboard from './components/Scoreboard.vue'
@@ -7,21 +7,33 @@ import SetUp from './components/SetUp.vue'
 import type { PlayerView, Side, SideScore } from './components/types'
 import * as scoring from './scoring/match'
 import type { BestOf, Player, PointsToWin } from './scoring/match'
+import { load, save } from './storage'
 
-const gameStarted = ref(false)
-const match = ref(scoring.newMatch())
+// A reload goes straight back to where it was: set-up, mid-game or the summary.
+const saved = load()
+const gameStarted = ref(saved?.gameStarted ?? false)
+const match = ref(saved?.match ?? scoring.newMatch())
 // Names are kept per player (A starts on the left), so they follow the
 // players when ends change.
-const names = ref<Record<Player, string>>({ A: '', B: '' })
-const firstServer = ref<Player>('A')
-const pointsToWin = ref<PointsToWin>(11)
-const bestOf = ref<BestOf>(5)
+const names = ref<Record<Player, string>>(saved?.names ?? { A: '', B: '' })
+const firstServer = ref<Player>(saved?.firstServer ?? 'A')
+const pointsToWin = ref<PointsToWin>(saved?.pointsToWin ?? 11)
+const bestOf = ref<BestOf>(saved?.bestOf ?? 5)
 const editMode = ref(false)
 const newServer = ref<Side>('left')
 
 // Colours follow the player, not the side.
 const colors: Record<Player, string> = { A: 'var(--player-a)', B: 'var(--player-b)' }
 const defaultNames: Record<Player, string> = { A: 'Player 1', B: 'Player 2' }
+
+watchEffect(() => save({
+    gameStarted: gameStarted.value,
+    match: match.value,
+    names: { ...names.value },
+    firstServer: firstServer.value,
+    pointsToWin: pointsToWin.value,
+    bestOf: bestOf.value
+}))
 
 const ends = computed(() => scoring.ends(match.value))
 const currentGame = computed(() => scoring.currentGame(match.value))
@@ -79,6 +91,11 @@ function nextMatch() {
     firstServer.value = 'A'
     match.value = scoring.newMatch()
     gameStarted.value = false
+}
+
+function endMatch() {
+    editMode.value = false
+    nextMatch()
 }
 
 function startMatch() {
@@ -159,6 +176,6 @@ function undo() {
                    v-model:player-right="playerRight"
                    v-model:server="newServer"
                    :color-left="left.color" :color-right="right.color"
-                   @done="toggleEdit"/>
+                   @done="toggleEdit" @end-match="endMatch"/>
     </template>
 </template>

@@ -60,15 +60,17 @@ now being modernized.
    that stores the match as an event log (point / next game / server correction) and
    derives score, server, ends and winner. Undo = drop the last event. Adds configurable
    11 or 21 points, best of 1/3/5/7, and the deciding-game change of ends.
-3. **UI rebuild and redesign (current).** Typed props and emits, no `$parent`, real `<button>`s,
+3. **UI rebuild and redesign (done).** Typed props and emits, no `$parent`, real `<button>`s,
    SVG icons instead of the icomoon font. Design direction: ITTF
    table blue background with white edge and net lines; player colours (blue #2e6bc6,
    red #df373d) follow the player, not the side; Big Shoulders Display for scores,
    Atkinson Hyperlegible for UI text (self-hosted via @fontsource); the server indicator
    is a ball that hops over the net when service changes. Held upright, the halves stack
    with the net across the middle.
-4. **Resilience.** Autosave the match to localStorage, screen wake lock during play,
-   installable offline PWA.
+4. **Resilience (current).** Ships in two PRs:
+   - 4a: autosave the match to localStorage and restore it on reload, plus an "End
+     match" action (with confirmation) to abandon a match, since reloading no longer does.
+   - 4b: screen wake lock during play, installable offline PWA.
 5. **Repo hygiene.** Component tests for the main flows, contributor docs.
 6. **Features, one PR each.** Keyboard shortcuts (moved from Phase 3), match history and
    rematch, timeouts, doubles serving order, optional spoken score, second-screen display
@@ -114,5 +116,8 @@ now being modernized.
 - The rules live in `src/scoring/match.ts` (event log, pure functions, players A/B).
 - `App.vue` holds the match and maps players to left/right for the components, which
   get everything through typed props and emits.
+- `src/storage.ts` saves the app state to localStorage after every change and restores it
+  on start. The save is versioned: bump `VERSION` when its shape changes, and older saves
+  are ignored. Tests clear localStorage in `test/setup.ts`.
 - Global tokens (colours, fonts) are in `src/assets/app.css`; component styles are
   scoped. Layout switches on `(orientation: portrait)`.
