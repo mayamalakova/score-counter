@@ -148,9 +148,8 @@ function serverIn(game: Game, pointsToWin: PointsToWin): Player {
     const every = pointsToWin === 21 ? 5 : 2
     const deuce = pointsToWin - 1
     const { A, B } = game.score
-    const changes = A >= deuce && B >= deuce
-        ? (2 * deuce) / every + (A + B - 2 * deuce)
-        : Math.floor((A + B) / every)
+    const changes =
+        A >= deuce && B >= deuce ? (2 * deuce) / every + (A + B - 2 * deuce) : Math.floor((A + B) / every)
     return changes % 2 === 0 ? game.firstServer : other(game.firstServer)
 }
 

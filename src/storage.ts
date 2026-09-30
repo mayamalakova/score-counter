@@ -32,8 +32,14 @@ export function parse(json: string | null): SavedState | null {
     }
     if (!isRecord(data) || data.version !== VERSION) return null
     const { gameStarted, match, names, firstServer, pointsToWin, bestOf } = data
-    if (typeof gameStarted !== 'boolean' || !isMatch(match) || !isNames(names) || !isPlayer(firstServer)
-        || !isPointsToWin(pointsToWin) || !isBestOf(bestOf)) {
+    if (
+        typeof gameStarted !== 'boolean' ||
+        !isMatch(match) ||
+        !isNames(names) ||
+        !isPlayer(firstServer) ||
+        !isPointsToWin(pointsToWin) ||
+        !isBestOf(bestOf)
+    ) {
         return null
     }
     return { gameStarted, match, names, firstServer, pointsToWin, bestOf }
@@ -80,15 +86,21 @@ function isNames(value: unknown): value is Record<Player, string> {
 function isEvent(value: unknown): value is MatchEvent {
     if (!isRecord(value)) return false
     switch (value.type) {
-        case 'point': return isPlayer(value.player)
-        case 'nextGame': return true
-        case 'serverCorrection': return isPlayer(value.server)
-        default: return false
+        case 'point':
+            return isPlayer(value.player)
+        case 'nextGame':
+            return true
+        case 'serverCorrection':
+            return isPlayer(value.server)
+        default:
+            return false
     }
 }
 
 function isMatch(value: unknown): value is Match {
     if (!isRecord(value) || !isRecord(value.settings) || !Array.isArray(value.events)) return false
     const { pointsToWin, bestOf, firstServer } = value.settings
-    return isPointsToWin(pointsToWin) && isBestOf(bestOf) && isPlayer(firstServer) && value.events.every(isEvent)
+    return (
+        isPointsToWin(pointsToWin) && isBestOf(bestOf) && isPlayer(firstServer) && value.events.every(isEvent)
+    )
 }

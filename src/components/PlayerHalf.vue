@@ -15,14 +15,23 @@ const emit = defineEmits<{
 
 <template>
     <div class="half" :class="side">
-        <button class="point" type="button" :aria-label="`Point for ${player.name}`" @click="emit('increase')">
+        <button
+            class="point"
+            type="button"
+            :aria-label="`Point for ${player.name}`"
+            @click="emit('increase')"
+        >
             <span class="name" :style="{ background: player.color }">{{ player.name }}</span>
             <span class="score">{{ player.score }}</span>
             <span class="games">games {{ player.games }}</span>
         </button>
-        <button class="minus" type="button" :aria-label="`Take a point from ${player.name}`"
-                @click="emit('decrease')">
-            <Icon name="minus"/>
+        <button
+            class="minus"
+            type="button"
+            :aria-label="`Take a point from ${player.name}`"
+            @click="emit('decrease')"
+        >
+            <Icon name="minus" />
         </button>
     </div>
 </template>

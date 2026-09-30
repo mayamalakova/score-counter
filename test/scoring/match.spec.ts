@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
-    addPoint, currentGame, games, gamesWon, matchWinner, newMatch, nextGame
+    addPoint,
+    currentGame,
+    games,
+    gamesWon,
+    matchWinner,
+    newMatch,
+    nextGame
 } from '../../src/scoring/match'
 import { play, winGame } from './helpers'
 

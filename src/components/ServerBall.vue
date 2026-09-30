@@ -8,7 +8,10 @@ const props = defineProps<{
 
 // Changing the key restarts the hop animation on every change of service.
 const hops = ref(0)
-watch(() => props.side, () => hops.value++)
+watch(
+    () => props.side,
+    () => hops.value++
+)
 </script>
 
 <template>
@@ -22,7 +25,9 @@ watch(() => props.side, () => hops.value++)
     position: absolute;
     top: 16px;
     left: calc(50% - 48px);
-    transition: left 0.45s ease-in-out, top 0.45s ease-in-out;
+    transition:
+        left 0.45s ease-in-out,
+        top 0.45s ease-in-out;
     pointer-events: none;
 }
 

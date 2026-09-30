@@ -24,14 +24,21 @@ export class AppDriver {
 
     // --- Set-up ---
 
-    async fillSetUp({ left = 'Ana', right = 'Ben', rightServesFirst, pointsToWin, bestOf }: SetUpOptions = {}) {
+    async fillSetUp({
+        left = 'Ana',
+        right = 'Ben',
+        rightServesFirst,
+        pointsToWin,
+        bestOf
+    }: SetUpOptions = {}) {
         const [leftName, rightName] = this.wrapper.findAll('.setup .name-input')
         await leftName.setValue(left)
         await rightName.setValue(right)
         if (rightServesFirst !== undefined) {
             await this.wrapper.find(`input[name="first-server"][value="${rightServesFirst}"]`).setValue()
         }
-        if (pointsToWin) await this.wrapper.find(`input[name="points-to-win"][value="${pointsToWin}"]`).setValue()
+        if (pointsToWin)
+            await this.wrapper.find(`input[name="points-to-win"][value="${pointsToWin}"]`).setValue()
         if (bestOf) await this.wrapper.find(`input[name="best-of"][value="${bestOf}"]`).setValue()
     }
 
@@ -46,7 +53,9 @@ export class AppDriver {
 
     /** The names typed on the set-up screen, left then right. */
     get setUpNames(): string[] {
-        return this.wrapper.findAll('.setup .name-input').map(input => (input.element as HTMLInputElement).value)
+        return this.wrapper
+            .findAll('.setup .name-input')
+            .map(input => (input.element as HTMLInputElement).value)
     }
 
     checkedValue(name: 'first-server' | 'points-to-win' | 'best-of'): string | undefined {

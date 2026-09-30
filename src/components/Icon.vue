@@ -14,9 +14,17 @@ defineProps<{
 </script>
 
 <template>
-    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
-         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path v-for="d in paths[name]" :key="d" :d="d"/>
+    <svg
+        class="icon"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    >
+        <path v-for="d in paths[name]" :key="d" :d="d" />
     </svg>
 </template>
 

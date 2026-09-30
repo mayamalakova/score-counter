@@ -18,7 +18,11 @@ const emit = defineEmits<{
 <template>
     <div class="backdrop">
         <section class="card" aria-labelledby="summary-title">
-            <h2 id="summary-title">{{ winner }} wins {{ Math.max(left.games, right.games) }}–{{ Math.min(left.games, right.games) }}</h2>
+            <h2 id="summary-title">
+                {{ winner }} wins {{ Math.max(left.games, right.games) }}–{{
+                    Math.min(left.games, right.games)
+                }}
+            </h2>
             <table class="match-result">
                 <thead>
                     <tr>
@@ -29,9 +33,14 @@ const emit = defineEmits<{
                 </thead>
                 <tbody>
                     <tr v-for="(player, row) in [left, right]" :key="row">
-                        <th scope="row"><span class="dot" :style="{ background: player.color }"></span>{{ player.name }}</th>
-                        <td v-for="(score, index) in gameScores" :key="index"
-                            :class="{ won: row === 0 ? score.left > score.right : score.right > score.left }">
+                        <th scope="row">
+                            <span class="dot" :style="{ background: player.color }"></span>{{ player.name }}
+                        </th>
+                        <td
+                            v-for="(score, index) in gameScores"
+                            :key="index"
+                            :class="{ won: row === 0 ? score.left > score.right : score.right > score.left }"
+                        >
                             {{ row === 0 ? score.left : score.right }}
                         </td>
                         <td class="games">{{ player.games }}</td>
@@ -40,10 +49,10 @@ const emit = defineEmits<{
             </table>
             <div class="actions">
                 <button class="button" type="button" @click="emit('undo')">
-                    <Icon name="undo"/> Undo last point
+                    <Icon name="undo" /> Undo last point
                 </button>
                 <button class="button primary next-match" type="button" @click="emit('next-match')">
-                    New match <Icon name="next"/>
+                    New match <Icon name="next" />
                 </button>
             </div>
         </section>
@@ -84,17 +93,19 @@ h2 {
     font-variant-numeric: tabular-nums;
 }
 
-th, td {
+th,
+td {
     padding: 4px 8px;
     text-align: center;
 }
 
-th[scope="row"] {
+th[scope='row'] {
     text-align: left;
     white-space: nowrap;
 }
 
-td.won, td.games {
+td.won,
+td.games {
     font-weight: 700;
 }
 

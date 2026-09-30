@@ -22,30 +22,47 @@ const confirmingEnd = ref(false)
 
 <template>
     <div class="backdrop">
-        <section v-if="confirmingEnd" class="panel" role="alertdialog" aria-labelledby="end-title"
-                 aria-describedby="end-message">
+        <section
+            v-if="confirmingEnd"
+            class="panel"
+            role="alertdialog"
+            aria-labelledby="end-title"
+            aria-describedby="end-message"
+        >
             <h2 id="end-title">End this match?</h2>
             <p id="end-message">The score will be lost.</p>
             <div class="actions">
                 <button class="button cancel-end" type="button" @click="confirmingEnd = false">Cancel</button>
-                <button class="button danger confirm-end" type="button" @click="emit('end-match')">End match</button>
+                <button class="button danger confirm-end" type="button" @click="emit('end-match')">
+                    End match
+                </button>
             </div>
         </section>
         <form v-else class="panel" aria-label="Edit players and server" @submit.prevent="emit('done')">
             <h2>Players</h2>
             <div class="row">
-                <input v-model="playerLeft" class="name-input" aria-label="Left player"
-                       placeholder="Player name" :style="{ borderColor: colorLeft }"/>
+                <input
+                    v-model="playerLeft"
+                    class="name-input"
+                    aria-label="Left player"
+                    placeholder="Player name"
+                    :style="{ borderColor: colorLeft }"
+                />
                 <label class="serves">
-                    <input v-model="server" type="radio" name="server-now" value="left"/>
+                    <input v-model="server" type="radio" name="server-now" value="left" />
                     Serving now
                 </label>
             </div>
             <div class="row">
-                <input v-model="playerRight" class="name-input" aria-label="Right player"
-                       placeholder="Player name" :style="{ borderColor: colorRight }"/>
+                <input
+                    v-model="playerRight"
+                    class="name-input"
+                    aria-label="Right player"
+                    placeholder="Player name"
+                    :style="{ borderColor: colorRight }"
+                />
                 <label class="serves">
-                    <input v-model="server" type="radio" name="server-now" value="right"/>
+                    <input v-model="server" type="radio" name="server-now" value="right" />
                     Serving now
                 </label>
             </div>

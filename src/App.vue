@@ -26,18 +26,20 @@ const newServer = ref<Side>('left')
 const colors: Record<Player, string> = { A: 'var(--player-a)', B: 'var(--player-b)' }
 const defaultNames: Record<Player, string> = { A: 'Player 1', B: 'Player 2' }
 
-watchEffect(() => save({
-    gameStarted: gameStarted.value,
-    match: match.value,
-    names: { ...names.value },
-    firstServer: firstServer.value,
-    pointsToWin: pointsToWin.value,
-    bestOf: bestOf.value
-}))
+watchEffect(() =>
+    save({
+        gameStarted: gameStarted.value,
+        match: match.value,
+        names: { ...names.value },
+        firstServer: firstServer.value,
+        pointsToWin: pointsToWin.value,
+        bestOf: bestOf.value
+    })
+)
 
 const ends = computed(() => scoring.ends(match.value))
 const currentGame = computed(() => scoring.currentGame(match.value))
-const server = computed<Side>(() => scoring.server(match.value) === ends.value.left ? 'left' : 'right')
+const server = computed<Side>(() => (scoring.server(match.value) === ends.value.left ? 'left' : 'right'))
 const gameWinner = computed(() => currentGame.value.winner)
 const matchWinner = computed(() => scoring.matchWinner(match.value))
 const gameNumber = computed(() => scoring.games(match.value).length)
@@ -59,24 +61,33 @@ const left = computed(() => playerView(ends.value.left))
 const right = computed(() => playerView(ends.value.right))
 
 // Finished games (including one just won), oriented to the current ends.
-const gameScores = computed<SideScore[]>(() => scoring.games(match.value)
-    .filter(game => game.winner)
-    .map(game => ({ left: game.score[ends.value.left], right: game.score[ends.value.right] })))
+const gameScores = computed<SideScore[]>(() =>
+    scoring
+        .games(match.value)
+        .filter(game => game.winner)
+        .map(game => ({ left: game.score[ends.value.left], right: game.score[ends.value.right] }))
+)
 
 const playerLeft = computed({
     get: () => names.value[ends.value.left],
-    set: name => { names.value[ends.value.left] = name }
+    set: name => {
+        names.value[ends.value.left] = name
+    }
 })
 
 const playerRight = computed({
     get: () => names.value[ends.value.right],
-    set: name => { names.value[ends.value.right] = name }
+    set: name => {
+        names.value[ends.value.right] = name
+    }
 })
 
 // The set-up screen picks the server by side; A is on the left at the start.
 const swapServer = computed({
     get: () => firstServer.value === 'B',
-    set: swap => { firstServer.value = swap ? 'B' : 'A' }
+    set: swap => {
+        firstServer.value = swap ? 'B' : 'A'
+    }
 })
 
 function sidePlayer(side: Side): Player {
@@ -144,36 +155,56 @@ function undo() {
 </script>
 
 <template>
-    <SetUp v-if="!gameStarted"
-           v-model:player-left="playerLeft"
-           v-model:player-right="playerRight"
-           v-model:swap-server="swapServer"
-           v-model:points-to-win="pointsToWin"
-           v-model:best-of="bestOf"
-           :color-left="colors.A" :color-right="colors.B"
-           @start-match="startMatch"/>
+    <SetUp
+        v-if="!gameStarted"
+        v-model:player-left="playerLeft"
+        v-model:player-right="playerRight"
+        v-model:swap-server="swapServer"
+        v-model:points-to-win="pointsToWin"
+        v-model:best-of="bestOf"
+        :color-left="colors.A"
+        :color-right="colors.B"
+        @start-match="startMatch"
+    />
 
     <template v-else>
-        <Scoreboard :left="left" :right="right" :server="server"
-                    :game-number="gameNumber" :best-of="match.settings.bestOf"
-                    :points-to-win="match.settings.pointsToWin"
-                    :game-winner="gameWinner && !matchWinner ? displayName(gameWinner) : null"
-                    @increase-left="increaseLeft"
-                    @decrease-left="decreaseLeft"
-                    @increase-right="increaseRight"
-                    @decrease-right="decreaseRight"
-                    @toggle-edit="toggleEdit" @restart="restart"
-                    @undo="undo" @next-game="nextGame"/>
+        <Scoreboard
+            :left="left"
+            :right="right"
+            :server="server"
+            :game-number="gameNumber"
+            :best-of="match.settings.bestOf"
+            :points-to-win="match.settings.pointsToWin"
+            :game-winner="gameWinner && !matchWinner ? displayName(gameWinner) : null"
+            @increase-left="increaseLeft"
+            @decrease-left="decreaseLeft"
+            @increase-right="increaseRight"
+            @decrease-right="decreaseRight"
+            @toggle-edit="toggleEdit"
+            @restart="restart"
+            @undo="undo"
+            @next-game="nextGame"
+        />
 
-        <MatchSummary v-if="matchWinner"
-                      :left="left" :right="right" :winner="displayName(matchWinner)" :game-scores="gameScores"
-                      @undo="undo" @next-match="nextMatch"/>
+        <MatchSummary
+            v-if="matchWinner"
+            :left="left"
+            :right="right"
+            :winner="displayName(matchWinner)"
+            :game-scores="gameScores"
+            @undo="undo"
+            @next-match="nextMatch"
+        />
 
-        <EditPanel v-else-if="editMode"
-                   v-model:player-left="playerLeft"
-                   v-model:player-right="playerRight"
-                   v-model:server="newServer"
-                   :color-left="left.color" :color-right="right.color"
-                   @done="toggleEdit" @end-match="endMatch"/>
+        <EditPanel
+            v-else-if="editMode"
+            v-model:player-left="playerLeft"
+            v-model:player-right="playerRight"
+            v-model:server="newServer"
+            :color-left="left.color"
+            :color-right="right.color"
+            @done="toggleEdit"
+            @end-match="endMatch"
+        />
     </template>
 </template>

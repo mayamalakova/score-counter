@@ -14,12 +14,12 @@ const emit = defineEmits<{
 
 <template>
     <div class="bar" role="status">
-        <span><strong>{{ winner }}</strong> wins game {{ gameNumber }}</span>
-        <button class="button" type="button" @click="emit('undo')">
-            <Icon name="undo"/> Undo
-        </button>
+        <p class="message">
+            <strong>{{ winner }}</strong> wins game {{ gameNumber }}
+        </p>
+        <button class="button" type="button" @click="emit('undo')"><Icon name="undo" /> Undo</button>
         <button class="button primary next-game" type="button" @click="emit('next-game')">
-            Next game <Icon name="next"/>
+            Next game <Icon name="next" />
         </button>
     </div>
 </template>
@@ -39,6 +39,10 @@ const emit = defineEmits<{
     color: var(--ink);
     white-space: nowrap;
     z-index: 2;
+}
+
+.message {
+    margin: 0;
 }
 
 /* Upright, the bottom edge holds the lower player's minus button: sit on the net instead. */
