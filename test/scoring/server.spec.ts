@@ -59,7 +59,7 @@ describe('service across games', () => {
 
 describe('correcting the server', () => {
     it('changes who serves now and keeps rotating from there', () => {
-        let match = correctServer(play(newMatch(), 'AAA'), 'A')
+        const match = correctServer(play(newMatch(), 'AAA'), 'A')
         // 3 points played: B would serve, the correction says A.
         expect(server(match)).toBe('A')
         expect(serversDuring('ABAB', match)).toBe('ABBA')
