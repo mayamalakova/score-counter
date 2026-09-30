@@ -23,7 +23,10 @@ now being modernized.
 - Vite for dev server and build
 - TypeScript, pinned to 6.0.x: `vue-tsc` relies on the TypeScript JS API, which the
   7.x native port doesn't provide the same way. Revisit when vue-tsc supports 7.
-- Vitest + @vue/test-utils + jsdom for tests
+- Vitest + @vue/test-utils + jsdom for tests, @vitest/coverage-v8 for coverage (90% floor)
+- ESLint (recommended JS, typescript-eslint, eslint-plugin-vue) and Prettier (4 spaces,
+  no semicolons, single quotes; config in `.prettierrc.json`)
+- @fontsource for self-hosted fonts
 - Node 22 (see `.nvmrc`)
 - Hosting: Netlify (static site, deploy on push to `main`, preview URL per PR),
   configured through `netlify.toml` in the repo. Why:
@@ -39,7 +42,8 @@ now being modernized.
     without extra setup); Vercel and Cloudflare Pages (roughly equivalent, Netlify
     chosen for the Heroku-like feel). Render, Railway or Fly.io only become relevant
     if a backend is added later (e.g. shared history or a live second screen).
-- CI: GitHub Actions running typecheck, tests and build on every PR
+- CI: GitHub Actions running lint, format check, typecheck, tests with coverage and
+  build on every PR
 
 ## Roadmap
 
@@ -119,5 +123,8 @@ now being modernized.
 - `src/storage.ts` saves the app state to localStorage after every change and restores it
   on start. The save is versioned: bump `VERSION` when its shape changes, and older saves
   are ignored. Tests clear localStorage in `test/setup.ts`.
+- UI tests go through `test/driver.ts` (`AppDriver`), which types and taps like a player
+  and reads only what's on screen; engine rules are unit-tested in `test/scoring/`. See
+  `CONTRIBUTING.md`.
 - Global tokens (colours, fonts) are in `src/assets/app.css`; component styles are
   scoped. Layout switches on `(orientation: portrait)`.
