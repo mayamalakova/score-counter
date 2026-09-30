@@ -27,18 +27,28 @@ const bestOfOptions: BestOf[] = [1, 3, 5, 7]
         <section class="players">
             <h1>New match</h1>
             <div class="player">
-                <input v-model="playerLeft" class="name-input" aria-label="Left player" placeholder="Player 1"
-                       :style="{ borderColor: colorLeft }"/>
+                <input
+                    v-model="playerLeft"
+                    class="name-input"
+                    aria-label="Left player"
+                    placeholder="Player 1"
+                    :style="{ borderColor: colorLeft }"
+                />
                 <label class="serves">
-                    <input v-model="swapServer" type="radio" name="first-server" :value="false"/>
+                    <input v-model="swapServer" type="radio" name="first-server" :value="false" />
                     Serves first
                 </label>
             </div>
             <div class="player">
-                <input v-model="playerRight" class="name-input" aria-label="Right player" placeholder="Player 2"
-                       :style="{ borderColor: colorRight }"/>
+                <input
+                    v-model="playerRight"
+                    class="name-input"
+                    aria-label="Right player"
+                    placeholder="Player 2"
+                    :style="{ borderColor: colorRight }"
+                />
                 <label class="serves">
-                    <input v-model="swapServer" type="radio" name="first-server" :value="true"/>
+                    <input v-model="swapServer" type="radio" name="first-server" :value="true" />
                     Serves first
                 </label>
             </div>
@@ -49,7 +59,7 @@ const bestOfOptions: BestOf[] = [1, 3, 5, 7]
                 <legend>Points per game</legend>
                 <div class="segments">
                     <label v-for="points in pointsOptions" :key="points">
-                        <input v-model="pointsToWin" type="radio" name="points-to-win" :value="points"/>
+                        <input v-model="pointsToWin" type="radio" name="points-to-win" :value="points" />
                         <span>{{ points }}</span>
                     </label>
                 </div>
@@ -58,12 +68,12 @@ const bestOfOptions: BestOf[] = [1, 3, 5, 7]
                 <legend>Best of</legend>
                 <div class="segments">
                     <label v-for="games in bestOfOptions" :key="games">
-                        <input v-model="bestOf" type="radio" name="best-of" :value="games"/>
+                        <input v-model="bestOf" type="radio" name="best-of" :value="games" />
                         <span>{{ games }}</span>
                     </label>
                 </div>
             </fieldset>
-            <button class="start" type="submit">Start match <Icon name="next"/></button>
+            <button class="start" type="submit">Start match <Icon name="next" /></button>
         </section>
     </form>
 </template>

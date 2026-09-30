@@ -1,0 +1,5 @@
+dist
+coverage
+package-lock.json
+# Markdown is written by hand; reflowing it would only churn diffs.
+*.md

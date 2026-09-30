@@ -1,0 +1,6 @@
+# Store and check out text files with LF endings on every OS, so diffs stay clean
+# and Windows checkouts do not warn about CRLF conversions.
+* text=auto eol=lf
+
+*.woff binary
+*.woff2 binary

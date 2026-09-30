@@ -49,8 +49,14 @@ describe('ignoring saves that cannot be used', () => {
         ['unsupported best of', withField('bestOf', 4)],
         ['match settings missing', withField('match', { events: [] })],
         ['events not a list', withField('match', { settings: newMatch().settings, events: {} })],
-        ['an unknown event', withField('match', { settings: newMatch().settings, events: [{ type: 'let' }] })],
-        ['a point for nobody', withField('match', { settings: newMatch().settings, events: [{ type: 'point' }] })]
+        [
+            'an unknown event',
+            withField('match', { settings: newMatch().settings, events: [{ type: 'let' }] })
+        ],
+        [
+            'a point for nobody',
+            withField('match', { settings: newMatch().settings, events: [{ type: 'point' }] })
+        ]
     ])('%s', (_, json) => {
         expect(parse(json)).toBeNull()
     })
@@ -58,8 +64,12 @@ describe('ignoring saves that cannot be used', () => {
 
 describe('when storage is unavailable', () => {
     const broken = {
-        getItem(): string | null { throw new Error('blocked') },
-        setItem(): void { throw new Error('full') }
+        getItem(): string | null {
+            throw new Error('blocked')
+        },
+        setItem(): void {
+            throw new Error('full')
+        }
     }
 
     it('loads nothing instead of failing', () => {
@@ -76,7 +86,9 @@ describe('load and save', () => {
         const store = new Map<string, string>()
         const storage = {
             getItem: (key: string) => store.get(key) ?? null,
-            setItem: (key: string, value: string) => { store.set(key, value) }
+            setItem: (key: string, value: string) => {
+                store.set(key, value)
+            }
         }
         save(state(), storage)
         expect(load(storage)).toEqual(state())

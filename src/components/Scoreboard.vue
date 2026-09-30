@@ -32,24 +32,41 @@ const emit = defineEmits<{
     <div class="board">
         <header class="top-bar">
             <button class="icon-button" type="button" aria-label="Restart game" @click="emit('restart')">
-                <Icon name="restart"/>
+                <Icon name="restart" />
             </button>
             <span class="info">Game {{ gameNumber }} · best of {{ bestOf }} · to {{ pointsToWin }}</span>
-            <button class="icon-button" type="button" aria-label="Edit players and server"
-                    @click="emit('toggle-edit')">
-                <Icon name="edit"/>
+            <button
+                class="icon-button"
+                type="button"
+                aria-label="Edit players and server"
+                @click="emit('toggle-edit')"
+            >
+                <Icon name="edit" />
             </button>
         </header>
 
         <div class="table">
-            <PlayerHalf side="left" :player="left"
-                        @increase="emit('increase-left')" @decrease="emit('decrease-left')"/>
-            <PlayerHalf side="right" :player="right"
-                        @increase="emit('increase-right')" @decrease="emit('decrease-right')"/>
+            <PlayerHalf
+                side="left"
+                :player="left"
+                @increase="emit('increase-left')"
+                @decrease="emit('decrease-left')"
+            />
+            <PlayerHalf
+                side="right"
+                :player="right"
+                @increase="emit('increase-right')"
+                @decrease="emit('decrease-right')"
+            />
             <div class="net" aria-hidden="true"></div>
-            <ServerBall :side="server"/>
-            <GameWonBar v-if="gameWinner" :winner="gameWinner" :game-number="gameNumber"
-                        @undo="emit('undo')" @next-game="emit('next-game')"/>
+            <ServerBall :side="server" />
+            <GameWonBar
+                v-if="gameWinner"
+                :winner="gameWinner"
+                :game-number="gameNumber"
+                @undo="emit('undo')"
+                @next-game="emit('next-game')"
+            />
         </div>
     </div>
 </template>

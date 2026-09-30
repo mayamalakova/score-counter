@@ -17,11 +17,15 @@
     --radius: 10px;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
-html, body, #content {
+html,
+body,
+#content {
     height: 100%;
     margin: 0;
 }
@@ -33,7 +37,8 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
-button, input {
+button,
+input {
     font: inherit;
     color: inherit;
 }

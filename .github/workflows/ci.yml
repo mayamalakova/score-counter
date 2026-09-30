@@ -15,6 +15,9 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
       - run: npm run typecheck
-      - run: npm test
+      # Runs the tests and fails if coverage drops below the floor in vite.config.ts.
+      - run: npm run coverage
       - run: npm run build

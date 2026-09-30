@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import {
-    correctServer, currentGame, ends, games, newMatch, nextGame, removePoint, restart, server, undo
+    correctServer,
+    currentGame,
+    ends,
+    games,
+    newMatch,
+    nextGame,
+    removePoint,
+    restart,
+    server,
+    undo
 } from '../../src/scoring/match'
 import { play, winGame } from './helpers'
 
@@ -15,7 +24,7 @@ describe('removing a point', () => {
         expect(removePoint(match, 'A')).toBe(match)
     })
 
-    it("does nothing when the player has no points but the other player has", () => {
+    it('does nothing when the player has no points but the other player has', () => {
         const match = play(winGame(newMatch(), 'A'), 'BBB')
         expect(removePoint(match, 'A')).toBe(match)
     })
