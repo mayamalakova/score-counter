@@ -75,7 +75,7 @@ now being modernized.
    plus an "End match" action (with confirmation) to abandon a match, since reloading no
    longer does. Wake lock and the PWA moved to Phase 6.
 5. **Repo hygiene (done).** Component tests for the main flows, contributor docs.
-6. **Features, one PR each (current).** Doubles (in progress, see below), keyboard shortcuts (moved from Phase 3), screen wake lock
+6. **Features, one PR each (current).** Doubles (done, see below), keyboard shortcuts (moved from Phase 3), screen wake lock
    during play and installable offline PWA (both moved from Phase 4), match history and
    rematch, timeouts, optional spoken score, second-screen display mode.
 
@@ -141,6 +141,8 @@ now being modernized.
 ## Code notes
 
 - The rules live in `src/scoring/match.ts` (event log, pure functions, players A/B).
+  Doubles service order and positions are in `src/scoring/doubles.ts` (players A1/A2,
+  B1/B2), derived from the same log; scores, winners and ends stay per pair.
 - `App.vue` holds the match and maps players to left/right for the components, which
   get everything through typed props and emits.
 - `src/storage.ts` saves the app state to localStorage after every change and restores it

@@ -48,6 +48,7 @@ npm run build
 | Path                     | What it is                                                              |
 | ------------------------ | ----------------------------------------------------------------------- |
 | `src/scoring/match.ts`   | The scoring engine: a match is settings plus an event log, and pure functions derive score, winners, server and ends. No Vue. |
+| `src/scoring/doubles.ts` | Doubles: who serves to whom and where each player stands, derived from the same log. |
 | `src/App.vue`            | Holds the match, maps players A/B to left/right, and wires up the screens. |
 | `src/components/`        | The screens and their parts. Typed props and emits, scoped styles.       |
 | `src/storage.ts`         | Autosave to `localStorage`, versioned and validated on load.             |
@@ -75,6 +76,9 @@ npm run build
   `src/storage.ts`, bump `VERSION`. Older saves are then ignored instead of misread.
 - **Portrait layout:** it switches on `@media (orientation: portrait)`. Check both
   orientations when you change the scoreboard.
+- **Doubles positions** assume the phone is on the table's near long side (the screen's
+  bottom edge). A player's right half-court is the near half at the left end and the far
+  half at the right end; upright, the picture is turned a quarter turn.
 - **Motion:** the server ball's hop respects `prefers-reduced-motion`; keep it that way
   for new animations.
 - **Line endings:** `.gitattributes` stores text files with LF on every OS.

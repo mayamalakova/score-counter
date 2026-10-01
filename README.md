@@ -3,6 +3,7 @@
 A table tennis scoreboard for a phone or tablet propped next to the table. Tap a half of
 the screen to give that player a point, tap minus to take one back. It tracks service,
 games, ends and the match result, and saves the match so a reload doesn't lose it.
+In doubles it shows where each of the four players stands for every serve.
 
 Built with Vue 3, Vite, TypeScript and Vitest.
 
