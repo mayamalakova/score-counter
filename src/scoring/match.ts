@@ -12,11 +12,25 @@
 export type Player = 'A' | 'B'
 export type PointsToWin = 11 | 21
 export type BestOf = 1 | 3 | 5 | 7
+export type Format = 'singles' | 'doubles'
+
+/** In doubles, pair A is A1 and A2, pair B is B1 and B2. */
+export type DoublesPlayer = 'A1' | 'A2' | 'B1' | 'B2'
+
+/** Who serves to whom in doubles. */
+export interface Service {
+    server: DoublesPlayer
+    receiver: DoublesPlayer
+}
 
 export interface MatchSettings {
     pointsToWin: PointsToWin
     bestOf: BestOf
+    /** The pair (or player) serving first in the match. */
     firstServer: Player
+    format: Format
+    /** Doubles only: who serves and who receives first in game 1. */
+    doublesOrder: Service | null
 }
 
 export type MatchEvent =
@@ -24,6 +38,8 @@ export type MatchEvent =
     | { type: 'nextGame' }
     /** The server at this moment is actually `server`; the game's first server was recorded wrongly. */
     | { type: 'serverCorrection'; server: Player }
+    /** Doubles: this is who actually serves to whom now; rotation continues from here. */
+    | { type: 'doublesCorrection'; server: DoublesPlayer; receiver: DoublesPlayer }
 
 export interface Match {
     readonly settings: MatchSettings
@@ -44,14 +60,25 @@ export interface Game {
     firstServer: Player
 }
 
-export const DEFAULT_SETTINGS: MatchSettings = { pointsToWin: 11, bestOf: 5, firstServer: 'A' }
+export const DEFAULT_SETTINGS: MatchSettings = {
+    pointsToWin: 11,
+    bestOf: 5,
+    firstServer: 'A',
+    format: 'singles',
+    doublesOrder: null
+}
 
 export function other(player: Player): Player {
     return player === 'A' ? 'B' : 'A'
 }
 
 export function newMatch(settings: Partial<MatchSettings> = {}): Match {
-    return { settings: { ...DEFAULT_SETTINGS, ...settings }, events: [] }
+    const merged = { ...DEFAULT_SETTINGS, ...settings }
+    // In doubles the first serving pair is the first server's pair.
+    if (merged.format === 'doubles' && merged.doublesOrder) {
+        merged.firstServer = merged.doublesOrder.server[0] as Player
+    }
+    return { settings: merged, events: [] }
 }
 
 /** Every game so far; the last one is the game in progress (or just won). */
@@ -67,7 +94,7 @@ export function games(match: Match): Game[] {
             if (serverIn(game, match.settings.pointsToWin) !== event.server) {
                 game.firstServer = other(game.firstServer)
             }
-        } else {
+        } else if (event.type === 'point') {
             game.score[event.player]++
             game.winner = gameWinner(game.score, match.settings.pointsToWin)
         }
@@ -112,7 +139,7 @@ export function ends(match: Match): Ends {
     const { score } = all[index]
     const { bestOf, pointsToWin } = match.settings
     let left: Player = index % 2 === 0 ? 'A' : 'B'
-    if (index === bestOf - 1 && Math.max(score.A, score.B) >= (pointsToWin === 21 ? 10 : 5)) {
+    if (index === bestOf - 1 && Math.max(score.A, score.B) >= decidingSwitchAt(pointsToWin)) {
         left = other(left)
     }
     return { left, right: other(left) }
@@ -145,12 +172,20 @@ function newGame(firstServer: Player): Game {
  * both players reach 10-10 (20-20).
  */
 function serverIn(game: Game, pointsToWin: PointsToWin): Player {
+    return serviceChanges(game.score, pointsToWin) % 2 === 0 ? game.firstServer : other(game.firstServer)
+}
+
+/** How many times service has changed in a game at this score. */
+export function serviceChanges(score: Score, pointsToWin: PointsToWin): number {
     const every = pointsToWin === 21 ? 5 : 2
     const deuce = pointsToWin - 1
-    const { A, B } = game.score
-    const changes =
-        A >= deuce && B >= deuce ? (2 * deuce) / every + (A + B - 2 * deuce) : Math.floor((A + B) / every)
-    return changes % 2 === 0 ? game.firstServer : other(game.firstServer)
+    const { A, B } = score
+    return A >= deuce && B >= deuce ? (2 * deuce) / every + (A + B - 2 * deuce) : Math.floor((A + B) / every)
+}
+
+/** The score at which ends change in the last possible game (and doubles receivers swap). */
+export function decidingSwitchAt(pointsToWin: PointsToWin): number {
+    return pointsToWin === 21 ? 10 : 5
 }
 
 function gameWinner(score: Score, pointsToWin: PointsToWin): Player | null {
