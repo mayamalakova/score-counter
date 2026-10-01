@@ -142,6 +142,9 @@ now being modernized.
 
 ## Code notes
 
+- `docs/architecture.md` has Mermaid diagrams of the data model and the UI model. Update
+  them in the same PR whenever the data model or the component tree changes.
+
 - The rules live in `src/scoring/match.ts` (event log, pure functions, players A/B).
   Doubles serve order and positions are in `src/scoring/doubles.ts`, derived from the
   same log; scores, winners and ends stay per team (`DoublesTeam`, the same A/B).

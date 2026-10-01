@@ -42,4 +42,5 @@ the tests with coverage, and the build on every pull request.
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow, where things live and how to
-write tests. The roadmap and decided stack are in [CLAUDE.md](CLAUDE.md).
+write tests, and [docs/architecture.md](docs/architecture.md) for diagrams of the data
+model and the UI. The roadmap and decided stack are in [CLAUDE.md](CLAUDE.md).
