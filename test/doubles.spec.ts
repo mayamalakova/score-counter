@@ -117,8 +117,8 @@ describe('editing in doubles', () => {
     })
 
     it('corrects who serves to whom, and the rotation continues from there', async () => {
-        await app.wrapper.find('input[name="service-server"][value="A2"]').setValue()
-        await app.wrapper.find('input[name="service-receiver"][value="B2"]').setValue()
+        await app.wrapper.find('input[name="serving"][value="A2"]').setValue()
+        await app.wrapper.find('input[name="receiving"][value="B2"]').setValue()
         await app.closeEdit()
         expect(app.courts).toEqual({ leftFar: 'Ana', leftNear: 'Eva', rightFar: 'Jan', rightNear: 'Ben' })
 
@@ -129,8 +129,8 @@ describe('editing in doubles', () => {
     })
 
     it('moves the receiver across when the server changes pair', async () => {
-        await app.wrapper.find('input[name="service-server"][value="B2"]').setValue()
-        const receiver = app.wrapper.find('input[name="service-receiver"]:checked').attributes('value')
+        await app.wrapper.find('input[name="serving"][value="B2"]').setValue()
+        const receiver = app.wrapper.find('input[name="receiving"]:checked').attributes('value')
         expect(receiver).toBe('A1')
     })
 })

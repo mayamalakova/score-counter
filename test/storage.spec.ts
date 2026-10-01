@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { correctService } from '../src/scoring/doubles'
+import { correctServe } from '../src/scoring/doubles'
 import { addPoint, correctServer, newMatch, nextGame } from '../src/scoring/match'
 import { DEFAULT_DOUBLES_ORDER, load, parse, save, serialize, type SavedState } from '../src/storage'
 
@@ -37,9 +37,9 @@ describe('saving and reading back', () => {
         expect(parse(serialize(state({ match })))?.match).toEqual(match)
     })
 
-    it('keeps a doubles match, including service corrections', () => {
+    it('keeps a doubles match, including serve corrections', () => {
         let match = newMatch({ format: 'doubles', doublesOrder: { server: 'A1', receiver: 'B2' } })
-        match = correctService(addPoint(match, 'A'), { server: 'A2', receiver: 'B1' })
+        match = correctServe(addPoint(match, 'A'), { server: 'A2', receiver: 'B1' })
         const saved = state({ match, format: 'doubles' })
         expect(parse(serialize(saved))).toEqual(saved)
     })

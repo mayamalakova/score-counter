@@ -12,7 +12,7 @@ import type {
     MatchEvent,
     Player,
     PointsToWin,
-    Service
+    Serve
 } from './scoring/match'
 
 export interface SavedState {
@@ -25,12 +25,12 @@ export interface SavedState {
     /** Set-up choices for the next match. */
     format: Format
     firstServer: Player
-    doublesOrder: Service
+    doublesOrder: Serve
     pointsToWin: PointsToWin
     bestOf: BestOf
 }
 
-export const DEFAULT_DOUBLES_ORDER: Service = { server: 'A1', receiver: 'B1' }
+export const DEFAULT_DOUBLES_ORDER: Serve = { server: 'A1', receiver: 'B1' }
 
 const KEY = 'score-counter'
 /**
@@ -62,7 +62,7 @@ export function parse(json: string | null): SavedState | null {
         !isNames(partners) ||
         !isFormat(format) ||
         !isPlayer(firstServer) ||
-        !isService(doublesOrder) ||
+        !isServe(doublesOrder) ||
         !isPointsToWin(pointsToWin) ||
         !isBestOf(bestOf)
     ) {
@@ -128,7 +128,7 @@ function isDoublesPlayer(value: unknown): value is DoublesPlayer {
 }
 
 /** A server and receiver from opposite pairs. */
-function isService(value: unknown): value is Service {
+function isServe(value: unknown): value is Serve {
     return (
         isRecord(value) &&
         isDoublesPlayer(value.server) &&
@@ -151,7 +151,7 @@ function isEvent(value: unknown): value is MatchEvent {
         case 'serverCorrection':
             return isPlayer(value.server)
         case 'doublesCorrection':
-            return isService(value)
+            return isServe(value)
         default:
             return false
     }
@@ -160,7 +160,7 @@ function isEvent(value: unknown): value is MatchEvent {
 function isMatch(value: unknown): value is Match {
     if (!isRecord(value) || !isRecord(value.settings) || !Array.isArray(value.events)) return false
     const { pointsToWin, bestOf, firstServer, format, doublesOrder } = value.settings
-    const orderFits = format === 'doubles' ? isService(doublesOrder) : doublesOrder === null
+    const orderFits = format === 'doubles' ? isServe(doublesOrder) : doublesOrder === null
     return (
         isPointsToWin(pointsToWin) &&
         isBestOf(bestOf) &&

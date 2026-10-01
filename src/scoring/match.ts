@@ -35,7 +35,7 @@ export function getDoublesPartner(player: DoublesPlayer): DoublesPlayer {
 }
 
 /** Who serves to whom in doubles. */
-export interface Service {
+export interface Serve {
     server: DoublesPlayer
     receiver: DoublesPlayer
 }
@@ -47,7 +47,7 @@ export interface MatchSettings {
     firstServer: Player
     format: Format
     /** Doubles only: who serves and who receives first in game 1. */
-    doublesOrder: Service | null
+    doublesOrder: Serve | null
 }
 
 export type MatchEvent =
@@ -189,11 +189,11 @@ function newGame(firstServer: Player): Game {
  * both players reach 10-10 (20-20).
  */
 function serverIn(game: Game, pointsToWin: PointsToWin): Player {
-    return serviceChanges(game.score, pointsToWin) % 2 === 0 ? game.firstServer : other(game.firstServer)
+    return serveChanges(game.score, pointsToWin) % 2 === 0 ? game.firstServer : other(game.firstServer)
 }
 
 /** How many times service has changed in a game at this score. */
-export function serviceChanges(score: Score, pointsToWin: PointsToWin): number {
+export function serveChanges(score: Score, pointsToWin: PointsToWin): number {
     const every = pointsToWin === 21 ? 5 : 2
     const deuce = pointsToWin - 1
     const { A, B } = score

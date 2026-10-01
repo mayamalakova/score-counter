@@ -143,7 +143,7 @@ now being modernized.
 ## Code notes
 
 - The rules live in `src/scoring/match.ts` (event log, pure functions, players A/B).
-  Doubles service order and positions are in `src/scoring/doubles.ts` (players A1/A2,
+  Doubles serve order and positions are in `src/scoring/doubles.ts` (players A1/A2,
   B1/B2), derived from the same log; scores, winners and ends stay per pair.
 - `App.vue` holds the match and maps players to left/right for the components, which
   get everything through typed props and emits.

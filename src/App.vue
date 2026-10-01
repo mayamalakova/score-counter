@@ -7,15 +7,7 @@ import SetUp from './components/SetUp.vue'
 import type { PlayerView, Side, SideScore } from './components/types'
 import * as doubles from './scoring/doubles'
 import * as scoring from './scoring/match'
-import type {
-    BestOf,
-    DoublesPlayer,
-    DoublesTeam,
-    Format,
-    Player,
-    PointsToWin,
-    Service
-} from './scoring/match'
+import type { BestOf, DoublesPlayer, DoublesTeam, Format, Player, PointsToWin, Serve } from './scoring/match'
 import { DEFAULT_DOUBLES_ORDER, load, save } from './storage'
 
 // A reload goes straight back to where it was: set-up, mid-game or the summary.
@@ -30,12 +22,12 @@ const partners = ref<Record<DoublesTeam, string>>(saved?.partners ?? { A: '', B:
 // Set-up choices for the next match.
 const format = ref<Format>(saved?.format ?? 'singles')
 const firstServer = ref<Player>(saved?.firstServer ?? 'A')
-const doublesOrder = ref<Service>(saved?.doublesOrder ?? DEFAULT_DOUBLES_ORDER)
+const doublesOrder = ref<Serve>(saved?.doublesOrder ?? DEFAULT_DOUBLES_ORDER)
 const pointsToWin = ref<PointsToWin>(saved?.pointsToWin ?? 11)
 const bestOf = ref<BestOf>(saved?.bestOf ?? 5)
 const editMode = ref(false)
 const newServer = ref<Side>('left')
-const newService = ref<Service>(DEFAULT_DOUBLES_ORDER)
+const newServe = ref<Serve>(DEFAULT_DOUBLES_ORDER)
 
 // Colours follow the player, not the side.
 const colors: Record<Player, string> = { A: 'var(--player-a)', B: 'var(--player-b)' }
@@ -66,7 +58,7 @@ const currentGame = computed(() => scoring.currentGame(match.value))
 const isDoubles = computed(() => match.value.settings.format === 'doubles')
 const servingPair = computed<Player>(() =>
     isDoubles.value
-        ? scoring.getDoublesTeam(doubles.service(match.value).server)
+        ? scoring.getDoublesTeam(doubles.currentServe(match.value).server)
         : scoring.server(match.value)
 )
 const server = computed<Side>(() => (servingPair.value === ends.value.left ? 'left' : 'right'))
@@ -189,9 +181,9 @@ function toggleEdit() {
     editMode.value = !editMode.value
     if (editMode.value) {
         newServer.value = server.value
-        if (isDoubles.value) newService.value = doubles.service(match.value)
+        if (isDoubles.value) newServe.value = doubles.currentServe(match.value)
     } else if (isDoubles.value) {
-        match.value = doubles.correctService(match.value, newService.value)
+        match.value = doubles.correctServe(match.value, newServe.value)
     } else {
         match.value = scoring.correctServer(match.value, sidePlayer(newServer.value))
     }
@@ -274,7 +266,7 @@ function undo() {
             v-model:player-left="playerLeft"
             v-model:player-right="playerRight"
             v-model:server="newServer"
-            v-model:service="newService"
+            v-model:serve="newServe"
             :doubles-players="doublesPlayers"
             :color-left="left.color"
             :color-right="right.color"

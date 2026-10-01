@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { withServer } from '../scoring/doubles'
 import { getDoublesTeam } from '../scoring/match'
-import type { DoublesPlayer, Service } from '../scoring/match'
+import type { DoublesPlayer, Serve } from '../scoring/match'
 import type { Side } from './types'
 
 defineProps<{
@@ -22,19 +22,19 @@ const playerLeft = defineModel<string>('playerLeft', { required: true })
 const playerRight = defineModel<string>('playerRight', { required: true })
 const server = defineModel<Side>('server', { required: true })
 /** Doubles: who is serving to whom now. */
-const service = defineModel<Service>('service')
+const serve = defineModel<Serve>('serve')
 
 const doublesServer = computed({
-    get: () => service.value?.server,
+    get: () => serve.value?.server,
     set: player => {
-        if (service.value && player) service.value = withServer(service.value, player)
+        if (serve.value && player) serve.value = withServer(serve.value, player)
     }
 })
 
 const doublesReceiver = computed({
-    get: () => service.value?.receiver,
+    get: () => serve.value?.receiver,
     set: player => {
-        if (service.value && player) service.value = { server: service.value.server, receiver: player }
+        if (serve.value && player) serve.value = { server: serve.value.server, receiver: player }
     }
 })
 
@@ -73,19 +73,14 @@ const confirmingEnd = ref(false)
                         @input="emit('rename', player.id, ($event.target as HTMLInputElement).value)"
                     />
                     <label class="serves">
-                        <input
-                            v-model="doublesServer"
-                            type="radio"
-                            name="service-server"
-                            :value="player.id"
-                        />
+                        <input v-model="doublesServer" type="radio" name="serving" :value="player.id" />
                         Serving
                     </label>
                     <label class="serves">
                         <input
                             v-model="doublesReceiver"
                             type="radio"
-                            name="service-receiver"
+                            name="receiving"
                             :value="player.id"
                             :disabled="
                                 doublesServer !== undefined &&

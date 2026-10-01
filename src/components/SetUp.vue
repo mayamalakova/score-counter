@@ -2,15 +2,7 @@
 import { computed } from 'vue'
 import Icon from './Icon.vue'
 import { getDoublesTeam } from '../scoring/match'
-import type {
-    BestOf,
-    DoublesPlayer,
-    DoublesTeam,
-    Format,
-    Player,
-    PointsToWin,
-    Service
-} from '../scoring/match'
+import type { BestOf, DoublesPlayer, DoublesTeam, Format, Player, PointsToWin, Serve } from '../scoring/match'
 
 const props = defineProps<{
     colorLeft: string
@@ -28,7 +20,7 @@ const partners = defineModel<Record<DoublesTeam, string>>('partners', { required
 const format = defineModel<Format>('format', { required: true })
 /** Singles: false when the left player serves first, true for the right player. */
 const swapServer = defineModel<boolean>('swapServer', { required: true })
-const doublesOrder = defineModel<Service>('doublesOrder', { required: true })
+const doublesOrder = defineModel<Serve>('doublesOrder', { required: true })
 const pointsToWin = defineModel<PointsToWin>('pointsToWin', { required: true })
 const bestOf = defineModel<BestOf>('bestOf', { required: true })
 
