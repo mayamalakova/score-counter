@@ -1,20 +1,41 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { withServer } from '../scoring/doubles'
+import type { DoublesPlayer, Serve } from '../scoring/match'
 import type { Side } from './types'
 
 defineProps<{
     colorLeft: string
     colorRight: string
+    /** Doubles: the four players, left team first. */
+    doublesPlayers?: { player: DoublesPlayer; name: string; color: string }[]
 }>()
 
 const emit = defineEmits<{
     done: []
     'end-match': []
+    rename: [player: DoublesPlayer, name: string]
 }>()
 
 const playerLeft = defineModel<string>('playerLeft', { required: true })
 const playerRight = defineModel<string>('playerRight', { required: true })
 const server = defineModel<Side>('server', { required: true })
+/** Doubles: who is serving to whom now. */
+const serve = defineModel<Serve>('serve')
+
+const doublesServer = computed({
+    get: () => serve.value?.server,
+    set: player => {
+        if (serve.value && player) serve.value = withServer(serve.value, player)
+    }
+})
+
+const doublesReceiver = computed({
+    get: () => serve.value?.receiver,
+    set: player => {
+        if (serve.value && player) serve.value = { server: serve.value.server, receiver: player }
+    }
+})
 
 // Ending a match throws the score away, so it takes a second, deliberate tap.
 const confirmingEnd = ref(false)
@@ -40,32 +61,60 @@ const confirmingEnd = ref(false)
         </section>
         <form v-else class="panel" aria-label="Edit players and server" @submit.prevent="emit('done')">
             <h2>Players</h2>
-            <div class="row">
-                <input
-                    v-model="playerLeft"
-                    class="name-input"
-                    aria-label="Left player"
-                    placeholder="Player name"
-                    :style="{ borderColor: colorLeft }"
-                />
-                <label class="serves">
-                    <input v-model="server" type="radio" name="server-now" value="left" />
-                    Serving now
-                </label>
-            </div>
-            <div class="row">
-                <input
-                    v-model="playerRight"
-                    class="name-input"
-                    aria-label="Right player"
-                    placeholder="Player name"
-                    :style="{ borderColor: colorRight }"
-                />
-                <label class="serves">
-                    <input v-model="server" type="radio" name="server-now" value="right" />
-                    Serving now
-                </label>
-            </div>
+            <template v-if="doublesPlayers">
+                <div v-for="row in doublesPlayers" :key="row.player.id" class="row">
+                    <input
+                        :value="row.name"
+                        class="name-input"
+                        :aria-label="`Player ${row.player.id}`"
+                        placeholder="Player name"
+                        :style="{ borderColor: row.color }"
+                        @input="emit('rename', row.player, ($event.target as HTMLInputElement).value)"
+                    />
+                    <label class="serves">
+                        <input v-model="doublesServer" type="radio" name="serving" :value="row.player" />
+                        Serving
+                    </label>
+                    <label class="serves">
+                        <input
+                            v-model="doublesReceiver"
+                            type="radio"
+                            name="receiving"
+                            :value="row.player"
+                            :disabled="doublesServer !== undefined && row.player.team === doublesServer.team"
+                        />
+                        Receiving
+                    </label>
+                </div>
+            </template>
+            <template v-else>
+                <div class="row">
+                    <input
+                        v-model="playerLeft"
+                        class="name-input"
+                        aria-label="Left player"
+                        placeholder="Player name"
+                        :style="{ borderColor: colorLeft }"
+                    />
+                    <label class="serves">
+                        <input v-model="server" type="radio" name="server-now" value="left" />
+                        Serving now
+                    </label>
+                </div>
+                <div class="row">
+                    <input
+                        v-model="playerRight"
+                        class="name-input"
+                        aria-label="Right player"
+                        placeholder="Player name"
+                        :style="{ borderColor: colorRight }"
+                    />
+                    <label class="serves">
+                        <input v-model="server" type="radio" name="server-now" value="right" />
+                        Serving now
+                    </label>
+                </div>
+            </template>
             <button class="button primary done" type="submit">Done</button>
             <button class="end-match" type="button" @click="confirmingEnd = true">End match</button>
         </form>
@@ -86,7 +135,10 @@ const confirmingEnd = ref(false)
 
 .panel {
     width: min(420px, 100%);
-    padding: 16px 20px 20px;
+    /* Four doubles rows only just fit a phone held sideways; scroll rather than clip. */
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 14px 20px 16px;
     border-radius: 14px;
     background: #fff;
     color: var(--ink);
@@ -103,7 +155,7 @@ h2 {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .name-input {
@@ -113,6 +165,10 @@ h2 {
     border: 2px solid;
     border-left-width: 8px;
     border-radius: 8px;
+}
+
+.serves:has(input:disabled) {
+    opacity: 0.4;
 }
 
 .serves {

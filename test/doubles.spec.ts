@@ -1,0 +1,136 @@
+// Doubles, played through the UI. The engine's rules are covered in test/scoring/doubles.spec.ts.
+import { beforeEach, describe, expect, it } from 'vitest'
+import { AppDriver } from './driver'
+
+let app: AppDriver
+
+beforeEach(() => {
+    app = new AppDriver()
+})
+
+describe('setting up doubles', () => {
+    it('asks for two names per pair', async () => {
+        await app.wrapper.find('input[name="format"][value="doubles"]').setValue()
+        expect(app.wrapper.findAll('.setup .name-input')).toHaveLength(4)
+    })
+
+    it('only asks who serves first', async () => {
+        await app.fillSetUp({ doubles: {} })
+        expect(app.wrapper.findAll('input[name="doubles-server"]')).toHaveLength(4)
+        expect(app.wrapper.find('input[name="doubles-receiver"]').exists()).toBe(false)
+    })
+
+    it("has the other pair's first-listed player receive first", async () => {
+        await app.start({ doubles: { server: 'B2' } })
+        // Jan serves from his right half-court (far, at the right end) to Ana in hers.
+        expect(app.courts).toEqual({ leftFar: 'Eva', leftNear: 'Ana', rightFar: 'Jan', rightNear: 'Ben' })
+        expect(app.server).toBe('right')
+    })
+})
+
+describe('the doubles board', () => {
+    it('shows the pairs, the format and where everyone stands for the first serve', async () => {
+        await app.start({ doubles: { server: 'A1' } })
+        expect(app.info).toBe('Game 1 · best of 5 · to 11 · doubles')
+        // Ana serves from her right half-court (near, at the left end) to Ben in his (far, at the right end).
+        expect(app.courts).toEqual({ leftFar: 'Eva', leftNear: 'Ana', rightFar: 'Ben', rightNear: 'Jan' })
+        expect(app.server).toBe('left')
+    })
+
+    it('moves players across at each change of service', async () => {
+        await app.start({ doubles: { server: 'A1' } })
+        await app.point('left')
+        await app.point('right')
+        // Ben serves to Eva: Eva moves into her right half-court.
+        expect(app.courts).toEqual({ leftFar: 'Ana', leftNear: 'Eva', rightFar: 'Ben', rightNear: 'Jan' })
+        expect(app.server).toBe('right')
+    })
+
+    it('starts game 2 with the first receiver serving to the first server', async () => {
+        await app.start({ doubles: { server: 'A1' } })
+        await app.winGame('left')
+        // Pairs have changed ends: Ben and Jan are on the left. Ben serves to Ana.
+        expect(app.courts).toEqual({ leftFar: 'Jan', leftNear: 'Ben', rightFar: 'Ana', rightNear: 'Eva' })
+        expect(app.server).toBe('left')
+    })
+
+    it('changes ends and swaps the receivers at 5 in the deciding game', async () => {
+        await app.start({ bestOf: 1, doubles: { server: 'A1' } })
+        // 4 points: A1>B1, B1>A2, A2>B2, so Eva serves to Jan.
+        await app.point('left', 4)
+        expect(app.courts).toEqual({ leftFar: 'Ana', leftNear: 'Eva', rightFar: 'Jan', rightNear: 'Ben' })
+
+        // At 5 the pairs change ends and Ben and Jan swap receiving order, so Eva serves to Ben.
+        await app.point('left')
+        expect(app.courts).toEqual({ leftFar: 'Jan', leftNear: 'Ben', rightFar: 'Eva', rightNear: 'Ana' })
+        expect(app.server).toBe('right')
+    })
+
+    it('names the pair in the game-won bar and the summary', async () => {
+        await app.start({ bestOf: 1, doubles: {} })
+        await app.point('left', 5)
+        await app.point('right', 6)
+        expect(app.summaryTitle).toBe('Ana / Eva wins 1–0')
+    })
+
+    it('uses default names for players left blank', async () => {
+        await app.start({ doubles: { names: ['', 'Eva', '', ''] } })
+        expect(app.courts.leftNear).toBe('Player 1')
+        expect(app.courts.rightFar).toBe('Player 3')
+    })
+})
+
+describe('doubles after a reload', () => {
+    it('keeps the format, the names and where everyone stands', async () => {
+        await app.start({ doubles: { server: 'A2' } })
+        await app.point('left', 3)
+        const before = { courts: app.courts, server: app.server, info: app.info }
+        await app.reload()
+        expect({ courts: app.courts, server: app.server, info: app.info }).toEqual(before)
+    })
+
+    it('keeps the doubles set-up for the next match', async () => {
+        await app.fillSetUp({ doubles: { server: 'B1' } })
+        await app.reload()
+        expect(app.setUpNames).toEqual(['Ana', 'Eva', 'Ben', 'Jan'])
+        expect(app.checkedValue('doubles-server')).toBe('B1')
+    })
+})
+
+describe('editing in doubles', () => {
+    beforeEach(async () => {
+        await app.start({ doubles: { server: 'A1' } })
+        await app.openEdit()
+    })
+
+    it('lists all four players, left pair first', () => {
+        const names = app.wrapper
+            .findAll('.panel .name-input')
+            .map(input => (input.element as HTMLInputElement).value)
+        expect(names).toEqual(['Ana', 'Eva', 'Ben', 'Jan'])
+    })
+
+    it('renames a player', async () => {
+        await app.wrapper.findAll('.panel .name-input')[2].setValue('Benny')
+        await app.closeEdit()
+        expect(app.courts.rightFar).toBe('Benny')
+    })
+
+    it('corrects who serves to whom, and the rotation continues from there', async () => {
+        await app.wrapper.find('input[name="serving"][value="A2"]').setValue()
+        await app.wrapper.find('input[name="receiving"][value="B2"]').setValue()
+        await app.closeEdit()
+        expect(app.courts).toEqual({ leftFar: 'Ana', leftNear: 'Eva', rightFar: 'Jan', rightNear: 'Ben' })
+
+        // After two points Jan serves to Ana.
+        await app.point('left', 2)
+        expect(app.courts).toEqual({ leftFar: 'Eva', leftNear: 'Ana', rightFar: 'Jan', rightNear: 'Ben' })
+        expect(app.server).toBe('right')
+    })
+
+    it('moves the receiver across when the server changes pair', async () => {
+        await app.wrapper.find('input[name="serving"][value="B2"]').setValue()
+        const receiver = app.wrapper.find('input[name="receiving"]:checked').attributes('value')
+        expect(receiver).toBe('A1')
+    })
+})

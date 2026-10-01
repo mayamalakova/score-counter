@@ -11,8 +11,14 @@ import {
 import { play, winGame } from './helpers'
 
 describe('a new match', () => {
-    it('defaults to games to 11, best of 5, A serving first', () => {
-        expect(newMatch().settings).toEqual({ pointsToWin: 11, bestOf: 5, firstServer: 'A' })
+    it('defaults to singles, games to 11, best of 5, A serving first', () => {
+        expect(newMatch().settings).toEqual({
+            pointsToWin: 11,
+            bestOf: 5,
+            firstServer: 'A',
+            format: 'singles',
+            doublesOrder: null
+        })
     })
 
     it('starts at 0-0 in the first game with no winner', () => {

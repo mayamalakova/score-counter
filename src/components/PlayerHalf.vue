@@ -1,11 +1,31 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Icon from './Icon.vue'
 import type { PlayerView, Side } from './types'
 
-defineProps<{
+const props = defineProps<{
     player: PlayerView
     side: Side
 }>()
+
+/**
+ * Doubles: where each player stands. The phone is on the table's near long side
+ * (the screen's bottom edge), so a player's right half-court is the bottom half at
+ * the left end and the top half at the right end.
+ */
+const courts = computed(() => {
+    const { courts } = props.player
+    if (!courts) return []
+    return props.side === 'left'
+        ? [
+              { position: 'far', name: courts.left },
+              { position: 'near', name: courts.right }
+          ]
+        : [
+              { position: 'far', name: courts.right },
+              { position: 'near', name: courts.left }
+          ]
+})
 
 const emit = defineEmits<{
     increase: []
@@ -21,10 +41,21 @@ const emit = defineEmits<{
             :aria-label="`Point for ${player.name}`"
             @click="emit('increase')"
         >
-            <span class="name" :style="{ background: player.color }">{{ player.name }}</span>
+            <span v-if="!player.courts" class="name" :style="{ background: player.color }">{{
+                player.name
+            }}</span>
             <span class="score">{{ player.score }}</span>
             <span class="games">games {{ player.games }}</span>
         </button>
+        <div
+            v-for="court in courts"
+            :key="court.position"
+            class="name court"
+            :class="court.position"
+            :style="{ background: player.color }"
+        >
+            {{ court.name }}
+        </div>
         <button
             class="minus"
             type="button"
@@ -109,9 +140,42 @@ const emit = defineEmits<{
     right: 12px;
 }
 
+.court {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.court.far {
+    top: 12px;
+}
+
+.court.near {
+    bottom: 14px;
+}
+
 @media (orientation: portrait) {
     .score {
         font-size: min(30vh, 58vw);
+    }
+
+    /* Upright the picture is turned a quarter turn: the near side is the left edge. */
+    .court.far,
+    .court.near {
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+        max-width: 40%;
+    }
+
+    .court.far {
+        left: auto;
+        right: 12px;
+    }
+
+    .court.near {
+        left: 12px;
     }
 }
 </style>

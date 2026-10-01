@@ -1,17 +1,19 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import GameWonBar from './GameWonBar.vue'
 import Icon from './Icon.vue'
 import PlayerHalf from './PlayerHalf.vue'
 import ServerBall from './ServerBall.vue'
 import type { PlayerView, Side } from './types'
 
-defineProps<{
+const props = defineProps<{
     left: PlayerView
     right: PlayerView
     server: Side
     gameNumber: number
     bestOf: number
     pointsToWin: number
+    doubles: boolean
     /** Name of the player who just won the game, while waiting for the next one. */
     gameWinner: string | null
 }>()
@@ -26,6 +28,17 @@ const emit = defineEmits<{
     undo: []
     'next-game': []
 }>()
+
+const info = computed(() =>
+    [
+        `Game ${props.gameNumber}`,
+        `best of ${props.bestOf}`,
+        `to ${props.pointsToWin}`,
+        props.doubles && 'doubles'
+    ]
+        .filter(Boolean)
+        .join(' · ')
+)
 </script>
 
 <template>
@@ -34,7 +47,7 @@ const emit = defineEmits<{
             <button class="icon-button" type="button" aria-label="Restart game" @click="emit('restart')">
                 <Icon name="restart" />
             </button>
-            <span class="info">Game {{ gameNumber }} · best of {{ bestOf }} · to {{ pointsToWin }}</span>
+            <span class="info">{{ info }}</span>
             <button
                 class="icon-button"
                 type="button"
@@ -58,8 +71,9 @@ const emit = defineEmits<{
                 @increase="emit('increase-right')"
                 @decrease="emit('decrease-right')"
             />
+            <div v-if="doubles" class="centre-line" aria-hidden="true"></div>
             <div class="net" aria-hidden="true"></div>
-            <ServerBall :side="server" />
+            <ServerBall :side="server" :doubles="doubles" />
             <GameWonBar
                 v-if="gameWinner"
                 :winner="gameWinner"
@@ -125,7 +139,29 @@ const emit = defineEmits<{
     pointer-events: none;
 }
 
+/* Doubles: the centre line splits each end into two half-courts. */
+.centre-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    margin-top: -1px;
+    background: rgb(255 255 255 / 0.75);
+    pointer-events: none;
+}
+
 @media (orientation: portrait) {
+    .centre-line {
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        right: auto;
+        width: 2px;
+        height: auto;
+        margin: 0 0 0 -1px;
+    }
+
     .table {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr;

@@ -1,8 +1,18 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Icon from './Icon.vue'
-import type { BestOf, PointsToWin } from '../scoring/match'
+import { DoublesPlayer } from '../scoring/match'
+import type {
+    BestOf,
+    DoublesPosition,
+    DoublesTeam,
+    Format,
+    Player,
+    PointsToWin,
+    Serve
+} from '../scoring/match'
 
-defineProps<{
+const props = defineProps<{
     colorLeft: string
     colorRight: string
 }>()
@@ -11,50 +21,124 @@ const emit = defineEmits<{
     'start-match': []
 }>()
 
-const playerLeft = defineModel<string>('playerLeft', { required: true })
-const playerRight = defineModel<string>('playerRight', { required: true })
-/** False when the left player serves first, true for the right player. */
+/** Each side's player in singles, or first player in doubles. The left side is A. */
+const names = defineModel<Record<Player, string>>('names', { required: true })
+/** Each team's second player in doubles. */
+const partners = defineModel<Record<DoublesTeam, string>>('partners', { required: true })
+const format = defineModel<Format>('format', { required: true })
+/** Singles: false when the left player serves first, true for the right player. */
 const swapServer = defineModel<boolean>('swapServer', { required: true })
+const doublesOrder = defineModel<Serve>('doublesOrder', { required: true })
 const pointsToWin = defineModel<PointsToWin>('pointsToWin', { required: true })
 const bestOf = defineModel<BestOf>('bestOf', { required: true })
 
 const pointsOptions: PointsToWin[] = [11, 21]
 const bestOfOptions: BestOf[] = [1, 3, 5, 7]
+
+const singlesRows = computed(() => [
+    {
+        side: 'A' as const,
+        label: 'Left player',
+        placeholder: 'Player 1',
+        color: props.colorLeft,
+        swap: false
+    },
+    {
+        side: 'B' as const,
+        label: 'Right player',
+        placeholder: 'Player 2',
+        color: props.colorRight,
+        swap: true
+    }
+])
+
+const teams = computed(() => [
+    { id: 'A' as DoublesTeam, label: 'Left pair', color: props.colorLeft },
+    { id: 'B' as DoublesTeam, label: 'Right pair', color: props.colorRight }
+])
+
+function nameOf(player: DoublesPlayer): string {
+    return player.position === 1 ? names.value[player.team] : partners.value[player.team]
+}
+
+function setName(player: DoublesPlayer, name: string) {
+    const team = player.team
+    if (player.position === 1) names.value = { ...names.value, [team]: name }
+    else partners.value = { ...partners.value, [team]: name }
+}
+
+function placeholder(player: DoublesPlayer): string {
+    return `Player ${{ A1: 1, A2: 2, B1: 3, B2: 4 }[player.id]}`
+}
+
+/**
+ * Set-up only asks who serves first. The other team's first-listed player receives
+ * first; if the team chooses differently, the edit panel corrects it.
+ */
+const server = computed({
+    get: () => doublesOrder.value.server,
+    set: player => {
+        doublesOrder.value = { server: player, receiver: player.firstOpponent() }
+    }
+})
 </script>
 
 <template>
     <form class="setup" @submit.prevent="emit('start-match')">
         <section class="players">
             <h1>New match</h1>
-            <div class="player">
-                <input
-                    v-model="playerLeft"
-                    class="name-input"
-                    aria-label="Left player"
-                    placeholder="Player 1"
-                    :style="{ borderColor: colorLeft }"
-                />
-                <label class="serves">
-                    <input v-model="swapServer" type="radio" name="first-server" :value="false" />
-                    Serves first
-                </label>
-            </div>
-            <div class="player">
-                <input
-                    v-model="playerRight"
-                    class="name-input"
-                    aria-label="Right player"
-                    placeholder="Player 2"
-                    :style="{ borderColor: colorRight }"
-                />
-                <label class="serves">
-                    <input v-model="swapServer" type="radio" name="first-server" :value="true" />
-                    Serves first
-                </label>
-            </div>
+            <template v-if="format === 'singles'">
+                <div v-for="row in singlesRows" :key="row.side" class="player">
+                    <input
+                        :value="names[row.side]"
+                        class="name-input"
+                        :aria-label="row.label"
+                        :placeholder="row.placeholder"
+                        :style="{ borderColor: row.color }"
+                        @input="names = { ...names, [row.side]: ($event.target as HTMLInputElement).value }"
+                    />
+                    <label class="serves">
+                        <input v-model="swapServer" type="radio" name="first-server" :value="row.swap" />
+                        Serves first
+                    </label>
+                </div>
+            </template>
+            <template v-else>
+                <div v-for="team in teams" :key="team.id" class="team" role="group" :aria-label="team.label">
+                    <div
+                        v-for="player in ([1, 2] as DoublesPosition[]).map(
+                            position => new DoublesPlayer(team.id, position)
+                        )"
+                        :key="player.id"
+                        class="player"
+                    >
+                        <input
+                            :value="nameOf(player)"
+                            class="name-input"
+                            :aria-label="`${team.label}, ${player.position === 1 ? 'first' : 'second'} player`"
+                            :placeholder="placeholder(player)"
+                            :style="{ borderColor: team.color }"
+                            @input="setName(player, ($event.target as HTMLInputElement).value)"
+                        />
+                        <label class="serves">
+                            <input v-model="server" type="radio" name="doubles-server" :value="player" />
+                            Serves first
+                        </label>
+                    </div>
+                </div>
+            </template>
         </section>
 
         <section class="settings">
+            <fieldset>
+                <legend>Format</legend>
+                <div class="segments">
+                    <label v-for="option in ['singles', 'doubles'] as Format[]" :key="option">
+                        <input v-model="format" type="radio" name="format" :value="option" />
+                        <span>{{ option === 'singles' ? 'Singles' : 'Doubles' }}</span>
+                    </label>
+                </div>
+            </fieldset>
             <fieldset>
                 <legend>Points per game</legend>
                 <div class="segments">
@@ -99,6 +183,18 @@ h1 {
 
 .player {
     margin-bottom: 16px;
+}
+
+/* Doubles: a team's two players side by side, so four players fit on a phone held sideways. */
+.team {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.team .player {
+    margin-bottom: 0;
 }
 
 .name-input {
