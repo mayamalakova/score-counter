@@ -31,6 +31,10 @@ npm run build
 
 ## Workflow
 
+- **Planned work lives in GitHub issues**, tracked on the project board under the repo's
+  [Projects tab](https://github.com/mayamalakova/score-counter/projects). Start from an
+  issue (or open one first), and close it from the PR with `Closes #N` in the
+  description.
 - **One branch and one PR per phase**, or per feature from Phase 6 on. Don't pull work
   forward from later phases.
 - **Only Maya merges.** Contributors, including Claude, push feature branches and open
