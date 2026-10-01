@@ -4,3 +4,5 @@ coverage/
 .netlify/
 *.local
 *.tsbuildinfo
+# JetBrains IDE settings (Rider, WebStorm)
+.idea/

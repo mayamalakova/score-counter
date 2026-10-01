@@ -10,6 +10,8 @@ now being modernized.
 - Work one phase at a time, one PR per phase (or per feature from Phase 6 on). Don't
   pull work forward from later phases, even when it's tempting.
 - Small, focused commits with messages that explain why, not just what.
+- Planned work is tracked in GitHub issues and on the project board (repo's Projects tab).
+  Start from an issue, and close it from the PR with `Closes #N`.
 - Behaviour changes need a test. Refactors must keep existing tests green.
 - Ask before adding a dependency that isn't listed under "Target stack".
 - Keep the known-bugs list below up to date: add bugs you find, strike them when fixed,
