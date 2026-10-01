@@ -45,6 +45,9 @@ npm run build
 
 ## Where things live
 
+[docs/architecture.md](docs/architecture.md) has diagrams of the data model and the UI
+model. Update them when either changes.
+
 | Path                     | What it is                                                              |
 | ------------------------ | ----------------------------------------------------------------------- |
 | `src/scoring/match.ts`   | The scoring engine: a match is settings plus an event log, and pure functions derive score, winners, server and ends. No Vue. |
