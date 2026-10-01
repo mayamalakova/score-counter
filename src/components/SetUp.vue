@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Icon from './Icon.vue'
-import { getDoublesTeam } from '../scoring/match'
-import type { BestOf, DoublesPlayer, DoublesTeam, Format, Player, PointsToWin, Serve } from '../scoring/match'
+import { DoublesPlayer } from '../scoring/match'
+import type {
+    BestOf,
+    DoublesPosition,
+    DoublesTeam,
+    Format,
+    Player,
+    PointsToWin,
+    Serve
+} from '../scoring/match'
 
 const props = defineProps<{
     colorLeft: string
@@ -50,17 +58,17 @@ const teams = computed(() => [
 ])
 
 function nameOf(player: DoublesPlayer): string {
-    return player[1] === '1' ? names.value[getDoublesTeam(player)] : partners.value[getDoublesTeam(player)]
+    return player.position === 1 ? names.value[player.team] : partners.value[player.team]
 }
 
 function setName(player: DoublesPlayer, name: string) {
-    const team = getDoublesTeam(player)
-    if (player[1] === '1') names.value = { ...names.value, [team]: name }
+    const team = player.team
+    if (player.position === 1) names.value = { ...names.value, [team]: name }
     else partners.value = { ...partners.value, [team]: name }
 }
 
 function placeholder(player: DoublesPlayer): string {
-    return `Player ${{ A1: 1, A2: 2, B1: 3, B2: 4 }[player]}`
+    return `Player ${{ A1: 1, A2: 2, B1: 3, B2: 4 }[player.id]}`
 }
 
 /**
@@ -70,7 +78,7 @@ function placeholder(player: DoublesPlayer): string {
 const server = computed({
     get: () => doublesOrder.value.server,
     set: player => {
-        doublesOrder.value = { server: player, receiver: getDoublesTeam(player) === 'A' ? 'B1' : 'A1' }
+        doublesOrder.value = { server: player, receiver: player.firstOpponent() }
     }
 })
 </script>
@@ -98,14 +106,16 @@ const server = computed({
             <template v-else>
                 <div v-for="team in teams" :key="team.id" class="team" role="group" :aria-label="team.label">
                     <div
-                        v-for="player in [`${team.id}1`, `${team.id}2`] as DoublesPlayer[]"
-                        :key="player"
+                        v-for="player in ([1, 2] as DoublesPosition[]).map(
+                            position => new DoublesPlayer(team.id, position)
+                        )"
+                        :key="player.id"
                         class="player"
                     >
                         <input
                             :value="nameOf(player)"
                             class="name-input"
-                            :aria-label="`${team.label}, ${player[1] === '1' ? 'first' : 'second'} player`"
+                            :aria-label="`${team.label}, ${player.position === 1 ? 'first' : 'second'} player`"
                             :placeholder="placeholder(player)"
                             :style="{ borderColor: team.color }"
                             @input="setName(player, ($event.target as HTMLInputElement).value)"

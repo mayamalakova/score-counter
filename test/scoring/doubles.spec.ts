@@ -2,8 +2,6 @@ import { describe, expect, it } from 'vitest'
 import { correctServe, currentServe, positions } from '../../src/scoring/doubles'
 import {
     ends,
-    getDoublesPartner,
-    getDoublesTeam,
     newMatch,
     removePoint,
     restart,
@@ -13,13 +11,9 @@ import {
     type PointsToWin,
     type Serve
 } from '../../src/scoring/match'
-import { play, winGame } from './helpers'
+import { play, player, serve, winGame } from './helpers'
 
-function doubles(
-    order: Serve = { server: 'A1', receiver: 'B1' },
-    bestOf: BestOf = 5,
-    pointsToWin: PointsToWin = 11
-) {
+function doubles(order: Serve = serve('A1', 'B1'), bestOf: BestOf = 5, pointsToWin: PointsToWin = 11) {
     return newMatch({ format: 'doubles', doublesOrder: order, bestOf, pointsToWin })
 }
 
@@ -40,37 +34,42 @@ function reachGame(game: number, match: Match): Match {
     return match
 }
 
-describe('teams and partners', () => {
-    it('puts 1 and 2 of each letter in the same team', () => {
-        expect([
-            getDoublesTeam('A1'),
-            getDoublesTeam('A2'),
-            getDoublesTeam('B1'),
-            getDoublesTeam('B2')
-        ]).toEqual(['A', 'A', 'B', 'B'])
+describe('a doubles player', () => {
+    it('knows their team and position', () => {
+        expect(player('B2')).toMatchObject({ team: 'B', position: 2 })
+        expect(player('B2').id).toBe('B2')
+        expect(String(player('A1'))).toBe('A1')
     })
 
-    it('pairs 1 with 2 on each side', () => {
-        expect([
-            getDoublesPartner('A1'),
-            getDoublesPartner('A2'),
-            getDoublesPartner('B1'),
-            getDoublesPartner('B2')
-        ]).toEqual(['A2', 'A1', 'B2', 'B1'])
+    it('equals another object for the same player, and nobody else', () => {
+        expect(player('A1').equals(player('A1'))).toBe(true)
+        expect(player('A1').equals(player('A2'))).toBe(false)
+        expect(player('A1').equals(player('B1'))).toBe(false)
+    })
+
+    it('has the other player in the same team as partner', () => {
+        expect(['A1', 'A2', 'B1', 'B2'].map(id => player(id as 'A1').partner().id)).toEqual([
+            'A2',
+            'A1',
+            'B2',
+            'B1'
+        ])
+    })
+
+    it("has the other team's first player as first opponent", () => {
+        expect(player('A2').firstOpponent().id).toBe('B1')
+        expect(player('B2').firstOpponent().id).toBe('A1')
     })
 })
 
 describe('a doubles match', () => {
     it('serves A first when A1 serves first', () => {
         expect(doubles().settings.firstServer).toBe('A')
-        expect(doubles({ server: 'B2', receiver: 'A1' }).settings.firstServer).toBe('B')
+        expect(doubles(serve('B2', 'A1')).settings.firstServer).toBe('B')
     })
 
     it('starts with the chosen server and receiver', () => {
-        expect(currentServe(doubles({ server: 'A2', receiver: 'B1' }))).toEqual({
-            server: 'A2',
-            receiver: 'B1'
-        })
+        expect(currentServe(doubles(serve('A2', 'B1')))).toEqual(serve('A2', 'B1'))
     })
 })
 
@@ -89,7 +88,7 @@ describe('rotation within a game', () => {
     })
 
     it('comes back to the start after four changes', () => {
-        expect(currentServe(play(doubles(), 'AB'.repeat(4)))).toEqual({ server: 'A1', receiver: 'B1' })
+        expect(currentServe(play(doubles(), 'AB'.repeat(4)))).toEqual(serve('A1', 'B1'))
     })
 
     it('changes every point from 10-10', () => {
@@ -109,20 +108,17 @@ describe('rotation within a game', () => {
 
 describe('later games', () => {
     it('the first receiver serves first, to the player who served to them', () => {
-        expect(currentServe(winGame(doubles({ server: 'A1', receiver: 'B2' }), 'A'))).toEqual({
-            server: 'B2',
-            receiver: 'A1'
-        })
+        expect(currentServe(winGame(doubles(serve('A1', 'B2')), 'A'))).toEqual(serve('B2', 'A1'))
     })
 
     it('swaps back in game 3', () => {
-        const match = winGame(winGame(doubles({ server: 'A1', receiver: 'B2' }), 'A'), 'B')
-        expect(currentServe(match)).toEqual({ server: 'A1', receiver: 'B2' })
+        const match = winGame(winGame(doubles(serve('A1', 'B2')), 'A'), 'B')
+        expect(currentServe(match)).toEqual(serve('A1', 'B2'))
     })
 
     it('does not depend on where game 1 ended in the rotation', () => {
         const match = winGame(play(doubles(), 'BBB'), 'A')
-        expect(currentServe(match)).toEqual({ server: 'B1', receiver: 'A1' })
+        expect(currentServe(match)).toEqual(serve('B1', 'A1'))
     })
 })
 
@@ -132,14 +128,14 @@ describe('the last possible game', () => {
         // 8 points, 4 changes: back to the game's first order.
         const before = currentServe(deciding)
         const after = currentServe(play(deciding, 'A'))
-        expect(after.server).toBe(before.server)
-        expect(after.receiver).toBe(getDoublesPartner(before.receiver))
+        expect(after.server.equals(before.server)).toBe(true)
+        expect(after.receiver.equals(before.receiver.partner())).toBe(true)
     })
 
     it('swaps once, then rotates normally', () => {
         // Game 5 starts A1>B1. Five points: A1>B1, B1>A2, A2>B2, then the swap makes it A2>B1.
         const atFive = play(reachGame(5, doubles()), 'AAAAA')
-        expect(currentServe(atFive)).toEqual({ server: 'A2', receiver: 'B1' })
+        expect(currentServe(atFive)).toEqual(serve('A2', 'B1'))
         expect(servesDuring('BBBB', atFive)).toEqual(['A2>B1', 'B1>A1', 'B1>A1', 'A1>B2'])
     })
 
@@ -151,8 +147,8 @@ describe('the last possible game', () => {
     it('swaps at 10 in games to 21', () => {
         const deciding = reachGame(5, doubles(undefined, 5, 21))
         // Every 5 points: A1>B1, then B1>A2 from 5, A2>B2 from 10, swapped at 10 to A2>B1.
-        expect(currentServe(play(deciding, 'A'.repeat(9)))).toEqual({ server: 'B1', receiver: 'A2' })
-        expect(currentServe(play(deciding, 'A'.repeat(10)))).toEqual({ server: 'A2', receiver: 'B1' })
+        expect(currentServe(play(deciding, 'A'.repeat(9)))).toEqual(serve('B1', 'A2'))
+        expect(currentServe(play(deciding, 'A'.repeat(10)))).toEqual(serve('A2', 'B1'))
     })
 
     it('undoes the swap when the fifth point is taken back', () => {
@@ -163,9 +159,9 @@ describe('the last possible game', () => {
 
 describe('positions', () => {
     it('puts the server and the receiver in their right half-courts', () => {
-        expect(positions(doubles({ server: 'A1', receiver: 'B2' }))).toEqual({
-            A: { right: 'A1', left: 'A2' },
-            B: { right: 'B2', left: 'B1' }
+        expect(positions(doubles(serve('A1', 'B2')))).toEqual({
+            A: { right: player('A1'), left: player('A2') },
+            B: { right: player('B2'), left: player('B1') }
         })
     })
 
@@ -173,8 +169,8 @@ describe('positions', () => {
         const match = play(doubles(), 'AB')
         // B1 serves to A2.
         expect(positions(match)).toEqual({
-            A: { right: 'A2', left: 'A1' },
-            B: { right: 'B1', left: 'B2' }
+            A: { right: player('A2'), left: player('A1') },
+            B: { right: player('B1'), left: player('B2') }
         })
     })
 
@@ -186,10 +182,10 @@ describe('positions', () => {
 
 describe('correcting the serve', () => {
     it('sets who serves to whom now and rotates from there', () => {
-        const match = correctServe(play(doubles(), 'AAA'), { server: 'A2', receiver: 'B1' })
-        expect(currentServe(match)).toEqual({ server: 'A2', receiver: 'B1' })
+        const match = correctServe(play(doubles(), 'AAA'), serve('A2', 'B1'))
+        expect(currentServe(match)).toEqual(serve('A2', 'B1'))
         // 3 points: next change after the 4th point.
-        expect(currentServe(play(match, 'A'))).toEqual({ server: 'B1', receiver: 'A1' })
+        expect(currentServe(play(match, 'A'))).toEqual(serve('B1', 'A1'))
     })
 
     it('records nothing when the order is already right', () => {
@@ -198,17 +194,17 @@ describe('correcting the serve', () => {
     })
 
     it('carries forward into the next game', () => {
-        const match = correctServe(doubles(), { server: 'A2', receiver: 'B2' })
-        expect(currentServe(winGame(match, 'A'))).toEqual({ server: 'B2', receiver: 'A2' })
+        const match = correctServe(doubles(), serve('A2', 'B2'))
+        expect(currentServe(winGame(match, 'A'))).toEqual(serve('B2', 'A2'))
     })
 
     it('is dropped by restarting the game', () => {
-        const match = correctServe(play(doubles(), 'AA'), { server: 'A2', receiver: 'B2' })
-        expect(currentServe(restart(match))).toEqual({ server: 'A1', receiver: 'B1' })
+        const match = correctServe(play(doubles(), 'AA'), serve('A2', 'B2'))
+        expect(currentServe(restart(match))).toEqual(serve('A1', 'B1'))
     })
 
     it('is dropped by undo', () => {
-        const match = correctServe(play(doubles(), 'AA'), { server: 'A2', receiver: 'B2' })
+        const match = correctServe(play(doubles(), 'AA'), serve('A2', 'B2'))
         expect(currentServe(undo(match))).toEqual(currentServe(play(doubles(), 'AA')))
     })
 })

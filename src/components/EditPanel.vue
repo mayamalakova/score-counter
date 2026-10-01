@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { withServer } from '../scoring/doubles'
-import { getDoublesTeam } from '../scoring/match'
 import type { DoublesPlayer, Serve } from '../scoring/match'
 import type { Side } from './types'
 
@@ -9,7 +8,7 @@ defineProps<{
     colorLeft: string
     colorRight: string
     /** Doubles: the four players, left team first. */
-    doublesPlayers?: { id: DoublesPlayer; name: string; color: string }[]
+    doublesPlayers?: { player: DoublesPlayer; name: string; color: string }[]
 }>()
 
 const emit = defineEmits<{
@@ -63,17 +62,17 @@ const confirmingEnd = ref(false)
         <form v-else class="panel" aria-label="Edit players and server" @submit.prevent="emit('done')">
             <h2>Players</h2>
             <template v-if="doublesPlayers">
-                <div v-for="player in doublesPlayers" :key="player.id" class="row">
+                <div v-for="row in doublesPlayers" :key="row.player.id" class="row">
                     <input
-                        :value="player.name"
+                        :value="row.name"
                         class="name-input"
-                        :aria-label="`Player ${player.id}`"
+                        :aria-label="`Player ${row.player.id}`"
                         placeholder="Player name"
-                        :style="{ borderColor: player.color }"
-                        @input="emit('rename', player.id, ($event.target as HTMLInputElement).value)"
+                        :style="{ borderColor: row.color }"
+                        @input="emit('rename', row.player, ($event.target as HTMLInputElement).value)"
                     />
                     <label class="serves">
-                        <input v-model="doublesServer" type="radio" name="serving" :value="player.id" />
+                        <input v-model="doublesServer" type="radio" name="serving" :value="row.player" />
                         Serving
                     </label>
                     <label class="serves">
@@ -81,11 +80,8 @@ const confirmingEnd = ref(false)
                             v-model="doublesReceiver"
                             type="radio"
                             name="receiving"
-                            :value="player.id"
-                            :disabled="
-                                doublesServer !== undefined &&
-                                getDoublesTeam(player.id) === getDoublesTeam(doublesServer)
-                            "
+                            :value="row.player"
+                            :disabled="doublesServer !== undefined && row.player.team === doublesServer.team"
                         />
                         Receiving
                     </label>

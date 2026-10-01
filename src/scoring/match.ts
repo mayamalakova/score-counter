@@ -21,17 +21,50 @@ export type Format = 'singles' | 'doubles'
  */
 export type DoublesTeam = Player
 
-/** In doubles, team A is A1 and A2, team B is B1 and B2. */
-export type DoublesPlayer = 'A1' | 'A2' | 'B1' | 'B2'
+/** First or second player of a doubles team, as listed on set-up. */
+export type DoublesPosition = 1 | 2
 
-/** The team a doubles player belongs to: A1 and A2 are team A. */
-export function getDoublesTeam(player: DoublesPlayer): DoublesTeam {
-    return player[0] as Player
-}
+/** A doubles player's short id: team then position, e.g. 'A1'. */
+export type DoublesPlayerId = `${DoublesTeam}${DoublesPosition}`
 
-/** A doubles player's partner, the other player in the same team: A1 and A2 are partners. */
-export function getDoublesPartner(player: DoublesPlayer): DoublesPlayer {
-    return `${player[0]}${player[1] === '1' ? '2' : '1'}` as DoublesPlayer
+/**
+ * A doubles player: which team they're in, and whether they're its first or
+ * second player. Two objects for the same player are different objects, so
+ * compare players with equals(), never ===.
+ */
+export class DoublesPlayer {
+    constructor(
+        readonly team: DoublesTeam,
+        readonly position: DoublesPosition
+    ) {}
+
+    /** The player for an id such as 'A1'. */
+    static fromId(id: DoublesPlayerId): DoublesPlayer {
+        return new DoublesPlayer(id[0] as DoublesTeam, Number(id[1]) as DoublesPosition)
+    }
+
+    /** Short id, e.g. 'A1', for list keys and form values. */
+    get id(): DoublesPlayerId {
+        return `${this.team}${this.position}`
+    }
+
+    equals(other: DoublesPlayer): boolean {
+        return this.team === other.team && this.position === other.position
+    }
+
+    /** The other player in the same team. */
+    partner(): DoublesPlayer {
+        return new DoublesPlayer(this.team, this.position === 1 ? 2 : 1)
+    }
+
+    /** The other team's first player. */
+    firstOpponent(): DoublesPlayer {
+        return new DoublesPlayer(other(this.team), 1)
+    }
+
+    toString(): string {
+        return this.id
+    }
 }
 
 /** Who serves to whom in doubles. */
@@ -93,7 +126,7 @@ export function newMatch(settings: Partial<MatchSettings> = {}): Match {
     const merged = { ...DEFAULT_SETTINGS, ...settings }
     // In doubles the first serving team is the first server's team.
     if (merged.format === 'doubles' && merged.doublesOrder) {
-        merged.firstServer = getDoublesTeam(merged.doublesOrder.server)
+        merged.firstServer = merged.doublesOrder.server.team
     }
     return { settings: merged, events: [] }
 }

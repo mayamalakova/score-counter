@@ -8,8 +8,6 @@
  */
 import {
     decidingSwitchAt,
-    getDoublesPartner,
-    getDoublesTeam,
     serveChanges,
     type DoublesPlayer,
     type DoublesTeam,
@@ -20,11 +18,11 @@ import {
 
 /** At a change of service the receiver serves, to the previous server's partner. */
 function rotate({ server, receiver }: Serve): Serve {
-    return { server: receiver, receiver: getDoublesPartner(server) }
+    return { server: receiver, receiver: server.partner() }
 }
 
 function rotateBack({ server, receiver }: Serve): Serve {
-    return { server: getDoublesPartner(receiver), receiver: server }
+    return { server: receiver.partner(), receiver: server }
 }
 
 /** Who serves the next point to whom. */
@@ -64,7 +62,7 @@ export function currentServe(match: Match): Serve {
             // In the last possible game the receiving team swaps its order when a team first reaches 5 (10).
             const lastGame = gameIndex === bestOf - 1
             if (lastGame && !swapped && Math.max(score.A, score.B) >= decidingSwitchAt(pointsToWin)) {
-                current = { server: current.server, receiver: getDoublesPartner(current.receiver) }
+                current = { server: current.server, receiver: current.receiver.partner() }
                 swapped = true
             }
         }
@@ -75,12 +73,12 @@ export function currentServe(match: Match): Serve {
 /** Where each team stands now: who is in their right half-court and who in their left. */
 export function positions(match: Match): Record<DoublesTeam, { right: DoublesPlayer; left: DoublesPlayer }> {
     const { server, receiver } = currentServe(match)
-    const inRight = (team: DoublesTeam) => (getDoublesTeam(server) === team ? server : receiver)
+    const inRight = (team: DoublesTeam) => (server.team === team ? server : receiver)
     const a = inRight('A')
     const b = inRight('B')
     return {
-        A: { right: a, left: getDoublesPartner(a) },
-        B: { right: b, left: getDoublesPartner(b) }
+        A: { right: a, left: a.partner() },
+        B: { right: b, left: b.partner() }
     }
 }
 
@@ -89,14 +87,14 @@ export function positions(match: Match): Record<DoublesTeam, { right: DoublesPla
  * team, in which case the other team's first player receives instead.
  */
 export function withServer(order: Serve, server: DoublesPlayer): Serve {
-    if (getDoublesTeam(order.receiver) !== getDoublesTeam(server)) return { server, receiver: order.receiver }
-    return { server, receiver: getDoublesTeam(server) === 'A' ? 'B1' : 'A1' }
+    if (order.receiver.team !== server.team) return { server, receiver: order.receiver }
+    return { server, receiver: server.firstOpponent() }
 }
 
 /** Records who actually serves to whom now, if the derived order says otherwise. */
 export function correctServe(match: Match, corrected: Serve): Match {
     const now = currentServe(match)
-    if (now.server === corrected.server && now.receiver === corrected.receiver) return match
+    if (now.server.equals(corrected.server) && now.receiver.equals(corrected.receiver)) return match
     return {
         ...match,
         events: [...match.events, { type: 'doublesCorrection', ...corrected }]

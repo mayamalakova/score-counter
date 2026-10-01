@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { correctServe } from '../src/scoring/doubles'
 import { addPoint, correctServer, newMatch, nextGame } from '../src/scoring/match'
+import { serve } from './scoring/helpers'
 import { DEFAULT_DOUBLES_ORDER, load, parse, save, serialize, type SavedState } from '../src/storage'
 
 function state(overrides: Partial<SavedState> = {}): SavedState {
@@ -13,7 +14,7 @@ function state(overrides: Partial<SavedState> = {}): SavedState {
         partners: { A: 'Eva', B: 'Jan' },
         format: 'singles',
         firstServer: 'B',
-        doublesOrder: { server: 'B2', receiver: 'A1' },
+        doublesOrder: serve('B2', 'A1'),
         pointsToWin: 21,
         bestOf: 3,
         ...overrides
@@ -38,8 +39,8 @@ describe('saving and reading back', () => {
     })
 
     it('keeps a doubles match, including serve corrections', () => {
-        let match = newMatch({ format: 'doubles', doublesOrder: { server: 'A1', receiver: 'B2' } })
-        match = correctServe(addPoint(match, 'A'), { server: 'A2', receiver: 'B1' })
+        let match = newMatch({ format: 'doubles', doublesOrder: serve('A1', 'B2') })
+        match = correctServe(addPoint(match, 'A'), serve('A2', 'B1'))
         const saved = state({ match, format: 'doubles' })
         expect(parse(serialize(saved))).toEqual(saved)
     })
@@ -88,6 +89,58 @@ describe('upgrading a version 1 save', () => {
     })
 })
 
+describe('upgrading a version 2 save', () => {
+    // Version 2 stored doubles players as ids such as 'A1'.
+    const version2 = {
+        version: 2,
+        gameStarted: true,
+        match: {
+            settings: {
+                pointsToWin: 11,
+                bestOf: 5,
+                firstServer: 'A',
+                format: 'doubles',
+                doublesOrder: { server: 'A1', receiver: 'B2' }
+            },
+            events: [
+                { type: 'point', player: 'A' },
+                { type: 'doublesCorrection', server: 'A2', receiver: 'B1' }
+            ]
+        },
+        names: { A: 'Ana', B: 'Ben' },
+        partners: { A: 'Eva', B: 'Jan' },
+        format: 'doubles',
+        firstServer: 'A',
+        doublesOrder: { server: 'B1', receiver: 'A2' },
+        pointsToWin: 11,
+        bestOf: 5
+    }
+
+    it('turns the player ids into doubles players', () => {
+        const upgraded = parse(JSON.stringify(version2))
+        expect(upgraded?.match.settings.doublesOrder).toEqual(serve('A1', 'B2'))
+        expect(upgraded?.match.events[1]).toEqual({ type: 'doublesCorrection', ...serve('A2', 'B1') })
+        expect(upgraded?.doublesOrder).toEqual(serve('B1', 'A2'))
+    })
+
+    it('gives back real DoublesPlayer objects, so equals() works', () => {
+        const upgraded = parse(JSON.stringify(version2))
+        expect(upgraded?.doublesOrder.server.equals(serve('B1', 'A2').server)).toBe(true)
+    })
+
+    it('rejects an unknown player id', () => {
+        const damaged = { ...version2, doublesOrder: { server: 'C1', receiver: 'A2' } }
+        expect(parse(JSON.stringify(damaged))).toBeNull()
+    })
+})
+
+describe('reading back doubles players', () => {
+    it('gives real DoublesPlayer objects, so equals() works', () => {
+        const saved = parse(serialize(state()))
+        expect(saved?.doublesOrder.server.equals(serve('B2', 'A1').server)).toBe(true)
+    })
+})
+
 describe('ignoring saves that cannot be used', () => {
     it.each([
         ['nothing saved', null],
@@ -101,7 +154,7 @@ describe('ignoring saves that cannot be used', () => {
         ['an unknown player', withField('firstServer', 'C')],
         ['partners missing', withField('partners', undefined)],
         ['an unknown format', withField('format', 'triples')],
-        ['a doubles order within one pair', withField('doublesOrder', { server: 'A1', receiver: 'A2' })],
+        ['a doubles order within one pair', withField('doublesOrder', serve('A1', 'A2'))],
         [
             'a doubles match without its order',
             withField('match', { settings: { ...newMatch().settings, format: 'doubles' }, events: [] })
@@ -110,7 +163,13 @@ describe('ignoring saves that cannot be used', () => {
             'a doubles correction for an unknown player',
             withField('match', {
                 settings: newMatch().settings,
-                events: [{ type: 'doublesCorrection', server: 'C1', receiver: 'A1' }]
+                events: [
+                    {
+                        type: 'doublesCorrection',
+                        server: { team: 'C', position: 1 },
+                        receiver: { team: 'A', position: 1 }
+                    }
+                ]
             })
         ],
         ['unsupported points per game', withField('pointsToWin', 15)],

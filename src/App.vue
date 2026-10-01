@@ -7,7 +7,17 @@ import SetUp from './components/SetUp.vue'
 import type { PlayerView, Side, SideScore } from './components/types'
 import * as doubles from './scoring/doubles'
 import * as scoring from './scoring/match'
-import type { BestOf, DoublesPlayer, DoublesTeam, Format, Player, PointsToWin, Serve } from './scoring/match'
+import { DoublesPlayer } from './scoring/match'
+import type {
+    BestOf,
+    DoublesPlayerId,
+    DoublesPosition,
+    DoublesTeam,
+    Format,
+    Player,
+    PointsToWin,
+    Serve
+} from './scoring/match'
 import { DEFAULT_DOUBLES_ORDER, load, save } from './storage'
 
 // A reload goes straight back to where it was: set-up, mid-game or the summary.
@@ -32,7 +42,7 @@ const newServe = ref<Serve>(DEFAULT_DOUBLES_ORDER)
 // Colours follow the player, not the side.
 const colors: Record<Player, string> = { A: 'var(--player-a)', B: 'var(--player-b)' }
 const defaultNames: Record<Player, string> = { A: 'Player 1', B: 'Player 2' }
-const defaultDoublesNames: Record<DoublesPlayer, string> = {
+const defaultDoublesNames: Record<DoublesPlayerId, string> = {
     A1: 'Player 1',
     A2: 'Player 2',
     B1: 'Player 3',
@@ -57,9 +67,7 @@ const ends = computed(() => scoring.ends(match.value))
 const currentGame = computed(() => scoring.currentGame(match.value))
 const isDoubles = computed(() => match.value.settings.format === 'doubles')
 const servingPair = computed<Player>(() =>
-    isDoubles.value
-        ? scoring.getDoublesTeam(doubles.currentServe(match.value).server)
-        : scoring.server(match.value)
+    isDoubles.value ? doubles.currentServe(match.value).server.team : scoring.server(match.value)
 )
 const server = computed<Side>(() => (servingPair.value === ends.value.left ? 'left' : 'right'))
 const gameWinner = computed(() => currentGame.value.winner)
@@ -67,14 +75,15 @@ const matchWinner = computed(() => scoring.matchWinner(match.value))
 const gameNumber = computed(() => scoring.games(match.value).length)
 
 function doublesName(player: DoublesPlayer): string {
-    const team = scoring.getDoublesTeam(player)
-    const name = player[1] === '1' ? names.value[team] : partners.value[team]
-    return name.trim() || defaultDoublesNames[player]
+    const name = player.position === 1 ? names.value[player.team] : partners.value[player.team]
+    return name.trim() || defaultDoublesNames[player.id]
 }
 
 /** A player's name in singles, or the team's names ("Ana / Eva") in doubles. */
 function displayName(player: Player): string {
-    if (isDoubles.value) return `${doublesName(`${player}1`)} / ${doublesName(`${player}2`)}`
+    if (isDoubles.value) {
+        return `${doublesName(new DoublesPlayer(player, 1))} / ${doublesName(new DoublesPlayer(player, 2))}`
+    }
     return names.value[player].trim() || defaultNames[player]
 }
 
@@ -193,18 +202,17 @@ function toggleEdit() {
 const doublesPlayers = computed(() => {
     if (!isDoubles.value) return undefined
     return [ends.value.left, ends.value.right].flatMap(team =>
-        ([`${team}1`, `${team}2`] as DoublesPlayer[]).map(id => ({
-            id,
-            name: id[1] === '1' ? names.value[team] : partners.value[team],
+        ([1, 2] as DoublesPosition[]).map(position => ({
+            player: new DoublesPlayer(team, position),
+            name: position === 1 ? names.value[team] : partners.value[team],
             color: colors[team]
         }))
     )
 })
 
 function rename(player: DoublesPlayer, name: string) {
-    const team = scoring.getDoublesTeam(player)
-    if (player[1] === '1') names.value = { ...names.value, [team]: name }
-    else partners.value = { ...partners.value, [team]: name }
+    if (player.position === 1) names.value = { ...names.value, [player.team]: name }
+    else partners.value = { ...partners.value, [player.team]: name }
 }
 
 function restart() {

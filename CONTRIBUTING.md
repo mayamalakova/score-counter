@@ -79,6 +79,8 @@ npm run build
 - **Doubles positions** assume the phone is on the table's near long side (the screen's
   bottom edge). A player's right half-court is the near half at the left end and the far
   half at the right end; upright, the picture is turned a quarter turn.
+- **Comparing doubles players:** use `a.equals(b)`, not `a === b`. Saved and restored
+  players are new objects, so `===` is false even for the same player.
 - **Motion:** the server ball's hop respects `prefers-reduced-motion`; keep it that way
   for new animations.
 - **Line endings:** `.gitattributes` stores text files with LF on every OS.

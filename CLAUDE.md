@@ -143,8 +143,11 @@ now being modernized.
 ## Code notes
 
 - The rules live in `src/scoring/match.ts` (event log, pure functions, players A/B).
-  Doubles serve order and positions are in `src/scoring/doubles.ts` (players A1/A2,
-  B1/B2), derived from the same log; scores, winners and ends stay per pair.
+  Doubles serve order and positions are in `src/scoring/doubles.ts`, derived from the
+  same log; scores, winners and ends stay per team (`DoublesTeam`, the same A/B).
+- A doubles player is a `DoublesPlayer` object with `team` and `position` (1 or 2), plus
+  `partner()` and an `id` such as 'A1' for keys and form values. Compare players with
+  `equals()`, never `===`: two objects for the same player are different objects.
 - `App.vue` holds the match and maps players to left/right for the components, which
   get everything through typed props and emits.
 - `src/storage.ts` saves the app state to localStorage after every change and restores it
