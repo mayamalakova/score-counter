@@ -74,11 +74,28 @@ now being modernized.
 4. **Resilience (done).** Autosave the match to localStorage and restore it on reload,
    plus an "End match" action (with confirmation) to abandon a match, since reloading no
    longer does. Wake lock and the PWA moved to Phase 6.
-5. **Repo hygiene (current).** Component tests for the main flows, contributor docs.
-6. **Features, one PR each.** Keyboard shortcuts (moved from Phase 3), screen wake lock
+5. **Repo hygiene (done).** Component tests for the main flows, contributor docs.
+6. **Features, one PR each (current).** Doubles (in progress, see below), keyboard shortcuts (moved from Phase 3), screen wake lock
    during play and installable offline PWA (both moved from Phase 4), match history and
-   rematch, timeouts, doubles serving order, optional spoken score, second-screen display
-   mode.
+   rematch, timeouts, optional spoken score, second-screen display mode.
+
+   Context for features: the app is used for Czech amateur league nights (4–5 players a
+   team, singles chosen by the captain plus two doubles, several tables at once, a
+   volunteer umpire per match). The signed paper protocol stays the official record and
+   some players score on paper, so the app is a helper, never the only way to score.
+   Ideas agreed in principle, after doubles: a fixture mode for the captain (results
+   scored in the app, handed over by QR code, or typed in and validated; a protocol view
+   for copying onto the paper sheet), and a Czech UI.
+
+   **Doubles (decided):**
+   - Board: centre line, four name tags in their half-courts (same style, pair colour),
+     the ball marks the server. No line or highlight for the receiver.
+   - Positions assume the phone is always on the same long side of the table: the screen's
+     bottom edge is the table edge nearest the phone (upright, the picture is turned a
+     quarter turn). So a player's right half-court is the bottom half at the left end and
+     the top half at the right end, and the serve runs bottom-left to top-right.
+   - Later games rotate automatically (who received first serves first, to who served to
+     them); the edit panel corrects it if a pair chooses differently.
 
 ## Scoring rules (ITTF)
 
@@ -88,6 +105,12 @@ now being modernized.
 - The player who served first in a game receives first in the next.
 - Players change ends after each game, and in the last possible game of the match
   when the first player reaches 5 (10 in games to 21).
+- Doubles: the server serves from their right half-court diagonally to the receiver's.
+  At each change of service the previous receiver becomes the server and the previous
+  server's partner becomes the receiver. In game 1 the serving pair chooses its first
+  server and the receiving pair its first receiver; in later games the first receiver is
+  the player who served to them in the previous game. In the last possible game the
+  receiving pair swaps its order when a pair first reaches 5 (10 in games to 21).
 
 ## Known bugs (legacy app)
 
