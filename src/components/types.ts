@@ -12,6 +12,6 @@ export interface PlayerView {
     color: string
     score: number
     games: number
-    /** Doubles: who stands in this pair's right and left half-courts. */
+    /** Doubles: who stands in this team's right and left half-courts. */
     courts?: { right: string; left: string }
 }

@@ -7,7 +7,15 @@ import SetUp from './components/SetUp.vue'
 import type { PlayerView, Side, SideScore } from './components/types'
 import * as doubles from './scoring/doubles'
 import * as scoring from './scoring/match'
-import type { BestOf, DoublesPlayer, Format, Player, PointsToWin, Service } from './scoring/match'
+import type {
+    BestOf,
+    DoublesPlayer,
+    DoublesTeam,
+    Format,
+    Player,
+    PointsToWin,
+    Service
+} from './scoring/match'
 import { DEFAULT_DOUBLES_ORDER, load, save } from './storage'
 
 // A reload goes straight back to where it was: set-up, mid-game or the summary.
@@ -18,7 +26,7 @@ const match = ref(saved?.match ?? scoring.newMatch())
 // players when ends change.
 const names = ref<Record<Player, string>>(saved?.names ?? { A: '', B: '' })
 // In doubles, each side's second player.
-const partners = ref<Record<Player, string>>(saved?.partners ?? { A: '', B: '' })
+const partners = ref<Record<DoublesTeam, string>>(saved?.partners ?? { A: '', B: '' })
 // Set-up choices for the next match.
 const format = ref<Format>(saved?.format ?? 'singles')
 const firstServer = ref<Player>(saved?.firstServer ?? 'A')
@@ -67,12 +75,12 @@ const matchWinner = computed(() => scoring.matchWinner(match.value))
 const gameNumber = computed(() => scoring.games(match.value).length)
 
 function doublesName(player: DoublesPlayer): string {
-    const pair = scoring.getDoublesTeam(player)
-    const name = player[1] === '1' ? names.value[pair] : partners.value[pair]
+    const team = scoring.getDoublesTeam(player)
+    const name = player[1] === '1' ? names.value[team] : partners.value[team]
     return name.trim() || defaultDoublesNames[player]
 }
 
-/** A player's name in singles, or the pair's names ("Ana / Eva") in doubles. */
+/** A player's name in singles, or the team's names ("Ana / Eva") in doubles. */
 function displayName(player: Player): string {
     if (isDoubles.value) return `${doublesName(`${player}1`)} / ${doublesName(`${player}2`)}`
     return names.value[player].trim() || defaultNames[player]
@@ -189,22 +197,22 @@ function toggleEdit() {
     }
 }
 
-/** Doubles players for the edit panel, left pair first, with the names as typed. */
+/** Doubles players for the edit panel, left team first, with the names as typed. */
 const doublesPlayers = computed(() => {
     if (!isDoubles.value) return undefined
-    return [ends.value.left, ends.value.right].flatMap(pair =>
-        ([`${pair}1`, `${pair}2`] as DoublesPlayer[]).map(id => ({
+    return [ends.value.left, ends.value.right].flatMap(team =>
+        ([`${team}1`, `${team}2`] as DoublesPlayer[]).map(id => ({
             id,
-            name: id[1] === '1' ? names.value[pair] : partners.value[pair],
-            color: colors[pair]
+            name: id[1] === '1' ? names.value[team] : partners.value[team],
+            color: colors[team]
         }))
     )
 })
 
 function rename(player: DoublesPlayer, name: string) {
-    const pair = scoring.getDoublesTeam(player)
-    if (player[1] === '1') names.value = { ...names.value, [pair]: name }
-    else partners.value = { ...partners.value, [pair]: name }
+    const team = scoring.getDoublesTeam(player)
+    if (player[1] === '1') names.value = { ...names.value, [team]: name }
+    else partners.value = { ...partners.value, [team]: name }
 }
 
 function restart() {

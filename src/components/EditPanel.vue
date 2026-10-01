@@ -8,7 +8,7 @@ import type { Side } from './types'
 defineProps<{
     colorLeft: string
     colorRight: string
-    /** Doubles: the four players, left pair first. */
+    /** Doubles: the four players, left team first. */
     doublesPlayers?: { id: DoublesPlayer; name: string; color: string }[]
 }>()
 

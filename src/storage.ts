@@ -6,6 +6,7 @@
 import type {
     BestOf,
     DoublesPlayer,
+    DoublesTeam,
     Format,
     Match,
     MatchEvent,
@@ -19,8 +20,8 @@ export interface SavedState {
     match: Match
     /** Each side's player in singles, or first player in doubles. */
     names: Record<Player, string>
-    /** Each side's second player in doubles. */
-    partners: Record<Player, string>
+    /** Each team's second player in doubles. */
+    partners: Record<DoublesTeam, string>
     /** Set-up choices for the next match. */
     format: Format
     firstServer: Player

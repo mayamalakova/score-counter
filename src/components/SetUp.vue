@@ -2,7 +2,15 @@
 import { computed } from 'vue'
 import Icon from './Icon.vue'
 import { getDoublesTeam } from '../scoring/match'
-import type { BestOf, DoublesPlayer, Format, Player, PointsToWin, Service } from '../scoring/match'
+import type {
+    BestOf,
+    DoublesPlayer,
+    DoublesTeam,
+    Format,
+    Player,
+    PointsToWin,
+    Service
+} from '../scoring/match'
 
 const props = defineProps<{
     colorLeft: string
@@ -15,8 +23,8 @@ const emit = defineEmits<{
 
 /** Each side's player in singles, or first player in doubles. The left side is A. */
 const names = defineModel<Record<Player, string>>('names', { required: true })
-/** Each side's second player in doubles. */
-const partners = defineModel<Record<Player, string>>('partners', { required: true })
+/** Each team's second player in doubles. */
+const partners = defineModel<Record<DoublesTeam, string>>('partners', { required: true })
 const format = defineModel<Format>('format', { required: true })
 /** Singles: false when the left player serves first, true for the right player. */
 const swapServer = defineModel<boolean>('swapServer', { required: true })
@@ -44,9 +52,9 @@ const singlesRows = computed(() => [
     }
 ])
 
-const pairs = computed(() => [
-    { side: 'A' as const, label: 'Left pair', color: props.colorLeft },
-    { side: 'B' as const, label: 'Right pair', color: props.colorRight }
+const teams = computed(() => [
+    { id: 'A' as DoublesTeam, label: 'Left pair', color: props.colorLeft },
+    { id: 'B' as DoublesTeam, label: 'Right pair', color: props.colorRight }
 ])
 
 function nameOf(player: DoublesPlayer): string {
@@ -54,9 +62,9 @@ function nameOf(player: DoublesPlayer): string {
 }
 
 function setName(player: DoublesPlayer, name: string) {
-    const side = getDoublesTeam(player)
-    if (player[1] === '1') names.value = { ...names.value, [side]: name }
-    else partners.value = { ...partners.value, [side]: name }
+    const team = getDoublesTeam(player)
+    if (player[1] === '1') names.value = { ...names.value, [team]: name }
+    else partners.value = { ...partners.value, [team]: name }
 }
 
 function placeholder(player: DoublesPlayer): string {
@@ -64,8 +72,8 @@ function placeholder(player: DoublesPlayer): string {
 }
 
 /**
- * Set-up only asks who serves first. The other pair's first-listed player receives
- * first; if the pair chooses differently, the edit panel corrects it.
+ * Set-up only asks who serves first. The other team's first-listed player receives
+ * first; if the team chooses differently, the edit panel corrects it.
  */
 const server = computed({
     get: () => doublesOrder.value.server,
@@ -96,24 +104,18 @@ const server = computed({
                 </div>
             </template>
             <template v-else>
-                <div
-                    v-for="pair in pairs"
-                    :key="pair.side"
-                    class="pair"
-                    role="group"
-                    :aria-label="pair.label"
-                >
+                <div v-for="team in teams" :key="team.id" class="team" role="group" :aria-label="team.label">
                     <div
-                        v-for="player in [`${pair.side}1`, `${pair.side}2`] as DoublesPlayer[]"
+                        v-for="player in [`${team.id}1`, `${team.id}2`] as DoublesPlayer[]"
                         :key="player"
                         class="player"
                     >
                         <input
                             :value="nameOf(player)"
                             class="name-input"
-                            :aria-label="`${pair.label}, ${player[1] === '1' ? 'first' : 'second'} player`"
+                            :aria-label="`${team.label}, ${player[1] === '1' ? 'first' : 'second'} player`"
                             :placeholder="placeholder(player)"
-                            :style="{ borderColor: pair.color }"
+                            :style="{ borderColor: team.color }"
                             @input="setName(player, ($event.target as HTMLInputElement).value)"
                         />
                         <label class="serves">
@@ -181,15 +183,15 @@ h1 {
     margin-bottom: 16px;
 }
 
-/* Doubles: a pair's two players side by side, so four players fit on a phone held sideways. */
-.pair {
+/* Doubles: a team's two players side by side, so four players fit on a phone held sideways. */
+.team {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-bottom: 16px;
 }
 
-.pair .player {
+.team .player {
     margin-bottom: 0;
 }
 

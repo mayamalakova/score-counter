@@ -14,11 +14,18 @@ export type PointsToWin = 11 | 21
 export type BestOf = 1 | 3 | 5 | 7
 export type Format = 'singles' | 'doubles'
 
-/** In doubles, pair A is A1 and A2, pair B is B1 and B2. */
+/**
+ * A doubles team. It's the same A or B as Player: in doubles the team is what
+ * scores, wins games and changes ends, so everything kept per Player is kept per
+ * team. The separate name is for code that means a team rather than a person.
+ */
+export type DoublesTeam = Player
+
+/** In doubles, team A is A1 and A2, team B is B1 and B2. */
 export type DoublesPlayer = 'A1' | 'A2' | 'B1' | 'B2'
 
-/** The team (pair) a doubles player belongs to: A1 and A2 are team A. */
-export function getDoublesTeam(player: DoublesPlayer): Player {
+/** The team a doubles player belongs to: A1 and A2 are team A. */
+export function getDoublesTeam(player: DoublesPlayer): DoublesTeam {
     return player[0] as Player
 }
 
@@ -36,7 +43,7 @@ export interface Service {
 export interface MatchSettings {
     pointsToWin: PointsToWin
     bestOf: BestOf
-    /** The pair (or player) serving first in the match. */
+    /** The player (or, in doubles, team) serving first in the match. */
     firstServer: Player
     format: Format
     /** Doubles only: who serves and who receives first in game 1. */
@@ -84,7 +91,7 @@ export function other(player: Player): Player {
 
 export function newMatch(settings: Partial<MatchSettings> = {}): Match {
     const merged = { ...DEFAULT_SETTINGS, ...settings }
-    // In doubles the first serving pair is the first server's pair.
+    // In doubles the first serving team is the first server's team.
     if (merged.format === 'doubles' && merged.doublesOrder) {
         merged.firstServer = getDoublesTeam(merged.doublesOrder.server)
     }
