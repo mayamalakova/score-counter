@@ -3,9 +3,17 @@ import { nextTick } from 'vue'
 import App from '../src/App.vue'
 import type { Side } from '../src/components/types'
 
+export type DoublesPlayerId = 'A1' | 'A2' | 'B1' | 'B2'
+
 export interface SetUpOptions {
     left?: string
     right?: string
+    /** Doubles: the four names (left pair first) and who serves and receives first. */
+    doubles?: {
+        names?: [string, string, string, string]
+        server?: DoublesPlayerId
+        receiver?: DoublesPlayerId
+    }
     rightServesFirst?: boolean
     pointsToWin?: 11 | 21
     bestOf?: 1 | 3 | 5 | 7
@@ -29,11 +37,27 @@ export class AppDriver {
         right = 'Ben',
         rightServesFirst,
         pointsToWin,
-        bestOf
+        bestOf,
+        doubles
     }: SetUpOptions = {}) {
-        const [leftName, rightName] = this.wrapper.findAll('.setup .name-input')
-        await leftName.setValue(left)
-        await rightName.setValue(right)
+        if (doubles) {
+            await this.wrapper.find('input[name="format"][value="doubles"]').setValue()
+            const inputs = this.wrapper.findAll('.setup .name-input')
+            const names = doubles.names ?? ['Ana', 'Eva', 'Ben', 'Jan']
+            for (let i = 0; i < 4; i++) await inputs[i].setValue(names[i])
+            if (doubles.server) {
+                await this.wrapper.find(`input[name="doubles-server"][value="${doubles.server}"]`).setValue()
+            }
+            if (doubles.receiver) {
+                await this.wrapper
+                    .find(`input[name="doubles-receiver"][value="${doubles.receiver}"]`)
+                    .setValue()
+            }
+        } else {
+            const [leftName, rightName] = this.wrapper.findAll('.setup .name-input')
+            await leftName.setValue(left)
+            await rightName.setValue(right)
+        }
         if (rightServesFirst !== undefined) {
             await this.wrapper.find(`input[name="first-server"][value="${rightServesFirst}"]`).setValue()
         }
@@ -58,7 +82,9 @@ export class AppDriver {
             .map(input => (input.element as HTMLInputElement).value)
     }
 
-    checkedValue(name: 'first-server' | 'points-to-win' | 'best-of'): string | undefined {
+    checkedValue(
+        name: 'first-server' | 'points-to-win' | 'best-of' | 'format' | 'doubles-server' | 'doubles-receiver'
+    ): string | undefined {
         return this.wrapper.find(`input[name="${name}"]:checked`).attributes('value')
     }
 
@@ -98,6 +124,21 @@ export class AppDriver {
 
     get nameColours(): (string | undefined)[] {
         return this.wrapper.findAll('.half .name').map(name => name.attributes('style'))
+    }
+
+    /**
+     * Doubles: who stands where, by end (left or right of the net) and half-court
+     * (near is the table edge by the phone, far is the other).
+     */
+    get courts(): { leftFar: string; leftNear: string; rightFar: string; rightNear: string } {
+        const [left, right] = this.wrapper.findAll('.half')
+        const tag = (half: typeof left, position: string) => half.find(`.court.${position}`).text()
+        return {
+            leftFar: tag(left, 'far'),
+            leftNear: tag(left, 'near'),
+            rightFar: tag(right, 'far'),
+            rightNear: tag(right, 'near')
+        }
     }
 
     get scores(): string[] {

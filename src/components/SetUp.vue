@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Icon from './Icon.vue'
-import type { BestOf, PointsToWin } from '../scoring/match'
+import { pairOf } from '../scoring/doubles'
+import type { BestOf, DoublesPlayer, Format, Player, PointsToWin, Service } from '../scoring/match'
 
-defineProps<{
+const props = defineProps<{
     colorLeft: string
     colorRight: string
 }>()
@@ -11,50 +13,148 @@ const emit = defineEmits<{
     'start-match': []
 }>()
 
-const playerLeft = defineModel<string>('playerLeft', { required: true })
-const playerRight = defineModel<string>('playerRight', { required: true })
-/** False when the left player serves first, true for the right player. */
+/** Each side's player in singles, or first player in doubles. The left side is A. */
+const names = defineModel<Record<Player, string>>('names', { required: true })
+/** Each side's second player in doubles. */
+const partners = defineModel<Record<Player, string>>('partners', { required: true })
+const format = defineModel<Format>('format', { required: true })
+/** Singles: false when the left player serves first, true for the right player. */
 const swapServer = defineModel<boolean>('swapServer', { required: true })
+const doublesOrder = defineModel<Service>('doublesOrder', { required: true })
 const pointsToWin = defineModel<PointsToWin>('pointsToWin', { required: true })
 const bestOf = defineModel<BestOf>('bestOf', { required: true })
 
 const pointsOptions: PointsToWin[] = [11, 21]
 const bestOfOptions: BestOf[] = [1, 3, 5, 7]
+
+const singlesRows = computed(() => [
+    {
+        side: 'A' as const,
+        label: 'Left player',
+        placeholder: 'Player 1',
+        color: props.colorLeft,
+        swap: false
+    },
+    {
+        side: 'B' as const,
+        label: 'Right player',
+        placeholder: 'Player 2',
+        color: props.colorRight,
+        swap: true
+    }
+])
+
+const pairs = computed(() => [
+    { side: 'A' as const, label: 'Left pair', color: props.colorLeft },
+    { side: 'B' as const, label: 'Right pair', color: props.colorRight }
+])
+
+function nameOf(player: DoublesPlayer): string {
+    return player[1] === '1' ? names.value[pairOf(player)] : partners.value[pairOf(player)]
+}
+
+function setName(player: DoublesPlayer, name: string) {
+    const side = pairOf(player)
+    if (player[1] === '1') names.value = { ...names.value, [side]: name }
+    else partners.value = { ...partners.value, [side]: name }
+}
+
+function placeholder(player: DoublesPlayer): string {
+    return `Player ${{ A1: 1, A2: 2, B1: 3, B2: 4 }[player]}`
+}
+
+/** Choosing a server from the other pair moves the receiver over too. */
+const server = computed({
+    get: () => doublesOrder.value.server,
+    set: player => {
+        const receiver = doublesOrder.value.receiver
+        doublesOrder.value = {
+            server: player,
+            receiver: pairOf(receiver) === pairOf(player) ? (pairOf(player) === 'A' ? 'B1' : 'A1') : receiver
+        }
+    }
+})
+
+const receiver = computed({
+    get: () => doublesOrder.value.receiver,
+    set: player => {
+        doublesOrder.value = { server: doublesOrder.value.server, receiver: player }
+    }
+})
 </script>
 
 <template>
     <form class="setup" @submit.prevent="emit('start-match')">
         <section class="players">
             <h1>New match</h1>
-            <div class="player">
-                <input
-                    v-model="playerLeft"
-                    class="name-input"
-                    aria-label="Left player"
-                    placeholder="Player 1"
-                    :style="{ borderColor: colorLeft }"
-                />
-                <label class="serves">
-                    <input v-model="swapServer" type="radio" name="first-server" :value="false" />
-                    Serves first
-                </label>
-            </div>
-            <div class="player">
-                <input
-                    v-model="playerRight"
-                    class="name-input"
-                    aria-label="Right player"
-                    placeholder="Player 2"
-                    :style="{ borderColor: colorRight }"
-                />
-                <label class="serves">
-                    <input v-model="swapServer" type="radio" name="first-server" :value="true" />
-                    Serves first
-                </label>
-            </div>
+            <template v-if="format === 'singles'">
+                <div v-for="row in singlesRows" :key="row.side" class="player">
+                    <input
+                        :value="names[row.side]"
+                        class="name-input"
+                        :aria-label="row.label"
+                        :placeholder="row.placeholder"
+                        :style="{ borderColor: row.color }"
+                        @input="names = { ...names, [row.side]: ($event.target as HTMLInputElement).value }"
+                    />
+                    <label class="serves">
+                        <input v-model="swapServer" type="radio" name="first-server" :value="row.swap" />
+                        Serves first
+                    </label>
+                </div>
+            </template>
+            <template v-else>
+                <div
+                    v-for="pair in pairs"
+                    :key="pair.side"
+                    class="pair"
+                    role="group"
+                    :aria-label="pair.label"
+                >
+                    <div
+                        v-for="player in [`${pair.side}1`, `${pair.side}2`] as DoublesPlayer[]"
+                        :key="player"
+                        class="player"
+                    >
+                        <input
+                            :value="nameOf(player)"
+                            class="name-input"
+                            :aria-label="`${pair.label}, ${player[1] === '1' ? 'first' : 'second'} player`"
+                            :placeholder="placeholder(player)"
+                            :style="{ borderColor: pair.color }"
+                            @input="setName(player, ($event.target as HTMLInputElement).value)"
+                        />
+                        <div class="choices">
+                            <label class="serves">
+                                <input v-model="server" type="radio" name="doubles-server" :value="player" />
+                                Serves first
+                            </label>
+                            <label class="serves">
+                                <input
+                                    v-model="receiver"
+                                    type="radio"
+                                    name="doubles-receiver"
+                                    :value="player"
+                                    :disabled="pairOf(player) === pairOf(server)"
+                                />
+                                Receives first
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </section>
 
         <section class="settings">
+            <fieldset>
+                <legend>Format</legend>
+                <div class="segments">
+                    <label v-for="option in ['singles', 'doubles'] as Format[]" :key="option">
+                        <input v-model="format" type="radio" name="format" :value="option" />
+                        <span>{{ option === 'singles' ? 'Singles' : 'Doubles' }}</span>
+                    </label>
+                </div>
+            </fieldset>
             <fieldset>
                 <legend>Points per game</legend>
                 <div class="segments">
@@ -99,6 +199,31 @@ h1 {
 
 .player {
     margin-bottom: 16px;
+}
+
+/* Doubles: a pair's two players side by side, so four players fit on a phone held sideways. */
+.pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.pair .player {
+    margin-bottom: 0;
+}
+
+.choices {
+    display: flex;
+    flex-direction: column;
+}
+
+.choices .serves {
+    margin-top: 4px;
+}
+
+.serves:has(input:disabled) {
+    opacity: 0.4;
 }
 
 .name-input {
