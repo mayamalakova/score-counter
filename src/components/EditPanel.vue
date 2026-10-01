@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { pairOf, withServer } from '../scoring/doubles'
+import { withServer } from '../scoring/doubles'
+import { getDoublesTeam } from '../scoring/match'
 import type { DoublesPlayer, Service } from '../scoring/match'
 import type { Side } from './types'
 
@@ -87,7 +88,8 @@ const confirmingEnd = ref(false)
                             name="service-receiver"
                             :value="player.id"
                             :disabled="
-                                doublesServer !== undefined && pairOf(player.id) === pairOf(doublesServer)
+                                doublesServer !== undefined &&
+                                getDoublesTeam(player.id) === getDoublesTeam(doublesServer)
                             "
                         />
                         Receiving

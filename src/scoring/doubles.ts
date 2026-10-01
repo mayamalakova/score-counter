@@ -8,6 +8,8 @@
  */
 import {
     decidingSwitchAt,
+    getDoublesPartner,
+    getDoublesTeam,
     serviceChanges,
     type DoublesPlayer,
     type Match,
@@ -16,21 +18,13 @@ import {
     type Service
 } from './match'
 
-export function pairOf(player: DoublesPlayer): Player {
-    return player[0] as Player
-}
-
-export function partner(player: DoublesPlayer): DoublesPlayer {
-    return `${player[0]}${player[1] === '1' ? '2' : '1'}` as DoublesPlayer
-}
-
 /** At a change of service the receiver serves, to the previous server's partner. */
 function rotate({ server, receiver }: Service): Service {
-    return { server: receiver, receiver: partner(server) }
+    return { server: receiver, receiver: getDoublesPartner(server) }
 }
 
 function rotateBack({ server, receiver }: Service): Service {
-    return { server: partner(receiver), receiver: server }
+    return { server: getDoublesPartner(receiver), receiver: server }
 }
 
 /** Who serves the next point to whom. */
@@ -70,7 +64,7 @@ export function service(match: Match): Service {
             // In the last possible game the receiving pair swaps its order when a pair first reaches 5 (10).
             const lastGame = gameIndex === bestOf - 1
             if (lastGame && !swapped && Math.max(score.A, score.B) >= decidingSwitchAt(pointsToWin)) {
-                current = { server: current.server, receiver: partner(current.receiver) }
+                current = { server: current.server, receiver: getDoublesPartner(current.receiver) }
                 swapped = true
             }
         }
@@ -81,12 +75,12 @@ export function service(match: Match): Service {
 /** Where each pair stands now: who is in their right half-court and who in their left. */
 export function positions(match: Match): Record<Player, { right: DoublesPlayer; left: DoublesPlayer }> {
     const { server, receiver } = service(match)
-    const inRight = (pair: Player) => (pairOf(server) === pair ? server : receiver)
+    const inRight = (pair: Player) => (getDoublesTeam(server) === pair ? server : receiver)
     const a = inRight('A')
     const b = inRight('B')
     return {
-        A: { right: a, left: partner(a) },
-        B: { right: b, left: partner(b) }
+        A: { right: a, left: getDoublesPartner(a) },
+        B: { right: b, left: getDoublesPartner(b) }
     }
 }
 
@@ -95,8 +89,8 @@ export function positions(match: Match): Record<Player, { right: DoublesPlayer; 
  * pair, in which case the other pair's first player receives instead.
  */
 export function withServer(order: Service, server: DoublesPlayer): Service {
-    if (pairOf(order.receiver) !== pairOf(server)) return { server, receiver: order.receiver }
-    return { server, receiver: pairOf(server) === 'A' ? 'B1' : 'A1' }
+    if (getDoublesTeam(order.receiver) !== getDoublesTeam(server)) return { server, receiver: order.receiver }
+    return { server, receiver: getDoublesTeam(server) === 'A' ? 'B1' : 'A1' }
 }
 
 /** Records who actually serves to whom now, if the derived order says otherwise. */

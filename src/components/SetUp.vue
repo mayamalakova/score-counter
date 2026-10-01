@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Icon from './Icon.vue'
-import { pairOf } from '../scoring/doubles'
+import { getDoublesTeam } from '../scoring/match'
 import type { BestOf, DoublesPlayer, Format, Player, PointsToWin, Service } from '../scoring/match'
 
 const props = defineProps<{
@@ -50,11 +50,11 @@ const pairs = computed(() => [
 ])
 
 function nameOf(player: DoublesPlayer): string {
-    return player[1] === '1' ? names.value[pairOf(player)] : partners.value[pairOf(player)]
+    return player[1] === '1' ? names.value[getDoublesTeam(player)] : partners.value[getDoublesTeam(player)]
 }
 
 function setName(player: DoublesPlayer, name: string) {
-    const side = pairOf(player)
+    const side = getDoublesTeam(player)
     if (player[1] === '1') names.value = { ...names.value, [side]: name }
     else partners.value = { ...partners.value, [side]: name }
 }
@@ -70,7 +70,7 @@ function placeholder(player: DoublesPlayer): string {
 const server = computed({
     get: () => doublesOrder.value.server,
     set: player => {
-        doublesOrder.value = { server: player, receiver: pairOf(player) === 'A' ? 'B1' : 'A1' }
+        doublesOrder.value = { server: player, receiver: getDoublesTeam(player) === 'A' ? 'B1' : 'A1' }
     }
 })
 </script>

@@ -17,6 +17,16 @@ export type Format = 'singles' | 'doubles'
 /** In doubles, pair A is A1 and A2, pair B is B1 and B2. */
 export type DoublesPlayer = 'A1' | 'A2' | 'B1' | 'B2'
 
+/** The team (pair) a doubles player belongs to: A1 and A2 are team A. */
+export function getDoublesTeam(player: DoublesPlayer): Player {
+    return player[0] as Player
+}
+
+/** A doubles player's partner, the other player in the same team: A1 and A2 are partners. */
+export function getDoublesPartner(player: DoublesPlayer): DoublesPlayer {
+    return `${player[0]}${player[1] === '1' ? '2' : '1'}` as DoublesPlayer
+}
+
 /** Who serves to whom in doubles. */
 export interface Service {
     server: DoublesPlayer
@@ -76,7 +86,7 @@ export function newMatch(settings: Partial<MatchSettings> = {}): Match {
     const merged = { ...DEFAULT_SETTINGS, ...settings }
     // In doubles the first serving pair is the first server's pair.
     if (merged.format === 'doubles' && merged.doublesOrder) {
-        merged.firstServer = merged.doublesOrder.server[0] as Player
+        merged.firstServer = getDoublesTeam(merged.doublesOrder.server)
     }
     return { settings: merged, events: [] }
 }

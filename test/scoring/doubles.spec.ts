@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { correctService, partner, positions, service } from '../../src/scoring/doubles'
+import { correctService, positions, service } from '../../src/scoring/doubles'
 import {
     ends,
+    getDoublesPartner,
+    getDoublesTeam,
     newMatch,
     removePoint,
     restart,
@@ -38,9 +40,23 @@ function reachGame(game: number, match: Match): Match {
     return match
 }
 
-describe('partners', () => {
+describe('teams and partners', () => {
+    it('puts 1 and 2 of each letter in the same team', () => {
+        expect([
+            getDoublesTeam('A1'),
+            getDoublesTeam('A2'),
+            getDoublesTeam('B1'),
+            getDoublesTeam('B2')
+        ]).toEqual(['A', 'A', 'B', 'B'])
+    })
+
     it('pairs 1 with 2 on each side', () => {
-        expect([partner('A1'), partner('A2'), partner('B1'), partner('B2')]).toEqual(['A2', 'A1', 'B2', 'B1'])
+        expect([
+            getDoublesPartner('A1'),
+            getDoublesPartner('A2'),
+            getDoublesPartner('B1'),
+            getDoublesPartner('B2')
+        ]).toEqual(['A2', 'A1', 'B2', 'B1'])
     })
 })
 
@@ -114,7 +130,7 @@ describe('the last possible game', () => {
         const before = service(deciding)
         const after = service(play(deciding, 'A'))
         expect(after.server).toBe(before.server)
-        expect(after.receiver).toBe(partner(before.receiver))
+        expect(after.receiver).toBe(getDoublesPartner(before.receiver))
     })
 
     it('swaps once, then rotates normally', () => {

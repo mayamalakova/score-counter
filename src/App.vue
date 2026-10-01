@@ -57,7 +57,9 @@ const ends = computed(() => scoring.ends(match.value))
 const currentGame = computed(() => scoring.currentGame(match.value))
 const isDoubles = computed(() => match.value.settings.format === 'doubles')
 const servingPair = computed<Player>(() =>
-    isDoubles.value ? doubles.pairOf(doubles.service(match.value).server) : scoring.server(match.value)
+    isDoubles.value
+        ? scoring.getDoublesTeam(doubles.service(match.value).server)
+        : scoring.server(match.value)
 )
 const server = computed<Side>(() => (servingPair.value === ends.value.left ? 'left' : 'right'))
 const gameWinner = computed(() => currentGame.value.winner)
@@ -65,7 +67,7 @@ const matchWinner = computed(() => scoring.matchWinner(match.value))
 const gameNumber = computed(() => scoring.games(match.value).length)
 
 function doublesName(player: DoublesPlayer): string {
-    const pair = doubles.pairOf(player)
+    const pair = scoring.getDoublesTeam(player)
     const name = player[1] === '1' ? names.value[pair] : partners.value[pair]
     return name.trim() || defaultDoublesNames[player]
 }
@@ -200,7 +202,7 @@ const doublesPlayers = computed(() => {
 })
 
 function rename(player: DoublesPlayer, name: string) {
-    const pair = doubles.pairOf(player)
+    const pair = scoring.getDoublesTeam(player)
     if (player[1] === '1') names.value = { ...names.value, [pair]: name }
     else partners.value = { ...partners.value, [pair]: name }
 }
