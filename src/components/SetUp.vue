@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Icon from './Icon.vue'
-import { pairOf, withServer } from '../scoring/doubles'
+import { pairOf } from '../scoring/doubles'
 import type { BestOf, DoublesPlayer, Format, Player, PointsToWin, Service } from '../scoring/match'
 
 const props = defineProps<{
@@ -63,18 +63,14 @@ function placeholder(player: DoublesPlayer): string {
     return `Player ${{ A1: 1, A2: 2, B1: 3, B2: 4 }[player]}`
 }
 
-/** Choosing a server from the other pair moves the receiver over too. */
+/**
+ * Set-up only asks who serves first. The other pair's first-listed player receives
+ * first; if the pair chooses differently, the edit panel corrects it.
+ */
 const server = computed({
     get: () => doublesOrder.value.server,
     set: player => {
-        doublesOrder.value = withServer(doublesOrder.value, player)
-    }
-})
-
-const receiver = computed({
-    get: () => doublesOrder.value.receiver,
-    set: player => {
-        doublesOrder.value = { server: doublesOrder.value.server, receiver: player }
+        doublesOrder.value = { server: player, receiver: pairOf(player) === 'A' ? 'B1' : 'A1' }
     }
 })
 </script>
@@ -120,22 +116,10 @@ const receiver = computed({
                             :style="{ borderColor: pair.color }"
                             @input="setName(player, ($event.target as HTMLInputElement).value)"
                         />
-                        <div class="choices">
-                            <label class="serves">
-                                <input v-model="server" type="radio" name="doubles-server" :value="player" />
-                                Serves first
-                            </label>
-                            <label class="serves">
-                                <input
-                                    v-model="receiver"
-                                    type="radio"
-                                    name="doubles-receiver"
-                                    :value="player"
-                                    :disabled="pairOf(player) === pairOf(server)"
-                                />
-                                Receives first
-                            </label>
-                        </div>
+                        <label class="serves">
+                            <input v-model="server" type="radio" name="doubles-server" :value="player" />
+                            Serves first
+                        </label>
                     </div>
                 </div>
             </template>
@@ -207,19 +191,6 @@ h1 {
 
 .pair .player {
     margin-bottom: 0;
-}
-
-.choices {
-    display: flex;
-    flex-direction: column;
-}
-
-.choices .serves {
-    margin-top: 4px;
-}
-
-.serves:has(input:disabled) {
-    opacity: 0.4;
 }
 
 .name-input {

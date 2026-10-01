@@ -8,11 +8,10 @@ export type DoublesPlayerId = 'A1' | 'A2' | 'B1' | 'B2'
 export interface SetUpOptions {
     left?: string
     right?: string
-    /** Doubles: the four names (left pair first) and who serves and receives first. */
+    /** Doubles: the four names (left pair first) and who serves first. */
     doubles?: {
         names?: [string, string, string, string]
         server?: DoublesPlayerId
-        receiver?: DoublesPlayerId
     }
     rightServesFirst?: boolean
     pointsToWin?: 11 | 21
@@ -48,11 +47,6 @@ export class AppDriver {
             if (doubles.server) {
                 await this.wrapper.find(`input[name="doubles-server"][value="${doubles.server}"]`).setValue()
             }
-            if (doubles.receiver) {
-                await this.wrapper
-                    .find(`input[name="doubles-receiver"][value="${doubles.receiver}"]`)
-                    .setValue()
-            }
         } else {
             const [leftName, rightName] = this.wrapper.findAll('.setup .name-input')
             await leftName.setValue(left)
@@ -83,7 +77,7 @@ export class AppDriver {
     }
 
     checkedValue(
-        name: 'first-server' | 'points-to-win' | 'best-of' | 'format' | 'doubles-server' | 'doubles-receiver'
+        name: 'first-server' | 'points-to-win' | 'best-of' | 'format' | 'doubles-server'
     ): string | undefined {
         return this.wrapper.find(`input[name="${name}"]:checked`).attributes('value')
     }

@@ -96,6 +96,8 @@ now being modernized.
      the top half at the right end, and the serve runs bottom-left to top-right.
    - Later games rotate automatically (who received first serves first, to who served to
      them); the edit panel corrects it if a pair chooses differently.
+   - Set-up only asks who serves first; the other pair's first-listed player receives
+     first. The edit panel corrects it if the pair chooses differently.
 
 ## Scoring rules (ITTF)
 

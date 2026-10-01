@@ -14,23 +14,23 @@ describe('setting up doubles', () => {
         expect(app.wrapper.findAll('.setup .name-input')).toHaveLength(4)
     })
 
-    it('only lets the other pair receive first', async () => {
-        await app.fillSetUp({ doubles: { server: 'A2' } })
-        const disabled = app.wrapper
-            .findAll('input[name="doubles-receiver"]')
-            .map(radio => (radio.element as HTMLInputElement).disabled)
-        expect(disabled).toEqual([true, true, false, false])
+    it('only asks who serves first', async () => {
+        await app.fillSetUp({ doubles: {} })
+        expect(app.wrapper.findAll('input[name="doubles-server"]')).toHaveLength(4)
+        expect(app.wrapper.find('input[name="doubles-receiver"]').exists()).toBe(false)
     })
 
-    it('moves the receiver to the other pair when the serving pair changes', async () => {
-        await app.fillSetUp({ doubles: { server: 'B2' } })
-        expect(app.checkedValue('doubles-receiver')).toBe('A1')
+    it("has the other pair's first-listed player receive first", async () => {
+        await app.start({ doubles: { server: 'B2' } })
+        // Jan serves from his right half-court (far, at the right end) to Ana in hers.
+        expect(app.courts).toEqual({ leftFar: 'Eva', leftNear: 'Ana', rightFar: 'Jan', rightNear: 'Ben' })
+        expect(app.server).toBe('right')
     })
 })
 
 describe('the doubles board', () => {
     it('shows the pairs, the format and where everyone stands for the first serve', async () => {
-        await app.start({ doubles: { server: 'A1', receiver: 'B1' } })
+        await app.start({ doubles: { server: 'A1' } })
         expect(app.info).toBe('Game 1 · best of 5 · to 11 · doubles')
         // Ana serves from her right half-court (near, at the left end) to Ben in his (far, at the right end).
         expect(app.courts).toEqual({ leftFar: 'Eva', leftNear: 'Ana', rightFar: 'Ben', rightNear: 'Jan' })
@@ -38,7 +38,7 @@ describe('the doubles board', () => {
     })
 
     it('moves players across at each change of service', async () => {
-        await app.start({ doubles: { server: 'A1', receiver: 'B1' } })
+        await app.start({ doubles: { server: 'A1' } })
         await app.point('left')
         await app.point('right')
         // Ben serves to Eva: Eva moves into her right half-court.
@@ -47,15 +47,15 @@ describe('the doubles board', () => {
     })
 
     it('starts game 2 with the first receiver serving to the first server', async () => {
-        await app.start({ doubles: { server: 'A1', receiver: 'B2' } })
+        await app.start({ doubles: { server: 'A1' } })
         await app.winGame('left')
-        // Pairs have changed ends: Ben and Jan are on the left. Jan serves to Ana.
-        expect(app.courts).toEqual({ leftFar: 'Ben', leftNear: 'Jan', rightFar: 'Ana', rightNear: 'Eva' })
+        // Pairs have changed ends: Ben and Jan are on the left. Ben serves to Ana.
+        expect(app.courts).toEqual({ leftFar: 'Jan', leftNear: 'Ben', rightFar: 'Ana', rightNear: 'Eva' })
         expect(app.server).toBe('left')
     })
 
     it('changes ends and swaps the receivers at 5 in the deciding game', async () => {
-        await app.start({ bestOf: 1, doubles: { server: 'A1', receiver: 'B1' } })
+        await app.start({ bestOf: 1, doubles: { server: 'A1' } })
         // 4 points: A1>B1, B1>A2, A2>B2, so Eva serves to Jan.
         await app.point('left', 4)
         expect(app.courts).toEqual({ leftFar: 'Ana', leftNear: 'Eva', rightFar: 'Jan', rightNear: 'Ben' })
@@ -82,7 +82,7 @@ describe('the doubles board', () => {
 
 describe('doubles after a reload', () => {
     it('keeps the format, the names and where everyone stands', async () => {
-        await app.start({ doubles: { server: 'A2', receiver: 'B2' } })
+        await app.start({ doubles: { server: 'A2' } })
         await app.point('left', 3)
         const before = { courts: app.courts, server: app.server, info: app.info }
         await app.reload()
@@ -90,17 +90,16 @@ describe('doubles after a reload', () => {
     })
 
     it('keeps the doubles set-up for the next match', async () => {
-        await app.fillSetUp({ doubles: { server: 'B1', receiver: 'A2' } })
+        await app.fillSetUp({ doubles: { server: 'B1' } })
         await app.reload()
         expect(app.setUpNames).toEqual(['Ana', 'Eva', 'Ben', 'Jan'])
         expect(app.checkedValue('doubles-server')).toBe('B1')
-        expect(app.checkedValue('doubles-receiver')).toBe('A2')
     })
 })
 
 describe('editing in doubles', () => {
     beforeEach(async () => {
-        await app.start({ doubles: { server: 'A1', receiver: 'B1' } })
+        await app.start({ doubles: { server: 'A1' } })
         await app.openEdit()
     })
 
