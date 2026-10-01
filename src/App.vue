@@ -27,6 +27,7 @@ const pointsToWin = ref<PointsToWin>(saved?.pointsToWin ?? 11)
 const bestOf = ref<BestOf>(saved?.bestOf ?? 5)
 const editMode = ref(false)
 const newServer = ref<Side>('left')
+const newService = ref<Service>(DEFAULT_DOUBLES_ORDER)
 
 // Colours follow the player, not the side.
 const colors: Record<Player, string> = { A: 'var(--player-a)', B: 'var(--player-b)' }
@@ -178,9 +179,30 @@ function toggleEdit() {
     editMode.value = !editMode.value
     if (editMode.value) {
         newServer.value = server.value
+        if (isDoubles.value) newService.value = doubles.service(match.value)
+    } else if (isDoubles.value) {
+        match.value = doubles.correctService(match.value, newService.value)
     } else {
         match.value = scoring.correctServer(match.value, sidePlayer(newServer.value))
     }
+}
+
+/** Doubles players for the edit panel, left pair first, with the names as typed. */
+const doublesPlayers = computed(() => {
+    if (!isDoubles.value) return undefined
+    return [ends.value.left, ends.value.right].flatMap(pair =>
+        ([`${pair}1`, `${pair}2`] as DoublesPlayer[]).map(id => ({
+            id,
+            name: id[1] === '1' ? names.value[pair] : partners.value[pair],
+            color: colors[pair]
+        }))
+    )
+})
+
+function rename(player: DoublesPlayer, name: string) {
+    const pair = doubles.pairOf(player)
+    if (player[1] === '1') names.value = { ...names.value, [pair]: name }
+    else partners.value = { ...partners.value, [pair]: name }
 }
 
 function restart() {
@@ -242,10 +264,13 @@ function undo() {
             v-model:player-left="playerLeft"
             v-model:player-right="playerRight"
             v-model:server="newServer"
+            v-model:service="newService"
+            :doubles-players="doublesPlayers"
             :color-left="left.color"
             :color-right="right.color"
             @done="toggleEdit"
             @end-match="endMatch"
+            @rename="rename"
         />
     </template>
 </template>

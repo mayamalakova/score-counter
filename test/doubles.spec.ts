@@ -97,3 +97,41 @@ describe('doubles after a reload', () => {
         expect(app.checkedValue('doubles-receiver')).toBe('A2')
     })
 })
+
+describe('editing in doubles', () => {
+    beforeEach(async () => {
+        await app.start({ doubles: { server: 'A1', receiver: 'B1' } })
+        await app.openEdit()
+    })
+
+    it('lists all four players, left pair first', () => {
+        const names = app.wrapper
+            .findAll('.panel .name-input')
+            .map(input => (input.element as HTMLInputElement).value)
+        expect(names).toEqual(['Ana', 'Eva', 'Ben', 'Jan'])
+    })
+
+    it('renames a player', async () => {
+        await app.wrapper.findAll('.panel .name-input')[2].setValue('Benny')
+        await app.closeEdit()
+        expect(app.courts.rightFar).toBe('Benny')
+    })
+
+    it('corrects who serves to whom, and the rotation continues from there', async () => {
+        await app.wrapper.find('input[name="service-server"][value="A2"]').setValue()
+        await app.wrapper.find('input[name="service-receiver"][value="B2"]').setValue()
+        await app.closeEdit()
+        expect(app.courts).toEqual({ leftFar: 'Ana', leftNear: 'Eva', rightFar: 'Jan', rightNear: 'Ben' })
+
+        // After two points Jan serves to Ana.
+        await app.point('left', 2)
+        expect(app.courts).toEqual({ leftFar: 'Eva', leftNear: 'Ana', rightFar: 'Jan', rightNear: 'Ben' })
+        expect(app.server).toBe('right')
+    })
+
+    it('moves the receiver across when the server changes pair', async () => {
+        await app.wrapper.find('input[name="service-server"][value="B2"]').setValue()
+        const receiver = app.wrapper.find('input[name="service-receiver"]:checked').attributes('value')
+        expect(receiver).toBe('A1')
+    })
+})

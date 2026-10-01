@@ -90,6 +90,15 @@ export function positions(match: Match): Record<Player, { right: DoublesPlayer; 
     }
 }
 
+/**
+ * Picks a new server, keeping the receiver unless they're in the server's own
+ * pair, in which case the other pair's first player receives instead.
+ */
+export function withServer(order: Service, server: DoublesPlayer): Service {
+    if (pairOf(order.receiver) !== pairOf(server)) return { server, receiver: order.receiver }
+    return { server, receiver: pairOf(server) === 'A' ? 'B1' : 'A1' }
+}
+
 /** Records who actually serves to whom now, if the derived order says otherwise. */
 export function correctService(match: Match, corrected: Service): Match {
     const now = service(match)
