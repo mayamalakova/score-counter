@@ -30,7 +30,8 @@ now being modernized.
   no semicolons, single quotes; config in `.prettierrc.json`)
 - @fontsource for self-hosted fonts
 - Node 22 (see `.nvmrc`)
-- Hosting: Netlify (static site, deploy on push to `main`, preview URL per PR),
+- Hosting: Netlify at https://mayas-tt-scorer.netlify.app (static site, deploy on push to
+  `main`, preview URL per PR),
   configured through `netlify.toml` in the repo. Why:
   - After Phase 1 the app is purely static, so it needs no server. The old Heroku
     setup is gone anyway (free dynos were discontinued in 2022).
