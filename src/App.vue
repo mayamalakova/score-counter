@@ -305,8 +305,6 @@ function undo() {
             @next-match="nextMatch"
         />
 
-        <ShareResult v-if="matchWinner && sharing" :link="shareLink" @close="sharing = false" />
-
         <EditPanel
             v-else-if="editMode"
             v-model:player-left="playerLeft"
@@ -320,5 +318,8 @@ function undo() {
             @end-match="endMatch"
             @rename="rename"
         />
+
+        <!-- Outside the summary/edit panel v-if chain above, on top of the summary. -->
+        <ShareResult v-if="matchWinner && sharing" :link="shareLink" @close="sharing = false" />
     </template>
 </template>
