@@ -238,6 +238,18 @@ export function decidingSwitchAt(pointsToWin: PointsToWin): number {
     return pointsToWin === 21 ? 10 : 5
 }
 
+/**
+ * Whether a game's final score is one a real game can end on: won at 11 (21) with
+ * a two-point lead, and no further, since play stops as soon as the game is won.
+ * So 11:9 and 13:11 are finished games, while 11:10, 12:9 and 15:3 aren't.
+ */
+export function isFinishedGame(score: Score, pointsToWin: PointsToWin): boolean {
+    const high = Math.max(score.A, score.B)
+    const low = Math.min(score.A, score.B)
+    if (high < pointsToWin || high - low < 2) return false
+    return high === pointsToWin || high - low === 2
+}
+
 function gameWinner(score: Score, pointsToWin: PointsToWin): Player | null {
     for (const player of ['A', 'B'] as const) {
         if (score[player] >= pointsToWin && score[player] - score[other(player)] >= 2) return player

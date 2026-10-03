@@ -29,6 +29,7 @@ now being modernized.
 - ESLint (recommended JS, typescript-eslint, eslint-plugin-vue) and Prettier (4 spaces,
   no semicolons, single quotes; config in `.prettierrc.json`)
 - @fontsource for self-hosted fonts
+- uqr for QR codes (tiny, no dependencies, SVG output)
 - Node 22 (see `.nvmrc`)
 - Hosting: Netlify at https://mayas-tt-scorer.netlify.app (static site, deploy on push to
   `main`, preview URL per PR),
@@ -156,6 +157,8 @@ now being modernized.
   `equals()`, never `===`: two objects for the same player are different objects.
 - `App.vue` holds the match and maps players to left/right for the components, which
   get everything through typed props and emits.
+- `src/sharing/result.ts` packs a finished match's result into a link (`#result=…`, versioned)
+  for sharing as a QR code, and validates a received one against the rules.
 - `src/storage.ts` saves the app state to localStorage after every change and restores it
   on start. The save is versioned: bump `VERSION` when its shape changes, and older saves
   are ignored. Tests clear localStorage in `test/setup.ts`.
