@@ -5,6 +5,8 @@ the screen to give that player a point, tap minus to take one back. It tracks se
 games, ends and the match result, and saves the match so a reload doesn't lose it.
 In doubles it shows where each of the four players stands for every serve.
 
+**Live:** [mayas-tt-scorer.netlify.app](https://mayas-tt-scorer.netlify.app)
+
 Built with Vue 3, Vite, TypeScript and Vitest.
 
 ## Setup
@@ -30,7 +32,9 @@ npm install
 
 ## Deploy
 
-The app is a static site hosted on Netlify. Build settings are in `netlify.toml`:
+The app is a static site hosted on Netlify at
+[mayas-tt-scorer.netlify.app](https://mayas-tt-scorer.netlify.app). Build settings are in
+`netlify.toml`:
 
 - Every push to `main` deploys the live site.
 - Every pull request gets its own deploy preview URL, so a change can be tried on a phone
