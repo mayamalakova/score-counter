@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
 import EditPanel from './components/EditPanel.vue'
 import MatchSummary from './components/MatchSummary.vue'
+import ReceivedResult from './components/ReceivedResult.vue'
 import Scoreboard from './components/Scoreboard.vue'
 import SetUp from './components/SetUp.vue'
+import ShareResult from './components/ShareResult.vue'
 import type { PlayerView, Side, SideScore } from './components/types'
 import * as doubles from './scoring/doubles'
 import * as scoring from './scoring/match'
@@ -18,6 +20,7 @@ import type {
     PointsToWin,
     Serve
 } from './scoring/match'
+import { resultFromHash, resultLink, type SharedResult } from './sharing/result'
 import { DEFAULT_DOUBLES_ORDER, load, save } from './storage'
 
 // A reload goes straight back to where it was: set-up, mid-game or the summary.
@@ -66,6 +69,36 @@ watchEffect(() =>
 const ends = computed(() => scoring.ends(match.value))
 const currentGame = computed(() => scoring.currentGame(match.value))
 const isDoubles = computed(() => match.value.settings.format === 'doubles')
+
+// A result shared by QR opens the app with #result=… in the address. It's shown
+// on its own page and never touches this phone's own match. undefined means the
+// address isn't a shared result; null means it is, but couldn't be read.
+const received = ref(resultFromHash(location.hash))
+const readReceived = () => (received.value = resultFromHash(location.hash))
+onMounted(() => window.addEventListener('hashchange', readReceived))
+onUnmounted(() => window.removeEventListener('hashchange', readReceived))
+
+function closeReceived() {
+    history.replaceState(null, '', location.pathname + location.search)
+    received.value = undefined
+}
+
+const sharing = ref(false)
+
+/** The finished match as a result to share, with names as the players see them. */
+const sharedResult = computed<SharedResult>(() => ({
+    format: match.value.settings.format,
+    pointsToWin: match.value.settings.pointsToWin,
+    bestOf: match.value.settings.bestOf,
+    names: { A: displayName('A'), B: displayName('B') },
+    games: scoring
+        .games(match.value)
+        .filter(game => game.winner)
+        .map(game => ({ ...game.score }))
+}))
+
+// The link points at wherever this app is running, so a Netlify preview shares preview links.
+const shareLink = computed(() => resultLink(location.origin + location.pathname, sharedResult.value))
 const servingPair = computed<Player>(() =>
     isDoubles.value ? doubles.currentServe(match.value).server.team : scoring.server(match.value)
 )
@@ -225,8 +258,10 @@ function undo() {
 </script>
 
 <template>
+    <ReceivedResult v-if="received !== undefined" :result="received" @back="closeReceived" />
+
     <SetUp
-        v-if="!gameStarted"
+        v-else-if="!gameStarted"
         v-model:names="names"
         v-model:partners="partners"
         v-model:format="format"
@@ -266,8 +301,11 @@ function undo() {
             :winner="displayName(matchWinner)"
             :game-scores="gameScores"
             @undo="undo"
+            @share="sharing = true"
             @next-match="nextMatch"
         />
+
+        <ShareResult v-if="matchWinner && sharing" :link="shareLink" @close="sharing = false" />
 
         <EditPanel
             v-else-if="editMode"
