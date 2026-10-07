@@ -20,7 +20,9 @@ export default tseslint.config(
             globals: {
                 localStorage: 'readonly',
                 document: 'readonly',
-                window: 'readonly'
+                window: 'readonly',
+                location: 'readonly',
+                history: 'readonly'
             }
         },
         rules: {

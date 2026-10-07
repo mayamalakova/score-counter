@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
 import EditPanel from './components/EditPanel.vue'
 import MatchSummary from './components/MatchSummary.vue'
+import ReceivedResult from './components/ReceivedResult.vue'
 import Scoreboard from './components/Scoreboard.vue'
 import SetUp from './components/SetUp.vue'
-import type { PlayerView, Side, SideScore } from './components/types'
+import ShareResult from './components/ShareResult.vue'
+import { playerColors, type PlayerView, type Side, type SideScore } from './components/types'
 import * as doubles from './scoring/doubles'
 import * as scoring from './scoring/match'
 import { DoublesPlayer } from './scoring/match'
@@ -18,6 +20,7 @@ import type {
     PointsToWin,
     Serve
 } from './scoring/match'
+import { resultFromHash, resultLink, type SharedResult } from './sharing/result'
 import { DEFAULT_DOUBLES_ORDER, load, save } from './storage'
 
 // A reload goes straight back to where it was: set-up, mid-game or the summary.
@@ -40,7 +43,6 @@ const newServer = ref<Side>('left')
 const newServe = ref<Serve>(DEFAULT_DOUBLES_ORDER)
 
 // Colours follow the player, not the side.
-const colors: Record<Player, string> = { A: 'var(--player-a)', B: 'var(--player-b)' }
 const defaultNames: Record<Player, string> = { A: 'Player 1', B: 'Player 2' }
 const defaultDoublesNames: Record<DoublesPlayerId, string> = {
     A1: 'Player 1',
@@ -66,6 +68,35 @@ watchEffect(() =>
 const ends = computed(() => scoring.ends(match.value))
 const currentGame = computed(() => scoring.currentGame(match.value))
 const isDoubles = computed(() => match.value.settings.format === 'doubles')
+
+// A result shared by QR opens the app with #result=… in the address. It's shown
+// on its own page and never touches this phone's own match.
+const received = ref(resultFromHash(location.hash))
+const readReceived = () => (received.value = resultFromHash(location.hash))
+onMounted(() => window.addEventListener('hashchange', readReceived))
+onUnmounted(() => window.removeEventListener('hashchange', readReceived))
+
+function closeReceived() {
+    history.replaceState(null, '', location.pathname + location.search)
+    received.value = { status: 'none' }
+}
+
+const sharing = ref(false)
+
+/** The finished match as a result to share, with names as the players see them. */
+const sharedResult = computed<SharedResult>(() => ({
+    format: match.value.settings.format,
+    pointsToWin: match.value.settings.pointsToWin,
+    bestOf: match.value.settings.bestOf,
+    names: { A: displayName('A'), B: displayName('B') },
+    games: scoring
+        .games(match.value)
+        .filter(game => game.winner)
+        .map(game => ({ ...game.score }))
+}))
+
+// The link points at wherever this app is running, so a Netlify preview shares preview links.
+const shareLink = computed(() => resultLink(location.origin + location.pathname, sharedResult.value))
 const servingPair = computed<Player>(() =>
     isDoubles.value ? doubles.currentServe(match.value).server.team : scoring.server(match.value)
 )
@@ -90,7 +121,7 @@ function displayName(player: Player): string {
 function playerView(player: Player): PlayerView {
     const view: PlayerView = {
         name: displayName(player),
-        color: colors[player],
+        color: playerColors[player],
         score: currentGame.value.score[player],
         games: scoring.gamesWon(match.value)[player]
     }
@@ -205,7 +236,7 @@ const doublesPlayers = computed(() => {
         ([1, 2] as DoublesPosition[]).map(position => ({
             player: new DoublesPlayer(team, position),
             name: position === 1 ? names.value[team] : partners.value[team],
-            color: colors[team]
+            color: playerColors[team]
         }))
     )
 })
@@ -225,8 +256,10 @@ function undo() {
 </script>
 
 <template>
+    <ReceivedResult v-if="received.status !== 'none'" :link="received" @back="closeReceived" />
+
     <SetUp
-        v-if="!gameStarted"
+        v-else-if="!gameStarted"
         v-model:names="names"
         v-model:partners="partners"
         v-model:format="format"
@@ -234,8 +267,8 @@ function undo() {
         v-model:doubles-order="doublesOrder"
         v-model:points-to-win="pointsToWin"
         v-model:best-of="bestOf"
-        :color-left="colors.A"
-        :color-right="colors.B"
+        :color-left="playerColors.A"
+        :color-right="playerColors.B"
         @start-match="startMatch"
     />
 
@@ -266,6 +299,7 @@ function undo() {
             :winner="displayName(matchWinner)"
             :game-scores="gameScores"
             @undo="undo"
+            @share="sharing = true"
             @next-match="nextMatch"
         />
 
@@ -282,5 +316,8 @@ function undo() {
             @end-match="endMatch"
             @rename="rename"
         />
+
+        <!-- Outside the summary/edit panel v-if chain above, on top of the summary. -->
+        <ShareResult v-if="matchWinner && sharing" :link="shareLink" @close="sharing = false" />
     </template>
 </template>
