@@ -10,8 +10,19 @@
  */
 
 export type Player = 'A' | 'B'
-export type PointsToWin = 11 | 21
-export type BestOf = 1 | 3 | 5 | 7
+/** The game and match lengths the app offers; set-up, saves and shared links all use these. */
+export const POINTS_TO_WIN = [11, 21] as const
+export const BEST_OF = [1, 3, 5, 7] as const
+export type PointsToWin = (typeof POINTS_TO_WIN)[number]
+export type BestOf = (typeof BEST_OF)[number]
+
+export function isPointsToWin(value: unknown): value is PointsToWin {
+    return POINTS_TO_WIN.some(points => points === value)
+}
+
+export function isBestOf(value: unknown): value is BestOf {
+    return BEST_OF.some(games => games === value)
+}
 export type Format = 'singles' | 'doubles'
 
 /**
@@ -158,11 +169,11 @@ export function currentGame(match: Match): Game {
 }
 
 export function gamesWon(match: Match): Score {
-    const won: Score = { A: 0, B: 0 }
-    for (const game of games(match)) {
-        if (game.winner) won[game.winner]++
-    }
-    return won
+    return gamesWonFrom(
+        games(match)
+            .filter(game => game.winner)
+            .map(game => game.score)
+    )
 }
 
 /** How many games a player needs to win the match. */
@@ -258,9 +269,9 @@ export function decidingSwitchAt(pointsToWin: PointsToWin): number {
  * So 11:9 and 13:11 are finished games, while 11:10, 12:9 and 15:3 aren't.
  */
 export function isFinishedGame(score: Score, pointsToWin: PointsToWin): boolean {
+    if (!gameWinner(score, pointsToWin)) return false
     const high = Math.max(score.A, score.B)
     const low = Math.min(score.A, score.B)
-    if (high < pointsToWin || high - low < 2) return false
     return high === pointsToWin || high - low === 2
 }
 

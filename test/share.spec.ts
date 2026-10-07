@@ -22,6 +22,12 @@ function sharedLink(): string {
     return app.wrapper.findComponent(ShareResult).props('link') as string
 }
 
+/** The result in the shared link, as the receiving phone reads it. */
+function sharedResult(): SharedResult | undefined {
+    const received = resultFromHash(new URL(sharedLink()).hash)
+    return received.status === 'ok' ? received.result : undefined
+}
+
 const shared: SharedResult = {
     format: 'singles',
     pointsToWin: 11,
@@ -49,7 +55,7 @@ describe('sharing a result', () => {
     it("links to this app with the match's result", () => {
         const link = new URL(sharedLink())
         expect(link.origin).toBe(location.origin)
-        expect(resultFromHash(link.hash)).toEqual({
+        expect(sharedResult()).toEqual({
             format: 'singles',
             pointsToWin: 11,
             bestOf: 3,
@@ -74,7 +80,7 @@ describe('sharing a doubles result', () => {
         app = new AppDriver()
         await finishMatch(true)
         await app.button('Share result').trigger('click')
-        expect(resultFromHash(new URL(sharedLink()).hash)?.names).toEqual({ A: 'Ana / Eva', B: 'Ben / Jan' })
+        expect(sharedResult()?.names).toEqual({ A: 'Ana / Eva', B: 'Ben / Jan' })
     })
 })
 

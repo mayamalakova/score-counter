@@ -71,8 +71,7 @@ const currentGame = computed(() => scoring.currentGame(match.value))
 const isDoubles = computed(() => match.value.settings.format === 'doubles')
 
 // A result shared by QR opens the app with #result=… in the address. It's shown
-// on its own page and never touches this phone's own match. undefined means the
-// address isn't a shared result; null means it is, but couldn't be read.
+// on its own page and never touches this phone's own match.
 const received = ref(resultFromHash(location.hash))
 const readReceived = () => (received.value = resultFromHash(location.hash))
 onMounted(() => window.addEventListener('hashchange', readReceived))
@@ -80,7 +79,7 @@ onUnmounted(() => window.removeEventListener('hashchange', readReceived))
 
 function closeReceived() {
     history.replaceState(null, '', location.pathname + location.search)
-    received.value = undefined
+    received.value = { status: 'none' }
 }
 
 const sharing = ref(false)
@@ -258,7 +257,7 @@ function undo() {
 </script>
 
 <template>
-    <ReceivedResult v-if="received !== undefined" :result="received" @back="closeReceived" />
+    <ReceivedResult v-if="received.status !== 'none'" :link="received" @back="closeReceived" />
 
     <SetUp
         v-else-if="!gameStarted"

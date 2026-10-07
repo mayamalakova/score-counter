@@ -72,16 +72,16 @@ describe('the link', () => {
     it('opens the app with the result after #result=', () => {
         const link = resultLink('https://example.app/', result())
         expect(link.startsWith('https://example.app/#result=')).toBe(true)
-        expect(resultFromHash(new URL(link).hash)).toEqual(result())
+        expect(resultFromHash(new URL(link).hash)).toEqual({ status: 'ok', result: result() })
     })
 
     it('is ignored when the hash is something else', () => {
-        expect(resultFromHash('')).toBeUndefined()
-        expect(resultFromHash('#about')).toBeUndefined()
+        expect(resultFromHash('')).toEqual({ status: 'none' })
+        expect(resultFromHash('#about')).toEqual({ status: 'none' })
     })
 
     it('is refused when it is a result that cannot be read', () => {
-        expect(resultFromHash('#result=not-a-result')).toBeNull()
+        expect(resultFromHash('#result=not-a-result')).toEqual({ status: 'unreadable' })
     })
 })
 

@@ -9,7 +9,9 @@
 import {
     gamesToWinMatch,
     gamesWonFrom,
+    isBestOf,
     isFinishedGame,
+    isPointsToWin,
     type BestOf,
     type Format,
     type Player,
@@ -38,13 +40,15 @@ export function resultLink(base: string, result: SharedResult): string {
     return `${base}${HASH_PREFIX}${encodeResult(result)}`
 }
 
-/**
- * Reads a result from a URL hash such as "#result=…". Returns undefined when the
- * hash isn't a shared result at all, and null when it is but can't be used.
- */
-export function resultFromHash(hash: string): SharedResult | null | undefined {
-    if (!hash.startsWith(HASH_PREFIX)) return undefined
-    return decodeResult(hash.slice(HASH_PREFIX.length))
+/** What the app's address holds: no shared result, one that can't be used, or a result. */
+export type ReceivedLink =
+    { status: 'none' } | { status: 'unreadable' } | { status: 'ok'; result: SharedResult }
+
+/** Reads a result from a URL hash such as "#result=…". */
+export function resultFromHash(hash: string): ReceivedLink {
+    if (!hash.startsWith(HASH_PREFIX)) return { status: 'none' }
+    const result = decodeResult(hash.slice(HASH_PREFIX.length))
+    return result ? { status: 'ok', result } : { status: 'unreadable' }
 }
 
 export function encodeResult(result: SharedResult): string {
@@ -68,14 +72,14 @@ export function decodeResult(encoded: string): SharedResult | null {
     }
     if (!isRecord(data) || data.v !== VERSION) return null
     const { f, p, b, n, g } = data
-    if ((f !== 's' && f !== 'd') || (p !== 11 && p !== 21) || ![1, 3, 5, 7].includes(b as number)) return null
+    if ((f !== 's' && f !== 'd') || !isPointsToWin(p) || !isBestOf(b)) return null
     if (!Array.isArray(n) || n.length !== 2 || !n.every(isName)) return null
     if (!Array.isArray(g) || !g.every(isGamePair)) return null
 
     const result: SharedResult = {
         format: f === 'd' ? 'doubles' : 'singles',
         pointsToWin: p,
-        bestOf: b as BestOf,
+        bestOf: b,
         names: { A: n[0], B: n[1] },
         games: g.map(([A, B]) => ({ A, B }))
     }
@@ -92,8 +96,7 @@ function isCompleteMatch({ games, pointsToWin, bestOf }: SharedResult): boolean 
 
 /** Names aren't limited when typed, so cut long ones rather than share a link that's refused. */
 function shorten(name: string): string {
-    const characters = Array.from(name.trim())
-    return characters.length <= MAX_NAME_LENGTH ? name.trim() : characters.slice(0, MAX_NAME_LENGTH).join('')
+    return Array.from(name.trim()).slice(0, MAX_NAME_LENGTH).join('')
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

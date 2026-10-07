@@ -1,62 +1,50 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { gamesWonFrom } from '../scoring/match'
-import type { SharedResult } from '../sharing/result'
+import { gamesWonFrom, type Player } from '../scoring/match'
+import type { ReceivedLink, SharedResult } from '../sharing/result'
 import Icon from './Icon.vue'
 import ResultTable, { type ResultRow } from './ResultTable.vue'
 
 const props = defineProps<{
-    /** The result from the link, or null if the link couldn't be read. */
-    result: SharedResult | null
+    /** A link that held a result, readable or not. */
+    link: Exclude<ReceivedLink, { status: 'none' }>
 }>()
 
 const emit = defineEmits<{
     back: []
 }>()
 
-const gamesWon = computed(() => gamesWonFrom(props.result?.games ?? []))
+const colors: Record<Player, string> = { A: 'var(--player-a)', B: 'var(--player-b)' }
 
-const rows = computed<[ResultRow, ResultRow] | null>(() => {
-    const { result } = props
-    if (!result) return null
-    return [
-        {
-            name: result.names.A,
-            color: 'var(--player-a)',
-            scores: result.games.map(game => game.A),
-            games: gamesWon.value.A
-        },
-        {
-            name: result.names.B,
-            color: 'var(--player-b)',
-            scores: result.games.map(game => game.B),
-            games: gamesWon.value.B
-        }
-    ]
-})
+const view = computed(() => (props.link.status === 'ok' ? describe(props.link.result) : null))
 
-const title = computed(() => {
-    const { A, B } = gamesWon.value
-    const winner = A > B ? props.result?.names.A : props.result?.names.B
-    return `${winner} wins ${Math.max(A, B)}–${Math.min(A, B)}`
-})
-
-const details = computed(() => {
-    const { result } = props
-    if (!result) return ''
-    const parts = [`best of ${result.bestOf}`, `to ${result.pointsToWin}`]
-    if (result.format === 'doubles') parts.push('doubles')
-    return parts.join(' · ')
-})
+/** What the page shows for a result. */
+function describe(result: SharedResult) {
+    const won = gamesWonFrom(result.games)
+    const winner: Player = won.A > won.B ? 'A' : 'B'
+    const row = (player: Player): ResultRow => ({
+        name: result.names[player],
+        color: colors[player],
+        scores: result.games.map(game => game[player]),
+        games: won[player]
+    })
+    const details = [`best of ${result.bestOf}`, `to ${result.pointsToWin}`]
+    if (result.format === 'doubles') details.push('doubles')
+    return {
+        title: `${result.names[winner]} wins ${Math.max(won.A, won.B)}–${Math.min(won.A, won.B)}`,
+        details: details.join(' · '),
+        rows: [row('A'), row('B')] as [ResultRow, ResultRow]
+    }
+}
 </script>
 
 <template>
     <main class="received">
-        <section v-if="result && rows" class="card" aria-labelledby="received-title">
+        <section v-if="view" class="card" aria-labelledby="received-title">
             <p class="label">Result received</p>
-            <h1 id="received-title">{{ title }}</h1>
-            <p class="details">{{ details }}</p>
-            <ResultTable :rows="rows" />
+            <h1 id="received-title">{{ view.title }}</h1>
+            <p class="details">{{ view.details }}</p>
+            <ResultTable :rows="view.rows" />
             <button class="button primary back" type="button" @click="emit('back')">
                 Back to my match <Icon name="next" />
             </button>
