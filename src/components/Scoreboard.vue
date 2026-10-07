@@ -98,12 +98,20 @@ const info = computed(() =>
     gap: 8px;
 }
 
-/* Equal outer columns keep the info centred over the net, whatever buttons each side has. */
 .top-bar {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
+}
+
+/* Sideways the net runs down the middle: equal outer columns keep the info centred over it.
+   Upright the net is across, so the info takes all the room between the buttons instead. */
+@media (orientation: landscape) {
+    .top-bar {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+    }
 }
 
 .actions {

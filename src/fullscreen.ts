@@ -2,17 +2,18 @@ import { onMounted, onUnmounted, ref } from 'vue'
 
 /**
  * Fullscreen for the whole page, where the browser allows it. Android browsers and
- * iPads do; iPhones don't (only videos go fullscreen there), so `supported` is false
+ * iPads (iPadOS 16.4 on) do; iPhones don't (only videos go fullscreen there), so `supported` is false
  * and the app shows no button. The browser can also leave fullscreen by itself (back
  * gesture, Esc), so `active` follows its events rather than our own taps.
  */
 export function useFullscreen() {
     const supported = document.fullscreenEnabled === true
-    const active = ref(document.fullscreenElement != null)
+    const active = ref(false)
 
     function update() {
         active.value = document.fullscreenElement != null
     }
+    update()
 
     async function toggle() {
         try {

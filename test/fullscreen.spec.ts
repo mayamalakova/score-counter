@@ -23,7 +23,7 @@ function supportFullscreen() {
 }
 
 function fullscreenButton() {
-    return app.wrapper.find('.top-bar [aria-pressed]')
+    return app.wrapper.find('.top-bar .fullscreen')
 }
 
 async function settle() {
@@ -56,7 +56,6 @@ describe('full screen', () => {
         await settle()
         expect(document.documentElement.requestFullscreen).toHaveBeenCalledWith({ navigationUI: 'hide' })
         expect(fullscreenButton().attributes('aria-label')).toBe('Exit full screen')
-        expect(fullscreenButton().attributes('aria-pressed')).toBe('true')
 
         await fullscreenButton().trigger('click')
         await settle()
