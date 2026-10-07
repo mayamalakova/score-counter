@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { gamesWonFrom } from '../scoring/match'
 import type { SharedResult } from '../sharing/result'
 import Icon from './Icon.vue'
 import ResultTable, { type ResultRow } from './ResultTable.vue'
@@ -13,10 +14,7 @@ const emit = defineEmits<{
     back: []
 }>()
 
-const gamesWon = computed(() => ({
-    A: props.result?.games.filter(game => game.A > game.B).length ?? 0,
-    B: props.result?.games.filter(game => game.B > game.A).length ?? 0
-}))
+const gamesWon = computed(() => gamesWonFrom(props.result?.games ?? []))
 
 const rows = computed<[ResultRow, ResultRow] | null>(() => {
     const { result } = props
@@ -114,5 +112,12 @@ h1 {
 .back {
     width: 100%;
     justify-content: center;
+}
+
+/* Room for a best of 7 in the result table on a small phone. */
+@media (max-width: 420px) {
+    .card {
+        padding-inline: 12px;
+    }
 }
 </style>

@@ -80,4 +80,11 @@ h2 {
     justify-content: flex-end;
     gap: 10px;
 }
+
+/* Room for a best of 7 in the result table on a small phone. */
+@media (max-width: 420px) {
+    .card {
+        padding-inline: 12px;
+    }
+}
 </style>
