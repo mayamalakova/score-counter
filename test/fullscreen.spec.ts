@@ -1,12 +1,13 @@
 // The full screen button on the scoreboard, with the browser's Fullscreen API stubbed:
 // jsdom has none, like an iPhone.
+import { flushPromises } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AppDriver } from './driver'
 
 let app: AppDriver
 let fullscreenElement: Element | null
 
-/** Gives the page a working Fullscreen API, as on Android, until the test ends. */
+/** Gives the page a working Fullscreen API, as on Android, until restoreFullscreen. */
 function supportFullscreen() {
     fullscreenElement = null
     const change = () => document.dispatchEvent(new Event('fullscreenchange'))
@@ -22,59 +23,50 @@ function supportFullscreen() {
     })
 }
 
-function fullscreenButton() {
-    return app.wrapper.find('.top-bar .fullscreen')
+const stubs = ['fullscreenEnabled', 'fullscreenElement', 'exitFullscreen', 'requestFullscreen']
+
+/** Takes the stubs away again, back to jsdom's page without the API. */
+function restoreFullscreen() {
+    for (const target of [document, document.documentElement]) {
+        for (const name of stubs) Reflect.deleteProperty(target, name)
+    }
 }
 
-async function settle() {
-    await new Promise(resolve => setTimeout(resolve))
-    await app.wrapper.vm.$nextTick()
-}
-
-afterEach(() => {
-    const stubbed = document as unknown as Record<string, unknown>
-    delete stubbed.fullscreenEnabled
-    delete stubbed.fullscreenElement
-    delete stubbed.exitFullscreen
-    delete (document.documentElement as unknown as Record<string, unknown>).requestFullscreen
-})
+afterEach(restoreFullscreen)
 
 describe('full screen', () => {
     it('has no button where the browser cannot go full screen', async () => {
         app = new AppDriver()
         await app.start()
-        expect(fullscreenButton().exists()).toBe(false)
+        expect(app.fullscreenLabel).toBeNull()
     })
 
     it('goes full screen and back from the scoreboard', async () => {
         supportFullscreen()
         app = new AppDriver()
         await app.start()
-        expect(fullscreenButton().attributes('aria-label')).toBe('Full screen')
+        expect(app.fullscreenLabel).toBe('Full screen')
 
-        await fullscreenButton().trigger('click')
-        await settle()
+        await app.toggleFullscreen()
         expect(document.documentElement.requestFullscreen).toHaveBeenCalledWith({ navigationUI: 'hide' })
-        expect(fullscreenButton().attributes('aria-label')).toBe('Exit full screen')
+        expect(app.fullscreenLabel).toBe('Exit full screen')
 
-        await fullscreenButton().trigger('click')
-        await settle()
+        await app.toggleFullscreen()
         expect(document.exitFullscreen).toHaveBeenCalled()
-        expect(fullscreenButton().attributes('aria-label')).toBe('Full screen')
+        expect(app.fullscreenLabel).toBe('Full screen')
     })
 
     it('follows the browser when it leaves full screen by itself', async () => {
         supportFullscreen()
         app = new AppDriver()
         await app.start()
-        await fullscreenButton().trigger('click')
-        await settle()
+        await app.toggleFullscreen()
 
         // A back gesture or Esc ends full screen without the button.
         fullscreenElement = null
         document.dispatchEvent(new Event('fullscreenchange'))
-        await settle()
-        expect(fullscreenButton().attributes('aria-label')).toBe('Full screen')
+        await flushPromises()
+        expect(app.fullscreenLabel).toBe('Full screen')
     })
 
     it('stays as it was when the browser refuses', async () => {
@@ -83,8 +75,7 @@ describe('full screen', () => {
         app = new AppDriver()
         await app.start()
 
-        await fullscreenButton().trigger('click')
-        await settle()
-        expect(fullscreenButton().attributes('aria-label')).toBe('Full screen')
+        await app.toggleFullscreen()
+        expect(app.fullscreenLabel).toBe('Full screen')
     })
 })

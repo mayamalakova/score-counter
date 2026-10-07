@@ -50,6 +50,7 @@ const info = computed(() =>
             </button>
             <span class="info">{{ info }}</span>
             <div class="actions">
+                <!-- The class lands on the button (its only root), so this file's .icon-button style applies. -->
                 <FullscreenButton class="icon-button" />
                 <button
                     class="icon-button"

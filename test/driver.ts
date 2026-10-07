@@ -1,4 +1,4 @@
-import { mount, type VueWrapper } from '@vue/test-utils'
+import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import App from '../src/App.vue'
 import type { Side } from '../src/components/types'
@@ -183,6 +183,24 @@ export class AppDriver {
     async endMatch() {
         await this.wrapper.find('.panel .end-match').trigger('click')
         await this.wrapper.find('.confirm-end').trigger('click')
+    }
+
+    // --- Full screen ---
+
+    private get fullscreenButton() {
+        return this.wrapper.find('button[aria-label="Full screen"], button[aria-label="Exit full screen"]')
+    }
+
+    /** The full screen button's label ('Full screen' or 'Exit full screen'), or null if there's none. */
+    get fullscreenLabel(): string | null {
+        const button = this.fullscreenButton
+        return button.exists() ? (button.attributes('aria-label') ?? null) : null
+    }
+
+    /** Taps the full screen button and waits for the browser to answer. */
+    async toggleFullscreen() {
+        await this.fullscreenButton.trigger('click')
+        await flushPromises()
     }
 
     // --- Summary ---

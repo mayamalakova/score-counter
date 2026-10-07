@@ -8,7 +8,6 @@ const { supported, active, toggle } = useFullscreen()
 <template>
     <button
         v-if="supported"
-        class="fullscreen"
         type="button"
         :aria-label="active ? 'Exit full screen' : 'Full screen'"
         @click="toggle"
