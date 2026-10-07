@@ -52,6 +52,17 @@ describe('a shared result', () => {
         expect(encodeResult(result({ names: { A: '???>>>', B: 'ÿÿÿ' } }))).toMatch(/^[A-Za-z0-9_-]+$/)
     })
 
+    it('keeps two long names in a doubles team', () => {
+        const names = { A: 'Kateřina Nováková-Svobodová / Alžběta Dvořáková-Procházková', B: 'Ben / Jan' }
+        const shared = result({ format: 'doubles', names })
+        expect(decodeResult(encodeResult(shared))?.names).toEqual(names)
+    })
+
+    it('cuts a name too long to share rather than make a link that is refused', () => {
+        const shared = result({ names: { A: 'Š'.repeat(100), B: 'Ben' } })
+        expect(decodeResult(encodeResult(shared))?.names).toEqual({ A: 'Š'.repeat(80), B: 'Ben' })
+    })
+
     it('is short enough for an easy-to-scan QR code', () => {
         expect(resultLink('https://mayas-tt-scorer.netlify.app/', result()).length).toBeLessThan(200)
     })
@@ -97,7 +108,7 @@ describe('refusing results that cannot be used', () => {
         ['unsupported best of', packed({ ...valid, b: 4 })],
         ['one name only', packed({ ...valid, n: ['Ana'] })],
         ['an empty name', packed({ ...valid, n: ['Ana', '  '] })],
-        ['a very long name', packed({ ...valid, n: ['Ana', 'x'.repeat(61)] })],
+        ['a very long name', packed({ ...valid, n: ['Ana', 'x'.repeat(81)] })],
         ['no games', packed({ ...valid, g: [] })],
         ['a game that is not a pair of scores', packed({ ...valid, g: games('11:8 11 11:7') })],
         ['a negative score', packed({ ...valid, g: games('11:-1 11:9 11:7') })],

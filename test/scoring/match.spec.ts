@@ -3,7 +3,9 @@ import {
     addPoint,
     currentGame,
     games,
+    gamesToWinMatch,
     gamesWon,
+    gamesWonFrom,
     isFinishedGame,
     matchWinner,
     newMatch,
@@ -114,6 +116,27 @@ describe('winning the match', () => {
     it('ends the match: no next game', () => {
         const won = play(winGame(winGame(newMatch(), 'A'), 'A'), 'A'.repeat(11))
         expect(nextGame(won)).toBe(won)
+    })
+})
+
+describe('games won from final scores', () => {
+    it('counts each game for whoever had more points', () => {
+        expect(
+            gamesWonFrom([
+                { A: 11, B: 8 },
+                { A: 9, B: 11 },
+                { A: 13, B: 11 }
+            ])
+        ).toEqual({ A: 2, B: 1 })
+    })
+
+    it.each([
+        [1, 1],
+        [3, 2],
+        [5, 3],
+        [7, 4]
+    ])('best of %i needs %i games', (bestOf, needed) => {
+        expect(gamesToWinMatch(bestOf as 1 | 3 | 5 | 7)).toBe(needed)
     })
 })
 

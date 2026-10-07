@@ -7,6 +7,8 @@
  * couldn't have been played that way, decodes to null.
  */
 import {
+    gamesToWinMatch,
+    gamesWonFrom,
     isFinishedGame,
     type BestOf,
     type Format,
@@ -28,7 +30,8 @@ export interface SharedResult {
 /** Bump when the packed shape changes; links from other versions are refused. */
 const VERSION = 1
 const HASH_PREFIX = '#result='
-const MAX_NAME_LENGTH = 60
+/** Room for two full names in doubles ("Kateřina Nováková / Alžběta Dvořáková"). */
+const MAX_NAME_LENGTH = 80
 
 /** The link to the app showing this result. `base` is the app's address, e.g. its origin and path. */
 export function resultLink(base: string, result: SharedResult): string {
@@ -50,7 +53,7 @@ export function encodeResult(result: SharedResult): string {
         f: result.format === 'doubles' ? 'd' : 's',
         p: result.pointsToWin,
         b: result.bestOf,
-        n: [result.names.A, result.names.B],
+        n: [shorten(result.names.A), shorten(result.names.B)],
         g: result.games.map(game => [game.A, game.B])
     }
     return toBase64Url(JSON.stringify(packed))
@@ -81,16 +84,16 @@ export function decodeResult(encoded: string): SharedResult | null {
 
 /** Every game was played to a finish, and the match ended exactly with the last one. */
 function isCompleteMatch({ games, pointsToWin, bestOf }: SharedResult): boolean {
-    if (games.length === 0 || games.length > bestOf) return false
-    const needed = (bestOf + 1) / 2
-    const won: Score = { A: 0, B: 0 }
-    for (const [index, game] of games.entries()) {
-        if (!isFinishedGame(game, pointsToWin)) return false
-        won[game.A > game.B ? 'A' : 'B']++
-        const matchOver = won.A === needed || won.B === needed
-        if (matchOver !== (index === games.length - 1)) return false
-    }
-    return true
+    if (games.length === 0 || !games.every(game => isFinishedGame(game, pointsToWin))) return false
+    const needed = gamesToWinMatch(bestOf)
+    const reached = (won: Score) => Math.max(won.A, won.B) >= needed
+    return reached(gamesWonFrom(games)) && !reached(gamesWonFrom(games.slice(0, -1)))
+}
+
+/** Names aren't limited when typed, so cut long ones rather than share a link that's refused. */
+function shorten(name: string): string {
+    const characters = Array.from(name.trim())
+    return characters.length <= MAX_NAME_LENGTH ? name.trim() : characters.slice(0, MAX_NAME_LENGTH).join('')
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -98,7 +101,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isName(value: unknown): value is string {
-    return typeof value === 'string' && value.trim().length > 0 && value.length <= MAX_NAME_LENGTH
+    return typeof value === 'string' && value.trim().length > 0 && Array.from(value).length <= MAX_NAME_LENGTH
 }
 
 function isGamePair(value: unknown): value is [number, number] {

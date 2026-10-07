@@ -165,8 +165,22 @@ export function gamesWon(match: Match): Score {
     return won
 }
 
+/** How many games a player needs to win the match. */
+export function gamesToWinMatch(bestOf: BestOf): number {
+    return (bestOf + 1) / 2
+}
+
+/** Games each player won, counted from finished games' final scores (e.g. a shared result). */
+export function gamesWonFrom(scores: Score[]): Score {
+    const won: Score = { A: 0, B: 0 }
+    for (const score of scores) {
+        if (score.A !== score.B) won[score.A > score.B ? 'A' : 'B']++
+    }
+    return won
+}
+
 export function matchWinner(match: Match): Player | null {
-    const needed = (match.settings.bestOf + 1) / 2
+    const needed = gamesToWinMatch(match.settings.bestOf)
     const won = gamesWon(match)
     if (won.A >= needed) return 'A'
     if (won.B >= needed) return 'B'
