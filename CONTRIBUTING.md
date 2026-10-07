@@ -59,6 +59,7 @@ model. Update them when either changes.
 | `src/App.vue`            | Holds the match, maps players A/B to left/right, and wires up the screens. |
 | `src/components/`        | The screens and their parts. Typed props and emits, scoped styles.       |
 | `src/storage.ts`         | Autosave to `localStorage`, versioned and validated on load.             |
+| `src/fullscreen.ts`      | Full screen through the browser's Fullscreen API, where it's supported.  |
 | `src/assets/app.css`     | Global tokens (colours, fonts) and base styles.                          |
 | `test/scoring/`          | Unit tests for the engine.                                               |
 | `test/driver.ts`         | Drives the app through its UI for the screen and flow tests.             |

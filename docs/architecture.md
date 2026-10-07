@@ -105,6 +105,7 @@ flowchart TD
     half["PlayerHalf ×2<br/>score, minus, names or half-courts"]
     ball["ServerBall<br/>the ball by the net"]
     bar["GameWonBar<br/>undo or next game"]
+    full["FullscreenButton<br/>top bar, where the browser allows"]
 
     storage <--> app
     app --> engine
@@ -115,6 +116,7 @@ flowchart TD
     board --> half
     board --> ball
     board --> bar
+    board --> full
 ```
 
 - **One screen at a time:** `SetUp` before a match, `Scoreboard` during it.
@@ -122,4 +124,7 @@ flowchart TD
 - **Doubles adds no screens.** It's extra data in the same props: each `PlayerHalf` shows
   who stands in which half-court, the ball sits in the server's half-court, and the edit
   panel lists four players.
+- **Full screen is the browser's state, not the match's.** `FullscreenButton` asks the
+  browser through `src/fullscreen.ts` and follows its events, so it needs nothing from
+  `App.vue`. It isn't shown where pages can't go full screen (iPhones).
 - **Tests** drive these screens through `test/driver.ts`, the way a player would.
