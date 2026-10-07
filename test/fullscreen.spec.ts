@@ -32,7 +32,10 @@ function restoreFullscreen() {
     }
 }
 
-afterEach(restoreFullscreen)
+afterEach(() => {
+    app.wrapper.unmount()
+    restoreFullscreen()
+})
 
 describe('full screen', () => {
     it('has no button where the browser cannot go full screen', async () => {
