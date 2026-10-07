@@ -1,4 +1,9 @@
+import type { Player } from '../scoring/match'
+
 export type Side = 'left' | 'right'
+
+/** Each player's colour, which follows the player (or team), not the side. */
+export const playerColors: Record<Player, string> = { A: 'var(--player-a)', B: 'var(--player-b)' }
 
 /** A finished game's score, oriented to the players' current ends. */
 export interface SideScore {

@@ -84,6 +84,9 @@ classDiagram
 - **`DoublesPlayer`** objects are compared with `equals()`, never `===`.
 - The rules live in `src/scoring/match.ts`; doubles serve order and positions in
   `src/scoring/doubles.ts`. Saving and loading is `src/storage.ts`.
+- **A shared result** (`src/sharing/result.ts`) is a separate, smaller shape: format,
+  settings, the two names and each game's final score. It travels inside a link
+  (`#result=…`, versioned) and is checked against the rules when it arrives.
 
 ## UI model
 
@@ -101,6 +104,8 @@ flowchart TD
     board["Scoreboard<br/>during play"]
     summary["MatchSummary<br/>over the board when the match is won"]
     edit["EditPanel<br/>over the board, from the pencil"]
+    share["ShareResult<br/>QR code of the result, from the summary"]
+    received["ReceivedResult<br/>a result opened from a QR link"]
 
     half["PlayerHalf ×2<br/>score, minus, names or half-courts"]
     ball["ServerBall<br/>the ball by the net"]
@@ -113,6 +118,8 @@ flowchart TD
     app --> board
     app --> summary
     app --> edit
+    app --> received
+    summary --> share
     board --> half
     board --> ball
     board --> bar
@@ -120,7 +127,10 @@ flowchart TD
 ```
 
 - **One screen at a time:** `SetUp` before a match, `Scoreboard` during it.
-  `MatchSummary` and `EditPanel` appear on top of the board.
+  `MatchSummary` and `EditPanel` appear on top of the board, and `ShareResult` on top of
+  the summary.
+- **A received result** (the app opened from a QR link) replaces everything with
+  `ReceivedResult`, without touching this phone's own match; going back clears the link.
 - **Doubles adds no screens.** It's extra data in the same props: each `PlayerHalf` shows
   who stands in which half-court, the ball sits in the server's half-court, and the edit
   panel lists four players.

@@ -3,7 +3,10 @@ import {
     addPoint,
     currentGame,
     games,
+    gamesToWinMatch,
     gamesWon,
+    gamesWonFrom,
+    isFinishedGame,
     matchWinner,
     newMatch,
     nextGame
@@ -113,5 +116,53 @@ describe('winning the match', () => {
     it('ends the match: no next game', () => {
         const won = play(winGame(winGame(newMatch(), 'A'), 'A'), 'A'.repeat(11))
         expect(nextGame(won)).toBe(won)
+    })
+})
+
+describe('games won from final scores', () => {
+    it('counts each game for whoever had more points', () => {
+        expect(
+            gamesWonFrom([
+                { A: 11, B: 8 },
+                { A: 9, B: 11 },
+                { A: 13, B: 11 }
+            ])
+        ).toEqual({ A: 2, B: 1 })
+    })
+
+    it.each([
+        [1, 1],
+        [3, 2],
+        [5, 3],
+        [7, 4]
+    ])('best of %i needs %i games', (bestOf, needed) => {
+        expect(gamesToWinMatch(bestOf as 1 | 3 | 5 | 7)).toBe(needed)
+    })
+})
+
+describe('a finished game score', () => {
+    it.each([
+        [11, 0],
+        [11, 9],
+        [12, 10],
+        [13, 11],
+        [9, 11]
+    ])('%i:%i is a game that can end there', (A, B) => {
+        expect(isFinishedGame({ A, B }, 11)).toBe(true)
+    })
+
+    it.each([
+        [10, 8],
+        [11, 10],
+        [12, 9],
+        [15, 3],
+        [14, 11]
+    ])('%i:%i is not', (A, B) => {
+        expect(isFinishedGame({ A, B }, 11)).toBe(false)
+    })
+
+    it('uses 21 for games to 21', () => {
+        expect(isFinishedGame({ A: 21, B: 15 }, 21)).toBe(true)
+        expect(isFinishedGame({ A: 11, B: 3 }, 21)).toBe(false)
     })
 })

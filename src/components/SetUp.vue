@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Icon from './Icon.vue'
-import { DoublesPlayer } from '../scoring/match'
+import { BEST_OF, DoublesPlayer, POINTS_TO_WIN } from '../scoring/match'
 import type {
     BestOf,
     DoublesPosition,
@@ -31,9 +31,6 @@ const swapServer = defineModel<boolean>('swapServer', { required: true })
 const doublesOrder = defineModel<Serve>('doublesOrder', { required: true })
 const pointsToWin = defineModel<PointsToWin>('pointsToWin', { required: true })
 const bestOf = defineModel<BestOf>('bestOf', { required: true })
-
-const pointsOptions: PointsToWin[] = [11, 21]
-const bestOfOptions: BestOf[] = [1, 3, 5, 7]
 
 const singlesRows = computed(() => [
     {
@@ -142,7 +139,7 @@ const server = computed({
             <fieldset>
                 <legend>Points per game</legend>
                 <div class="segments">
-                    <label v-for="points in pointsOptions" :key="points">
+                    <label v-for="points in POINTS_TO_WIN" :key="points">
                         <input v-model="pointsToWin" type="radio" name="points-to-win" :value="points" />
                         <span>{{ points }}</span>
                     </label>
@@ -151,7 +148,7 @@ const server = computed({
             <fieldset>
                 <legend>Best of</legend>
                 <div class="segments">
-                    <label v-for="games in bestOfOptions" :key="games">
+                    <label v-for="games in BEST_OF" :key="games">
                         <input v-model="bestOf" type="radio" name="best-of" :value="games" />
                         <span>{{ games }}</span>
                     </label>

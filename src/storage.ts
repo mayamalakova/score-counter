@@ -5,6 +5,8 @@
  */
 import {
     DoublesPlayer,
+    isBestOf,
+    isPointsToWin,
     type BestOf,
     type DoublesPosition,
     type DoublesTeam,
@@ -188,14 +190,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isPlayer(value: unknown): value is Player {
     return value === 'A' || value === 'B'
-}
-
-function isPointsToWin(value: unknown): value is PointsToWin {
-    return value === 11 || value === 21
-}
-
-function isBestOf(value: unknown): value is BestOf {
-    return value === 1 || value === 3 || value === 5 || value === 7
 }
 
 function isFormat(value: unknown): value is Format {

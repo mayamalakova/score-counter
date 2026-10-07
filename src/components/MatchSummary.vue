@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Icon from './Icon.vue'
+import ResultTable, { type ResultRow } from './ResultTable.vue'
 import type { PlayerView, SideScore } from './types'
 
-defineProps<{
+const props = defineProps<{
     left: PlayerView
     right: PlayerView
     winner: string
@@ -11,8 +13,14 @@ defineProps<{
 
 const emit = defineEmits<{
     undo: []
+    share: []
     'next-match': []
 }>()
+
+const rows = computed<[ResultRow, ResultRow]>(() => [
+    { ...props.left, scores: props.gameScores.map(game => game.left) },
+    { ...props.right, scores: props.gameScores.map(game => game.right) }
+])
 </script>
 
 <template>
@@ -23,33 +31,13 @@ const emit = defineEmits<{
                     Math.min(left.games, right.games)
                 }}
             </h2>
-            <table class="match-result">
-                <thead>
-                    <tr>
-                        <th scope="col"><span class="visually-hidden">Player</span></th>
-                        <th v-for="(_, index) in gameScores" :key="index" scope="col">{{ index + 1 }}</th>
-                        <th scope="col">Games</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(player, row) in [left, right]" :key="row">
-                        <th scope="row">
-                            <span class="dot" :style="{ background: player.color }"></span>{{ player.name }}
-                        </th>
-                        <td
-                            v-for="(score, index) in gameScores"
-                            :key="index"
-                            :class="{ won: row === 0 ? score.left > score.right : score.right > score.left }"
-                        >
-                            {{ row === 0 ? score.left : score.right }}
-                        </td>
-                        <td class="games">{{ player.games }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <ResultTable :rows="rows" />
             <div class="actions">
                 <button class="button" type="button" @click="emit('undo')">
                     <Icon name="undo" /> Undo last point
+                </button>
+                <button class="button share" type="button" @click="emit('share')">
+                    <Icon name="qr" /> Share result
                 </button>
                 <button class="button primary next-match" type="button" @click="emit('next-match')">
                     New match <Icon name="next" />
@@ -86,37 +74,6 @@ h2 {
     font-size: 2rem;
 }
 
-.match-result {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 16px;
-    font-variant-numeric: tabular-nums;
-}
-
-th,
-td {
-    padding: 4px 8px;
-    text-align: center;
-}
-
-th[scope='row'] {
-    text-align: left;
-    white-space: nowrap;
-}
-
-td.won,
-td.games {
-    font-weight: 700;
-}
-
-.dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-right: 6px;
-    border-radius: 50%;
-}
-
 .actions {
     display: flex;
     flex-wrap: wrap;
@@ -124,11 +81,10 @@ td.games {
     gap: 10px;
 }
 
-.visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
+/* Room for a best of 7 in the result table on a small phone. */
+@media (max-width: 420px) {
+    .card {
+        padding-inline: 12px;
+    }
 }
 </style>

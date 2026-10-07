@@ -10,9 +10,21 @@
  */
 
 export type Player = 'A' | 'B'
-export type PointsToWin = 11 | 21
-export type BestOf = 1 | 3 | 5 | 7
 export type Format = 'singles' | 'doubles'
+
+/** The game and match lengths the app offers; set-up, saves and shared links all use these. */
+export const POINTS_TO_WIN = [11, 21] as const
+export const BEST_OF = [1, 3, 5, 7] as const
+export type PointsToWin = (typeof POINTS_TO_WIN)[number]
+export type BestOf = (typeof BEST_OF)[number]
+
+export function isPointsToWin(value: unknown): value is PointsToWin {
+    return POINTS_TO_WIN.some(points => points === value)
+}
+
+export function isBestOf(value: unknown): value is BestOf {
+    return BEST_OF.some(games => games === value)
+}
 
 /**
  * A doubles team. It's the same A or B as Player: in doubles the team is what
@@ -158,15 +170,29 @@ export function currentGame(match: Match): Game {
 }
 
 export function gamesWon(match: Match): Score {
+    return gamesWonFrom(
+        games(match)
+            .filter(game => game.winner)
+            .map(game => game.score)
+    )
+}
+
+/** How many games a player needs to win the match. */
+export function gamesToWinMatch(bestOf: BestOf): number {
+    return (bestOf + 1) / 2
+}
+
+/** Games each player won, counted from finished games' final scores (e.g. a shared result). */
+export function gamesWonFrom(scores: Score[]): Score {
     const won: Score = { A: 0, B: 0 }
-    for (const game of games(match)) {
-        if (game.winner) won[game.winner]++
+    for (const score of scores) {
+        if (score.A !== score.B) won[score.A > score.B ? 'A' : 'B']++
     }
     return won
 }
 
 export function matchWinner(match: Match): Player | null {
-    const needed = (match.settings.bestOf + 1) / 2
+    const needed = gamesToWinMatch(match.settings.bestOf)
     const won = gamesWon(match)
     if (won.A >= needed) return 'A'
     if (won.B >= needed) return 'B'
@@ -236,6 +262,18 @@ export function serveChanges(score: Score, pointsToWin: PointsToWin): number {
 /** The score at which ends change in the last possible game (and doubles receivers swap). */
 export function decidingSwitchAt(pointsToWin: PointsToWin): number {
     return pointsToWin === 21 ? 10 : 5
+}
+
+/**
+ * Whether a game's final score is one a real game can end on: won at 11 (21) with
+ * a two-point lead, and no further, since play stops as soon as the game is won.
+ * So 11:9 and 13:11 are finished games, while 11:10, 12:9 and 15:3 aren't.
+ */
+export function isFinishedGame(score: Score, pointsToWin: PointsToWin): boolean {
+    if (!gameWinner(score, pointsToWin)) return false
+    const high = Math.max(score.A, score.B)
+    const low = Math.min(score.A, score.B)
+    return high === pointsToWin || high - low === 2
 }
 
 function gameWinner(score: Score, pointsToWin: PointsToWin): Player | null {

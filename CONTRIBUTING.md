@@ -58,6 +58,7 @@ model. Update them when either changes.
 | `src/scoring/doubles.ts` | Doubles: who serves to whom and where each player stands, derived from the same log. |
 | `src/App.vue`            | Holds the match, maps players A/B to left/right, and wires up the screens. |
 | `src/components/`        | The screens and their parts. Typed props and emits, scoped styles.       |
+| `src/sharing/result.ts` | Packs a result into a link for the QR code, and checks a received one. |
 | `src/storage.ts`         | Autosave to `localStorage`, versioned and validated on load.             |
 | `src/fullscreen.ts`      | Full screen through the browser's Fullscreen API, where it's supported.  |
 | `src/assets/app.css`     | Global tokens (colours, fonts) and base styles.                          |
