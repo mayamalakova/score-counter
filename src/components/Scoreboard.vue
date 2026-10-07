@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import FullscreenButton from './FullscreenButton.vue'
 import GameWonBar from './GameWonBar.vue'
 import Icon from './Icon.vue'
 import PlayerHalf from './PlayerHalf.vue'
@@ -48,14 +49,17 @@ const info = computed(() =>
                 <Icon name="restart" />
             </button>
             <span class="info">{{ info }}</span>
-            <button
-                class="icon-button"
-                type="button"
-                aria-label="Edit players and server"
-                @click="emit('toggle-edit')"
-            >
-                <Icon name="edit" />
-            </button>
+            <div class="actions">
+                <FullscreenButton class="icon-button" />
+                <button
+                    class="icon-button"
+                    type="button"
+                    aria-label="Edit players and server"
+                    @click="emit('toggle-edit')"
+                >
+                    <Icon name="edit" />
+                </button>
+            </div>
         </header>
 
         <div class="table">
@@ -94,11 +98,18 @@ const info = computed(() =>
     gap: 8px;
 }
 
+/* Equal outer columns keep the info centred over the net, whatever buttons each side has. */
 .top-bar {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
     gap: 12px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }
 
 .info {
