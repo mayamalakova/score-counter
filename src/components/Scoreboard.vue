@@ -98,20 +98,12 @@ const info = computed(() =>
     gap: 8px;
 }
 
+/* Sideways the net runs down the middle: equal outer columns keep the info centred over it. */
 .top-bar {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
     gap: 12px;
-}
-
-/* Sideways the net runs down the middle: equal outer columns keep the info centred over it.
-   Upright the net is across, so the info takes all the room between the buttons instead. */
-@media (orientation: landscape) {
-    .top-bar {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-    }
 }
 
 .actions {
@@ -171,6 +163,12 @@ const info = computed(() =>
 }
 
 @media (orientation: portrait) {
+    /* Upright the net runs across, so the info takes all the room between the buttons instead. */
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+    }
+
     .centre-line {
         top: 0;
         bottom: 0;
