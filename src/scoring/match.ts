@@ -10,6 +10,8 @@
  */
 
 export type Player = 'A' | 'B'
+export type Format = 'singles' | 'doubles'
+
 /** The game and match lengths the app offers; set-up, saves and shared links all use these. */
 export const POINTS_TO_WIN = [11, 21] as const
 export const BEST_OF = [1, 3, 5, 7] as const
@@ -23,7 +25,6 @@ export function isPointsToWin(value: unknown): value is PointsToWin {
 export function isBestOf(value: unknown): value is BestOf {
     return BEST_OF.some(games => games === value)
 }
-export type Format = 'singles' | 'doubles'
 
 /**
  * A doubles team. It's the same A or B as Player: in doubles the team is what

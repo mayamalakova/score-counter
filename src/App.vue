@@ -6,7 +6,7 @@ import ReceivedResult from './components/ReceivedResult.vue'
 import Scoreboard from './components/Scoreboard.vue'
 import SetUp from './components/SetUp.vue'
 import ShareResult from './components/ShareResult.vue'
-import type { PlayerView, Side, SideScore } from './components/types'
+import { playerColors, type PlayerView, type Side, type SideScore } from './components/types'
 import * as doubles from './scoring/doubles'
 import * as scoring from './scoring/match'
 import { DoublesPlayer } from './scoring/match'
@@ -43,7 +43,6 @@ const newServer = ref<Side>('left')
 const newServe = ref<Serve>(DEFAULT_DOUBLES_ORDER)
 
 // Colours follow the player, not the side.
-const colors: Record<Player, string> = { A: 'var(--player-a)', B: 'var(--player-b)' }
 const defaultNames: Record<Player, string> = { A: 'Player 1', B: 'Player 2' }
 const defaultDoublesNames: Record<DoublesPlayerId, string> = {
     A1: 'Player 1',
@@ -122,7 +121,7 @@ function displayName(player: Player): string {
 function playerView(player: Player): PlayerView {
     const view: PlayerView = {
         name: displayName(player),
-        color: colors[player],
+        color: playerColors[player],
         score: currentGame.value.score[player],
         games: scoring.gamesWon(match.value)[player]
     }
@@ -237,7 +236,7 @@ const doublesPlayers = computed(() => {
         ([1, 2] as DoublesPosition[]).map(position => ({
             player: new DoublesPlayer(team, position),
             name: position === 1 ? names.value[team] : partners.value[team],
-            color: colors[team]
+            color: playerColors[team]
         }))
     )
 })
@@ -268,8 +267,8 @@ function undo() {
         v-model:doubles-order="doublesOrder"
         v-model:points-to-win="pointsToWin"
         v-model:best-of="bestOf"
-        :color-left="colors.A"
-        :color-right="colors.B"
+        :color-left="playerColors.A"
+        :color-right="playerColors.B"
         @start-match="startMatch"
     />
 

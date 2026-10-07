@@ -40,12 +40,11 @@ export function resultLink(base: string, result: SharedResult): string {
     return `${base}${HASH_PREFIX}${encodeResult(result)}`
 }
 
-/** What the app's address holds: no shared result, one that can't be used, or a result. */
-export type ReceivedLink =
-    { status: 'none' } | { status: 'unreadable' } | { status: 'ok'; result: SharedResult }
+/** A shared result that arrived in a link: one that can't be used, or a result. */
+export type ReceivedLink = { status: 'unreadable' } | { status: 'ok'; result: SharedResult }
 
-/** Reads a result from a URL hash such as "#result=…". */
-export function resultFromHash(hash: string): ReceivedLink {
+/** Reads a result from a URL hash such as "#result=…", or 'none' if the hash isn't one. */
+export function resultFromHash(hash: string): ReceivedLink | { status: 'none' } {
     if (!hash.startsWith(HASH_PREFIX)) return { status: 'none' }
     const result = decodeResult(hash.slice(HASH_PREFIX.length))
     return result ? { status: 'ok', result } : { status: 'unreadable' }

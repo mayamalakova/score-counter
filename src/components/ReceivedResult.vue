@@ -4,17 +4,15 @@ import { gamesWonFrom, type Player } from '../scoring/match'
 import type { ReceivedLink, SharedResult } from '../sharing/result'
 import Icon from './Icon.vue'
 import ResultTable, { type ResultRow } from './ResultTable.vue'
+import { playerColors } from './types'
 
 const props = defineProps<{
-    /** A link that held a result, readable or not. */
-    link: Exclude<ReceivedLink, { status: 'none' }>
+    link: ReceivedLink
 }>()
 
 const emit = defineEmits<{
     back: []
 }>()
-
-const colors: Record<Player, string> = { A: 'var(--player-a)', B: 'var(--player-b)' }
 
 const view = computed(() => (props.link.status === 'ok' ? describe(props.link.result) : null))
 
@@ -24,7 +22,7 @@ function describe(result: SharedResult) {
     const winner: Player = won.A > won.B ? 'A' : 'B'
     const row = (player: Player): ResultRow => ({
         name: result.names[player],
-        color: colors[player],
+        color: playerColors[player],
         scores: result.games.map(game => game[player]),
         games: won[player]
     })
