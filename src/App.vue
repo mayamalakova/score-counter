@@ -21,6 +21,7 @@ import type {
     Serve
 } from './scoring/match'
 import { resultFromHash, resultLink, type SharedResult } from './sharing/result'
+import { loadLanguage, provideMessages, saveLanguage, type Language } from './i18n'
 import { DEFAULT_DOUBLES_ORDER, load, save } from './storage'
 
 // A reload goes straight back to where it was: set-up, mid-game or the summary.
@@ -42,14 +43,19 @@ const editMode = ref(false)
 const newServer = ref<Side>('left')
 const newServe = ref<Serve>(DEFAULT_DOUBLES_ORDER)
 
-// Colours follow the player, not the side.
-const defaultNames: Record<Player, string> = { A: 'Player 1', B: 'Player 2' }
-const defaultDoublesNames: Record<DoublesPlayerId, string> = {
-    A1: 'Player 1',
-    A2: 'Player 2',
-    B1: 'Player 3',
-    B2: 'Player 4'
-}
+// The language is this phone's choice, kept apart from the match.
+const language = ref<Language>(loadLanguage())
+const t = provideMessages(language)
+watchEffect(() => {
+    saveLanguage(language.value)
+    document.documentElement.lang = language.value
+    document.title = t.value.appTitle
+})
+
+// Names for players left blank, in the current language.
+const defaultNumbers: Record<DoublesPlayerId, number> = { A1: 1, A2: 2, B1: 3, B2: 4 }
+const defaultName = (player: Player) => t.value.playerNumber(player === 'A' ? 1 : 2)
+const defaultDoublesName = (id: DoublesPlayerId) => t.value.playerNumber(defaultNumbers[id])
 
 watchEffect(() =>
     save({
@@ -107,7 +113,7 @@ const gameNumber = computed(() => scoring.games(match.value).length)
 
 function doublesName(player: DoublesPlayer): string {
     const name = player.position === 1 ? names.value[player.team] : partners.value[player.team]
-    return name.trim() || defaultDoublesNames[player.id]
+    return name.trim() || defaultDoublesName(player.id)
 }
 
 /** A player's name in singles, or the team's names ("Ana / Eva") in doubles. */
@@ -115,7 +121,7 @@ function displayName(player: Player): string {
     if (isDoubles.value) {
         return `${doublesName(new DoublesPlayer(player, 1))} / ${doublesName(new DoublesPlayer(player, 2))}`
     }
-    return names.value[player].trim() || defaultNames[player]
+    return names.value[player].trim() || defaultName(player)
 }
 
 function playerView(player: Player): PlayerView {
@@ -267,6 +273,7 @@ function undo() {
         v-model:doubles-order="doublesOrder"
         v-model:points-to-win="pointsToWin"
         v-model:best-of="bestOf"
+        v-model:language="language"
         :color-left="playerColors.A"
         :color-right="playerColors.B"
         @start-match="startMatch"
@@ -309,6 +316,7 @@ function undo() {
             v-model:player-right="playerRight"
             v-model:server="newServer"
             v-model:serve="newServe"
+            v-model:language="language"
             :doubles-players="doublesPlayers"
             :color-left="left.color"
             :color-right="right.color"

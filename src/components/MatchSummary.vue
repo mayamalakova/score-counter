@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Icon from './Icon.vue'
+import { useMessages } from '../i18n'
 import ResultTable, { type ResultRow } from './ResultTable.vue'
 import type { PlayerView, SideScore } from './types'
 
@@ -17,6 +18,8 @@ const emit = defineEmits<{
     'next-match': []
 }>()
 
+const t = useMessages()
+
 const rows = computed<[ResultRow, ResultRow]>(() => [
     { ...props.left, scores: props.gameScores.map(game => game.left) },
     { ...props.right, scores: props.gameScores.map(game => game.right) }
@@ -27,20 +30,20 @@ const rows = computed<[ResultRow, ResultRow]>(() => [
     <div class="backdrop">
         <section class="card" aria-labelledby="summary-title">
             <h2 id="summary-title">
-                {{ winner }} wins {{ Math.max(left.games, right.games) }}–{{
-                    Math.min(left.games, right.games)
+                {{
+                    t.winsMatch(winner, Math.max(left.games, right.games), Math.min(left.games, right.games))
                 }}
             </h2>
             <ResultTable :rows="rows" />
             <div class="actions">
                 <button class="button" type="button" @click="emit('undo')">
-                    <Icon name="undo" /> Undo last point
+                    <Icon name="undo" /> {{ t.undoLastPoint }}
                 </button>
                 <button class="button share" type="button" @click="emit('share')">
-                    <Icon name="qr" /> Share result
+                    <Icon name="qr" /> {{ t.shareResult }}
                 </button>
                 <button class="button primary next-match" type="button" @click="emit('next-match')">
-                    New match <Icon name="next" />
+                    {{ t.newMatch }} <Icon name="next" />
                 </button>
             </div>
         </section>

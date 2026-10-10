@@ -25,8 +25,9 @@ export interface SetUpOptions {
 export class AppDriver {
     wrapper: VueWrapper
 
-    constructor() {
-        this.wrapper = mount(App)
+    /** `attachTo` puts the app in the page, for tests that check where the focus is. */
+    constructor(options: { attachTo?: HTMLElement } = {}) {
+        this.wrapper = mount(App, options)
     }
 
     // --- Set-up ---
@@ -63,6 +64,13 @@ export class AppDriver {
     async start(options: SetUpOptions = {}) {
         await this.fillSetUp(options)
         await this.wrapper.find('form.setup').trigger('submit')
+    }
+
+    async chooseLanguage(language: 'en' | 'cs' | 'bg') {
+        await this.wrapper.find('.language-picker .toggle').trigger('click')
+        await this.wrapper
+            .find(`.language-picker [role="menuitemradio"][lang="${language}"]`)
+            .trigger('click')
     }
 
     get onSetUp(): boolean {
@@ -152,7 +160,12 @@ export class AppDriver {
     }
 
     get gameWonText(): string {
-        return this.wrapper.find('.bar').text().replace(/\s+/g, ' ')
+        // The message and each button as separate texts, since whitespace between elements isn't on screen.
+        return this.wrapper
+            .find('.bar')
+            .findAll('.message, button')
+            .map(part => part.text().replace(/\s+/g, ' '))
+            .join(' ')
     }
 
     // --- Edit panel ---

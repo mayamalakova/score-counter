@@ -16,15 +16,12 @@ export default tseslint.config(
         }
     },
     {
-        languageOptions: {
-            globals: {
-                localStorage: 'readonly',
-                document: 'readonly',
-                window: 'readonly',
-                location: 'readonly',
-                history: 'readonly'
-            }
-        },
+        // TypeScript already reports undefined names, and knows DOM types such as
+        // HTMLElement that no-undef doesn't (typescript-eslint's recommendation).
+        files: ['**/*.ts', '**/*.vue'],
+        rules: { 'no-undef': 'off' }
+    },
+    {
         rules: {
             // Component files are named after what they show (Scoreboard, Icon), not two words.
             'vue/multi-word-component-names': 'off',
