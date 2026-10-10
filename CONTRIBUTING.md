@@ -61,6 +61,7 @@ model. Update them when either changes.
 | `src/sharing/result.ts` | Packs a result into a link for the QR code, and checks a received one. |
 | `src/storage.ts`         | Autosave to `localStorage`, versioned and validated on load.             |
 | `src/fullscreen.ts`      | Full screen through the browser's Fullscreen API, where it's supported.  |
+| `src/wakeLock.ts`        | Keeps the screen on during play (Screen Wake Lock API), where supported. |
 | `src/assets/app.css`     | Global tokens (colours, fonts) and base styles.                          |
 | `test/scoring/`          | Unit tests for the engine.                                               |
 | `test/driver.ts`         | Drives the app through its UI for the screen and flow tests.             |
