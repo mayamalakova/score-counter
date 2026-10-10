@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Icon from './Icon.vue'
+import { useMessages, type Language } from '../i18n'
+import LanguagePicker from './LanguagePicker.vue'
 import { BEST_OF, DoublesPlayer, POINTS_TO_WIN } from '../scoring/match'
 import type {
     BestOf,
@@ -17,6 +19,8 @@ const props = defineProps<{
     colorRight: string
 }>()
 
+const t = useMessages()
+
 const emit = defineEmits<{
     'start-match': []
 }>()
@@ -31,27 +35,28 @@ const swapServer = defineModel<boolean>('swapServer', { required: true })
 const doublesOrder = defineModel<Serve>('doublesOrder', { required: true })
 const pointsToWin = defineModel<PointsToWin>('pointsToWin', { required: true })
 const bestOf = defineModel<BestOf>('bestOf', { required: true })
+const language = defineModel<Language>('language', { required: true })
 
 const singlesRows = computed(() => [
     {
         side: 'A' as const,
-        label: 'Left player',
-        placeholder: 'Player 1',
+        label: t.value.leftPlayer,
+        placeholder: t.value.playerNumber(1),
         color: props.colorLeft,
         swap: false
     },
     {
         side: 'B' as const,
-        label: 'Right player',
-        placeholder: 'Player 2',
+        label: t.value.rightPlayer,
+        placeholder: t.value.playerNumber(2),
         color: props.colorRight,
         swap: true
     }
 ])
 
 const teams = computed(() => [
-    { id: 'A' as DoublesTeam, label: 'Left pair', color: props.colorLeft },
-    { id: 'B' as DoublesTeam, label: 'Right pair', color: props.colorRight }
+    { id: 'A' as DoublesTeam, label: t.value.leftPair, color: props.colorLeft },
+    { id: 'B' as DoublesTeam, label: t.value.rightPair, color: props.colorRight }
 ])
 
 function nameOf(player: DoublesPlayer): string {
@@ -65,7 +70,7 @@ function setName(player: DoublesPlayer, name: string) {
 }
 
 function placeholder(player: DoublesPlayer): string {
-    return `Player ${{ A1: 1, A2: 2, B1: 3, B2: 4 }[player.id]}`
+    return t.value.playerNumber({ A1: 1, A2: 2, B1: 3, B2: 4 }[player.id])
 }
 
 /**
@@ -83,7 +88,11 @@ const server = computed({
 <template>
     <form class="setup" @submit.prevent="emit('start-match')">
         <section class="players">
-            <h1>New match</h1>
+            <div class="heading">
+                <h1>{{ t.newMatch }}</h1>
+                <!-- Small and out of the way: it's chosen once per phone, not per match. -->
+                <LanguagePicker v-model="language" />
+            </div>
             <template v-if="format === 'singles'">
                 <div v-for="row in singlesRows" :key="row.side" class="player">
                     <input
@@ -96,7 +105,7 @@ const server = computed({
                     />
                     <label class="serves">
                         <input v-model="swapServer" type="radio" name="first-server" :value="row.swap" />
-                        Serves first
+                        {{ t.servesFirst }}
                     </label>
                 </div>
             </template>
@@ -112,14 +121,14 @@ const server = computed({
                         <input
                             :value="nameOf(player)"
                             class="name-input"
-                            :aria-label="`${team.label}, ${player.position === 1 ? 'first' : 'second'} player`"
+                            :aria-label="t.pairPlayer(team.label, player.position)"
                             :placeholder="placeholder(player)"
                             :style="{ borderColor: team.color }"
                             @input="setName(player, ($event.target as HTMLInputElement).value)"
                         />
                         <label class="serves">
                             <input v-model="server" type="radio" name="doubles-server" :value="player" />
-                            Serves first
+                            {{ t.servesFirst }}
                         </label>
                     </div>
                 </div>
@@ -128,16 +137,16 @@ const server = computed({
 
         <section class="settings">
             <fieldset>
-                <legend>Format</legend>
+                <legend>{{ t.format }}</legend>
                 <div class="segments">
                     <label v-for="option in ['singles', 'doubles'] as Format[]" :key="option">
                         <input v-model="format" type="radio" name="format" :value="option" />
-                        <span>{{ option === 'singles' ? 'Singles' : 'Doubles' }}</span>
+                        <span>{{ option === 'singles' ? t.singles : t.doubles }}</span>
                     </label>
                 </div>
             </fieldset>
             <fieldset>
-                <legend>Points per game</legend>
+                <legend>{{ t.pointsPerGame }}</legend>
                 <div class="segments">
                     <label v-for="points in POINTS_TO_WIN" :key="points">
                         <input v-model="pointsToWin" type="radio" name="points-to-win" :value="points" />
@@ -146,7 +155,7 @@ const server = computed({
                 </div>
             </fieldset>
             <fieldset>
-                <legend>Best of</legend>
+                <legend>{{ t.bestOf }}</legend>
                 <div class="segments">
                     <label v-for="games in BEST_OF" :key="games">
                         <input v-model="bestOf" type="radio" name="best-of" :value="games" />
@@ -154,7 +163,7 @@ const server = computed({
                     </label>
                 </div>
             </fieldset>
-            <button class="start" type="submit">Start match <Icon name="next" /></button>
+            <button class="start" type="submit">{{ t.startMatch }} <Icon name="next" /></button>
         </section>
     </form>
 </template>
@@ -171,8 +180,16 @@ const server = computed({
     padding: 24px;
 }
 
+.heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
 h1 {
-    margin: 0 0 16px;
+    margin: 0;
     font-family: var(--font-score);
     font-weight: 900;
     font-size: clamp(2rem, 7vmin, 3rem);

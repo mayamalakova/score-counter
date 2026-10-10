@@ -89,7 +89,8 @@ now being modernized.
    some players score on paper, so the app is a helper, never the only way to score.
    Ideas agreed in principle, after doubles: a fixture mode for the captain (results
    scored in the app, handed over by QR code, or typed in and validated; a protocol view
-   for copying onto the paper sheet), and a Czech UI.
+   for copying onto the paper sheet), and a Czech UI (done: English, Czech and Bulgarian,
+   switched from a flag menu on set-up or mid-match in the edit panel).
 
    **Doubles (decided):**
    - Board: centre line, four name tags in their half-courts (same style, pair colour),
@@ -159,6 +160,10 @@ now being modernized.
   get everything through typed props and emits.
 - `src/sharing/result.ts` packs a finished match's result into a link (`#result=…`, versioned)
   for sharing as a QR code, and validates a received one against the rules.
+- Every text on screen comes from `src/i18n/` (`en.ts`, `cs.ts`, `bg.ts`); components get
+  them with `useMessages()`. Add a text to all three files (TypeScript enforces the same
+  keys). In Czech a game is a "set" and a match a "zápas"; in Bulgarian "гейм" and "мач".
+  The app starts in English; the chosen language is stored apart from the match.
 - `src/storage.ts` saves the app state to localStorage after every change and restores it
   on start. The save is versioned: bump `VERSION` when its shape changes, and older saves
   are ignored. Tests clear localStorage in `test/setup.ts`.

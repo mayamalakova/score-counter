@@ -97,7 +97,8 @@ records them as new match events.
 ```mermaid
 flowchart TD
     storage["storage.ts<br/>load on start, autosave on change"]
-    app["App.vue<br/>holds the match, names and set-up"]
+    app["App.vue<br/>holds the match, names, set-up and language"]
+    i18n["i18n<br/>texts in en, cs, bg"]
     engine["Scoring engine<br/>match.ts, doubles.ts"]
 
     setup["SetUp<br/>before a match"]
@@ -111,8 +112,10 @@ flowchart TD
     ball["ServerBall<br/>the ball by the net"]
     bar["GameWonBar<br/>undo or next game"]
     full["FullscreenButton<br/>top bar, where the browser allows"]
+    picker["LanguagePicker<br/>flag menu, on set-up and in the edit panel"]
 
     storage <--> app
+    app --> i18n
     app --> engine
     app --> setup
     app --> board
@@ -124,6 +127,8 @@ flowchart TD
     board --> ball
     board --> bar
     board --> full
+    setup --> picker
+    edit --> picker
 ```
 
 - **One screen at a time:** `SetUp` before a match, `Scoreboard` during it.
@@ -137,4 +142,7 @@ flowchart TD
 - **Full screen is the browser's state, not the match's.** `FullscreenButton` asks the
   browser through `src/fullscreen.ts` and follows its events, so it needs nothing from
   `App.vue`. It isn't shown where pages can't go full screen (iPhones).
+- **Languages:** `App.vue` holds the chosen language and provides its texts; every
+  component reads them with `useMessages()` rather than through props. The choice is
+  saved on the phone apart from the match.
 - **Tests** drive these screens through `test/driver.ts`, the way a player would.
