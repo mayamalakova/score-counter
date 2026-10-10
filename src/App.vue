@@ -49,6 +49,7 @@ const t = provideMessages(language)
 watchEffect(() => {
     saveLanguage(language.value)
     document.documentElement.lang = language.value
+    document.title = t.value.appTitle
 })
 
 // Names for players left blank, in the current language.

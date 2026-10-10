@@ -25,6 +25,23 @@ function onPointerDown(event: PointerEvent) {
     if (!root.value?.contains(event.target as Node)) close(false)
 }
 
+// Up and Down (and Home, End) move between the languages, as in any menu.
+function onMenuKey(event: KeyboardEvent) {
+    const items = Array.from(root.value?.querySelectorAll<HTMLElement>('[role="menuitemradio"]') ?? [])
+    const current = items.indexOf(document.activeElement as HTMLElement)
+    const last = items.length - 1
+    const moves: Partial<Record<string, number>> = {
+        ArrowDown: current < last ? current + 1 : 0,
+        ArrowUp: current > 0 ? current - 1 : last,
+        Home: 0,
+        End: last
+    }
+    const next = moves[event.key]
+    if (next === undefined) return
+    event.preventDefault()
+    items[next].focus()
+}
+
 watch(open, async isOpen => {
     if (isOpen) {
         document.addEventListener('pointerdown', onPointerDown)
@@ -38,7 +55,7 @@ onUnmounted(() => document.removeEventListener('pointerdown', onPointerDown))
 </script>
 
 <template>
-    <div ref="root" class="language-picker" @keydown.escape="close()">
+    <div ref="root" class="language-picker" @keydown.escape="open && close()">
         <button
             ref="toggleButton"
             class="toggle"
@@ -53,7 +70,7 @@ onUnmounted(() => document.removeEventListener('pointerdown', onPointerDown))
                 <path d="m6 9 6 6 6-6" />
             </svg>
         </button>
-        <div v-if="open" class="menu" role="menu" :aria-label="t.language">
+        <div v-if="open" class="menu" role="menu" :aria-label="t.language" @keydown="onMenuKey">
             <button
                 v-for="option in LANGUAGES"
                 :key="option"

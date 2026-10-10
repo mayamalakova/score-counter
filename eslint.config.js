@@ -22,15 +22,6 @@ export default tseslint.config(
         rules: { 'no-undef': 'off' }
     },
     {
-        languageOptions: {
-            globals: {
-                localStorage: 'readonly',
-                document: 'readonly',
-                window: 'readonly',
-                location: 'readonly',
-                history: 'readonly'
-            }
-        },
         rules: {
             // Component files are named after what they show (Scoreboard, Icon), not two words.
             'vue/multi-word-component-names': 'off',

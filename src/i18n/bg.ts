@@ -2,6 +2,8 @@ import type { Messages } from './en'
 
 /** Bulgarian: a game is a "гейм", a match a "мач". */
 export const bg: Messages = {
+    appTitle: 'Резултат за тенис на маса',
+
     // Set-up
     newMatch: 'Нов мач',
     leftPlayer: 'Играч вляво',

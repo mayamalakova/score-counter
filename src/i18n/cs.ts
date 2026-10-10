@@ -2,6 +2,8 @@ import type { Messages } from './en'
 
 /** Czech: a game is a "set", a match a "zápas" (a league fixture is an "utkání"). */
 export const cs: Messages = {
+    appTitle: 'Počítadlo stolního tenisu',
+
     // Set-up
     newMatch: 'Nový zápas',
     leftPlayer: 'Hráč vlevo',

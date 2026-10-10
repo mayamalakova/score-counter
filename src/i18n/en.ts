@@ -1,5 +1,7 @@
 /** Every text on screen, in English. The other languages must match its keys and functions. */
 export const en = {
+    appTitle: 'Table Tennis Score',
+
     // Set-up
     newMatch: 'New match',
     leftPlayer: 'Left player',

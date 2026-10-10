@@ -29,6 +29,7 @@ describe('languages', () => {
         expect(heading()).toBe('Nový zápas')
         expect(startButton()).toBe('Začít zápas')
         expect(document.documentElement.lang).toBe('cs')
+        expect(document.title).toBe('Počítadlo stolního tenisu')
 
         await app.start({ bestOf: 5 })
         expect(info()).toBe('Set 1 · na 3 vítězné sety · do 11')
@@ -112,6 +113,23 @@ describe('the language menu', () => {
         await flushPromises()
         expect(menuOpen()).toBe(false)
         expect(heading()).toBe('New match')
+    })
+
+    it('moves between languages with the arrow keys', async () => {
+        app = new AppDriver({ attachTo: document.body })
+        await toggle().trigger('click')
+        await flushPromises()
+        const menu = app.wrapper.find('[role="menu"]')
+        const focused = () => document.activeElement?.getAttribute('lang')
+        expect(focused()).toBe('en')
+        await menu.trigger('keydown', { key: 'ArrowDown' })
+        expect(focused()).toBe('cs')
+        await menu.trigger('keydown', { key: 'End' })
+        expect(focused()).toBe('bg')
+        await menu.trigger('keydown', { key: 'ArrowDown' })
+        expect(focused()).toBe('en')
+        await menu.trigger('keydown', { key: 'ArrowUp' })
+        expect(focused()).toBe('bg')
     })
 
     it('closes with Escape', async () => {
