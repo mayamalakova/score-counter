@@ -112,7 +112,7 @@ flowchart TD
     ball["ServerBall<br/>the ball by the net"]
     bar["GameWonBar<br/>undo or next game"]
     full["FullscreenButton<br/>top bar, where the browser allows"]
-    picker["LanguagePicker<br/>flag menu on set-up"]
+    picker["LanguagePicker<br/>flag menu, on set-up and in the edit panel"]
 
     storage <--> app
     app --> i18n
@@ -128,6 +128,7 @@ flowchart TD
     board --> bar
     board --> full
     setup --> picker
+    edit --> picker
 ```
 
 - **One screen at a time:** `SetUp` before a match, `Scoreboard` during it.

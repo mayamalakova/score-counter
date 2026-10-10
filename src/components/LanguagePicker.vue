@@ -98,7 +98,8 @@ onUnmounted(() => document.removeEventListener('pointerdown', onPointerDown))
     align-items: center;
     gap: 6px;
     padding: 8px 8px 8px 10px;
-    border: 2px solid rgb(255 255 255 / 0.7);
+    /* Light on the blue set-up screen, dark on the white edit panel. */
+    border: 2px solid color-mix(in srgb, currentColor 65%, transparent);
     border-radius: var(--radius);
     background: none;
     font-size: 1.1rem;

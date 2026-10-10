@@ -78,6 +78,18 @@ describe('languages', () => {
         expect(app.summaryTitle).toBe('Ana vyhrává 2:0')
     })
 
+    it('changes mid-match from the edit panel, keeping the score', async () => {
+        app = new AppDriver()
+        await app.start({ bestOf: 5 })
+        await app.point('left', 3)
+        await app.openEdit()
+        await app.chooseLanguage('bg')
+        expect(app.wrapper.find('.panel h2').text()).toBe('Играчи')
+        await app.closeEdit()
+        expect(info()).toBe('Гейм 1 · до 3 спечелени гейма · до 11')
+        expect(app.scores).toEqual(['3', '0'])
+    })
+
     it('ignores an unknown saved language', () => {
         localStorage.setItem('score-counter-language', 'xx')
         app = new AppDriver()

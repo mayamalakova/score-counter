@@ -90,7 +90,7 @@ now being modernized.
    Ideas agreed in principle, after doubles: a fixture mode for the captain (results
    scored in the app, handed over by QR code, or typed in and validated; a protocol view
    for copying onto the paper sheet), and a Czech UI (done: English, Czech and Bulgarian,
-   switched on set-up).
+   switched from a flag menu on set-up or mid-match in the edit panel).
 
    **Doubles (decided):**
    - Board: centre line, four name tags in their half-courts (same style, pair colour),

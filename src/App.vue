@@ -316,6 +316,7 @@ function undo() {
             v-model:player-right="playerRight"
             v-model:server="newServer"
             v-model:serve="newServe"
+            v-model:language="language"
             :doubles-players="doublesPlayers"
             :color-left="left.color"
             :color-right="right.color"

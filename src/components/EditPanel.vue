@@ -3,7 +3,8 @@ import { computed, ref } from 'vue'
 import { withServer } from '../scoring/doubles'
 import type { DoublesPlayer, Serve } from '../scoring/match'
 import type { Side } from './types'
-import { useMessages } from '../i18n'
+import { useMessages, type Language } from '../i18n'
+import LanguagePicker from './LanguagePicker.vue'
 
 defineProps<{
     colorLeft: string
@@ -25,6 +26,7 @@ const playerRight = defineModel<string>('playerRight', { required: true })
 const server = defineModel<Side>('server', { required: true })
 /** Doubles: who is serving to whom now. */
 const serve = defineModel<Serve>('serve')
+const language = defineModel<Language>('language', { required: true })
 
 const doublesServer = computed({
     get: () => serve.value?.server,
@@ -65,7 +67,11 @@ const confirmingEnd = ref(false)
             </div>
         </section>
         <form v-else class="panel" :aria-label="t.editPlayers" @submit.prevent="emit('done')">
-            <h2>{{ t.players }}</h2>
+            <!-- The language can change mid-match, e.g. when a new umpire takes over. -->
+            <div class="heading">
+                <h2>{{ t.players }}</h2>
+                <LanguagePicker v-model="language" />
+            </div>
             <template v-if="doublesPlayers">
                 <div v-for="row in doublesPlayers" :key="row.player.id" class="row">
                     <input
@@ -149,6 +155,18 @@ const confirmingEnd = ref(false)
     border-radius: 14px;
     background: #fff;
     color: var(--ink);
+}
+
+.heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.heading h2 {
+    margin: 0;
 }
 
 h2 {
