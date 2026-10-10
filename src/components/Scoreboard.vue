@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import FullscreenButton from './FullscreenButton.vue'
 import GameWonBar from './GameWonBar.vue'
 import Icon from './Icon.vue'
 import PlayerHalf from './PlayerHalf.vue'
@@ -48,14 +49,18 @@ const info = computed(() =>
                 <Icon name="restart" />
             </button>
             <span class="info">{{ info }}</span>
-            <button
-                class="icon-button"
-                type="button"
-                aria-label="Edit players and server"
-                @click="emit('toggle-edit')"
-            >
-                <Icon name="edit" />
-            </button>
+            <div class="actions">
+                <!-- The class lands on the button (its only root), so this file's .icon-button style applies. -->
+                <FullscreenButton class="icon-button" />
+                <button
+                    class="icon-button"
+                    type="button"
+                    aria-label="Edit players and server"
+                    @click="emit('toggle-edit')"
+                >
+                    <Icon name="edit" />
+                </button>
+            </div>
         </header>
 
         <div class="table">
@@ -94,11 +99,18 @@ const info = computed(() =>
     gap: 8px;
 }
 
+/* Sideways the net runs down the middle: equal outer columns keep the info centred over it. */
 .top-bar {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
     gap: 12px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }
 
 .info {
@@ -152,6 +164,12 @@ const info = computed(() =>
 }
 
 @media (orientation: portrait) {
+    /* Upright the net runs across, so the info takes all the room between the buttons instead. */
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+    }
+
     .centre-line {
         top: 0;
         bottom: 0;
