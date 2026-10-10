@@ -3,7 +3,8 @@ import { onUnmounted, watch, type Ref } from 'vue'
 /**
  * Keeps the screen on while `wanted` is true, where the browser supports it (the
  * Screen Wake Lock API). Browsers drop the lock whenever the page is hidden (another
- * app, the phone locked), so it's asked for again when the page is visible again.
+ * app, the phone locked), and some drop it on battery saver, so it's asked for again
+ * whenever it's released while still wanted and the page is visible.
  * Without the API the phone just dims as usual.
  */
 export function useWakeLock(wanted: Ref<boolean>) {
@@ -16,6 +17,7 @@ export function useWakeLock(wanted: Ref<boolean>) {
         requesting = true
         try {
             lock = await navigator.wakeLock.request('screen')
+            lock.addEventListener('release', sync)
             // Play may have ended while the browser was answering.
             if (!wanted.value) await release()
         } catch (error) {
@@ -29,7 +31,11 @@ export function useWakeLock(wanted: Ref<boolean>) {
     async function release() {
         const held = lock
         lock = null
-        if (held && !held.released) await held.release()
+        try {
+            if (held && !held.released) await held.release()
+        } catch (error) {
+            console.log('Letting the screen dim failed', error)
+        }
     }
 
     function sync() {

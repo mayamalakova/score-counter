@@ -80,7 +80,7 @@ now being modernized.
    longer does. Wake lock and the PWA moved to Phase 6.
 5. **Repo hygiene (done).** Component tests for the main flows, contributor docs.
 6. **Features, one PR each (current).** Doubles (done, see below), keyboard shortcuts (moved from Phase 3), screen wake lock
-   during play and installable offline PWA (both moved from Phase 4), match history and
+   during play (done) and installable offline PWA (both moved from Phase 4), match history and
    rematch, timeouts, optional spoken score, second-screen display mode.
 
    Context for features: the app is used for Czech amateur league nights (4–5 players a

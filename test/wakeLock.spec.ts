@@ -7,19 +7,17 @@ import { AppDriver } from './driver'
 
 let app: AppDriver | undefined
 let visibility: DocumentVisibilityState = 'visible'
-let held: { released: boolean } | null = null
+let held: (EventTarget & { released: boolean }) | null = null
 let request: ReturnType<typeof vi.fn>
 
 /** Gives the page a working Wake Lock API, as on Android Chrome or iOS Safari. */
 function supportWakeLock() {
     held = null
     request = vi.fn(async () => {
-        const lock = {
+        const lock = Object.assign(new EventTarget(), {
             released: false,
-            release: vi.fn(async () => {
-                lock.released = true
-            })
-        }
+            release: vi.fn(async () => browserReleases(lock))
+        })
         held = lock
         return lock
     })
@@ -27,11 +25,17 @@ function supportWakeLock() {
     Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => visibility })
 }
 
+/** What the browser does when a lock ends, whoever ended it. */
+function browserReleases(lock: EventTarget & { released: boolean }) {
+    lock.released = true
+    lock.dispatchEvent(new Event('release'))
+}
+
 /** Switches to another app (hidden) and back (visible). The browser drops the lock when hidden. */
 async function setVisibility(state: DocumentVisibilityState) {
     visibility = state
-    if (state === 'hidden' && held) held.released = true
     document.dispatchEvent(new Event('visibilitychange'))
+    if (state === 'hidden' && held) browserReleases(held)
     await flushPromises()
 }
 
@@ -43,6 +47,7 @@ afterEach(() => {
     visibility = 'visible'
     Reflect.deleteProperty(navigator, 'wakeLock')
     Reflect.deleteProperty(document, 'visibilityState')
+    vi.restoreAllMocks()
 })
 
 describe('keeping the screen on', () => {
@@ -152,6 +157,17 @@ describe('keeping the screen on', () => {
         expect(log).toHaveBeenCalledWith('Keeping the screen on was refused', expect.any(DOMException))
         await app.point('left')
         expect(app.scores).toEqual(['1', '0'])
-        log.mockRestore()
+    })
+
+    it('asks again when the browser lets go during play, e.g. on battery saver', async () => {
+        supportWakeLock()
+        app = new AppDriver()
+        await app.start()
+        await flushPromises()
+
+        browserReleases(held!)
+        await flushPromises()
+        expect(request).toHaveBeenCalledTimes(2)
+        expect(screenOn()).toBe(true)
     })
 })
