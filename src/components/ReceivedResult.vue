@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { gamesWonFrom, type Player } from '../scoring/match'
 import type { ReceivedLink, SharedResult } from '../sharing/result'
 import Icon from './Icon.vue'
+import { useMessages } from '../i18n'
 import ResultTable, { type ResultRow } from './ResultTable.vue'
 import { playerColors } from './types'
 
@@ -13,6 +14,8 @@ const props = defineProps<{
 const emit = defineEmits<{
     back: []
 }>()
+
+const t = useMessages()
 
 const view = computed(() => (props.link.status === 'ok' ? describe(props.link.result) : null))
 
@@ -26,10 +29,10 @@ function describe(result: SharedResult) {
         scores: result.games.map(game => game[player]),
         games: won[player]
     })
-    const details = [`best of ${result.bestOf}`, `to ${result.pointsToWin}`]
-    if (result.format === 'doubles') details.push('doubles')
+    const details = [t.value.bestOfGames(result.bestOf), t.value.toPoints(result.pointsToWin)]
+    if (result.format === 'doubles') details.push(t.value.doublesShort)
     return {
-        title: `${result.names[winner]} wins ${Math.max(won.A, won.B)}–${Math.min(won.A, won.B)}`,
+        title: t.value.winsMatch(result.names[winner], Math.max(won.A, won.B), Math.min(won.A, won.B)),
         details: details.join(' · '),
         rows: [row('A'), row('B')] as [ResultRow, ResultRow]
     }
@@ -39,19 +42,19 @@ function describe(result: SharedResult) {
 <template>
     <main class="received">
         <section v-if="view" class="card" aria-labelledby="received-title">
-            <p class="label">Result received</p>
+            <p class="label">{{ t.resultReceived }}</p>
             <h1 id="received-title">{{ view.title }}</h1>
             <p class="details">{{ view.details }}</p>
             <ResultTable :rows="view.rows" />
             <button class="button primary back" type="button" @click="emit('back')">
-                Back to my match <Icon name="next" />
+                {{ t.backToMyMatch }} <Icon name="next" />
             </button>
         </section>
         <section v-else class="card" role="alert">
-            <h1>This result couldn't be read</h1>
-            <p>The link may be incomplete. Ask for the QR code again.</p>
+            <h1>{{ t.unreadableResult }}</h1>
+            <p>{{ t.unreadableHint }}</p>
             <button class="button primary back" type="button" @click="emit('back')">
-                Back to my match <Icon name="next" />
+                {{ t.backToMyMatch }} <Icon name="next" />
             </button>
         </section>
     </main>

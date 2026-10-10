@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import FullscreenButton from './FullscreenButton.vue'
 import GameWonBar from './GameWonBar.vue'
 import Icon from './Icon.vue'
+import { useMessages } from '../i18n'
 import PlayerHalf from './PlayerHalf.vue'
 import ServerBall from './ServerBall.vue'
 import type { PlayerView, Side } from './types'
@@ -30,12 +31,14 @@ const emit = defineEmits<{
     'next-game': []
 }>()
 
+const t = useMessages()
+
 const info = computed(() =>
     [
-        `Game ${props.gameNumber}`,
-        `best of ${props.bestOf}`,
-        `to ${props.pointsToWin}`,
-        props.doubles && 'doubles'
+        t.value.gameNumber(props.gameNumber),
+        t.value.bestOfGames(props.bestOf),
+        t.value.toPoints(props.pointsToWin),
+        props.doubles && t.value.doublesShort
     ]
         .filter(Boolean)
         .join(' · ')
@@ -45,7 +48,7 @@ const info = computed(() =>
 <template>
     <div class="board">
         <header class="top-bar">
-            <button class="icon-button" type="button" aria-label="Restart game" @click="emit('restart')">
+            <button class="icon-button" type="button" :aria-label="t.restartGame" @click="emit('restart')">
                 <Icon name="restart" />
             </button>
             <span class="info">{{ info }}</span>
@@ -55,7 +58,7 @@ const info = computed(() =>
                 <button
                     class="icon-button"
                     type="button"
-                    aria-label="Edit players and server"
+                    :aria-label="t.editPlayers"
                     @click="emit('toggle-edit')"
                 >
                     <Icon name="edit" />

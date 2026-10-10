@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { renderSVG } from 'uqr'
+import { useMessages } from '../i18n'
 
 const props = defineProps<{
     /** The link that opens the app on this result. */
@@ -11,6 +12,8 @@ const emit = defineEmits<{
     close: []
 }>()
 
+const t = useMessages()
+
 // uqr builds the SVG from our own link only, so rendering it as HTML is safe.
 const qrCode = computed(() => renderSVG(props.link, { ecc: 'M', border: 2 }))
 </script>
@@ -18,11 +21,11 @@ const qrCode = computed(() => renderSVG(props.link, { ecc: 'M', border: 2 }))
 <template>
     <div class="backdrop">
         <section class="card" aria-labelledby="share-title">
-            <h2 id="share-title">Share result</h2>
+            <h2 id="share-title">{{ t.shareResult }}</h2>
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <div class="qr" role="img" aria-label="QR code with a link to this result" v-html="qrCode"></div>
-            <p>Scan with the phone's camera to open this result in the app.</p>
-            <button class="button primary close" type="button" @click="emit('close')">Done</button>
+            <div class="qr" role="img" :aria-label="t.qrCodeLabel" v-html="qrCode"></div>
+            <p>{{ t.scanHint }}</p>
+            <button class="button primary close" type="button" @click="emit('close')">{{ t.done }}</button>
         </section>
     </div>
 </template>

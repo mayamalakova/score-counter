@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Icon from './Icon.vue'
+import { useMessages } from '../i18n'
 
 defineProps<{
     winner: string
@@ -10,16 +11,18 @@ const emit = defineEmits<{
     undo: []
     'next-game': []
 }>()
+
+const t = useMessages()
 </script>
 
 <template>
     <div class="bar" role="status">
         <p class="message">
-            <strong>{{ winner }}</strong> wins game {{ gameNumber }}
+            <strong>{{ winner }}</strong> {{ t.winsGame(gameNumber) }}
         </p>
-        <button class="button" type="button" @click="emit('undo')"><Icon name="undo" /> Undo</button>
+        <button class="button" type="button" @click="emit('undo')"><Icon name="undo" /> {{ t.undo }}</button>
         <button class="button primary next-game" type="button" @click="emit('next-game')">
-            Next game <Icon name="next" />
+            {{ t.nextGame }} <Icon name="next" />
         </button>
     </div>
 </template>

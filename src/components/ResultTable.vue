@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useMessages } from '../i18n'
 export interface ResultRow {
     name: string
     color: string
@@ -11,6 +12,8 @@ defineProps<{
     /** The two players (or doubles teams), in the order to show them. */
     rows: [ResultRow, ResultRow]
 }>()
+
+const t = useMessages()
 </script>
 
 <template>
@@ -18,9 +21,11 @@ defineProps<{
         <table class="match-result">
             <thead>
                 <tr>
-                    <th scope="col"><span class="visually-hidden">Player</span></th>
+                    <th scope="col">
+                        <span class="visually-hidden">{{ t.player }}</span>
+                    </th>
                     <th v-for="(_, index) in rows[0].scores" :key="index" scope="col">{{ index + 1 }}</th>
-                    <th scope="col">Games</th>
+                    <th scope="col">{{ t.games }}</th>
                 </tr>
             </thead>
             <tbody>

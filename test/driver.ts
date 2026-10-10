@@ -65,6 +65,13 @@ export class AppDriver {
         await this.wrapper.find('form.setup').trigger('submit')
     }
 
+    async chooseLanguage(language: 'en' | 'cs' | 'bg') {
+        await this.wrapper.find('.language-picker .toggle').trigger('click')
+        await this.wrapper
+            .find(`.language-picker [role="menuitemradio"][lang="${language}"]`)
+            .trigger('click')
+    }
+
     get onSetUp(): boolean {
         return this.wrapper.find('form.setup').exists()
     }
@@ -152,7 +159,12 @@ export class AppDriver {
     }
 
     get gameWonText(): string {
-        return this.wrapper.find('.bar').text().replace(/\s+/g, ' ')
+        // The message and each button as separate texts, since whitespace between elements isn't on screen.
+        return this.wrapper
+            .find('.bar')
+            .findAll('.message, button')
+            .map(part => part.text().replace(/\s+/g, ' '))
+            .join(' ')
     }
 
     // --- Edit panel ---

@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Icon from './Icon.vue'
+import { useMessages } from '../i18n'
 import type { PlayerView, Side } from './types'
 
 const props = defineProps<{
     player: PlayerView
     side: Side
 }>()
+
+const t = useMessages()
 
 /**
  * Doubles: where each player stands. The phone is on the table's near long side
@@ -35,17 +38,12 @@ const emit = defineEmits<{
 
 <template>
     <div class="half" :class="side">
-        <button
-            class="point"
-            type="button"
-            :aria-label="`Point for ${player.name}`"
-            @click="emit('increase')"
-        >
+        <button class="point" type="button" :aria-label="t.pointFor(player.name)" @click="emit('increase')">
             <span v-if="!player.courts" class="name" :style="{ background: player.color }">{{
                 player.name
             }}</span>
             <span class="score">{{ player.score }}</span>
-            <span class="games">games {{ player.games }}</span>
+            <span class="games">{{ t.gamesWon(player.games) }}</span>
         </button>
         <div
             v-for="court in courts"
@@ -59,7 +57,7 @@ const emit = defineEmits<{
         <button
             class="minus"
             type="button"
-            :aria-label="`Take a point from ${player.name}`"
+            :aria-label="t.takePointFrom(player.name)"
             @click="emit('decrease')"
         >
             <Icon name="minus" />

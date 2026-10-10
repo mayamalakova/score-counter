@@ -16,6 +16,12 @@ export default tseslint.config(
         }
     },
     {
+        // TypeScript already reports undefined names, and knows DOM types such as
+        // HTMLElement that no-undef doesn't (typescript-eslint's recommendation).
+        files: ['**/*.ts', '**/*.vue'],
+        rules: { 'no-undef': 'off' }
+    },
+    {
         languageOptions: {
             globals: {
                 localStorage: 'readonly',

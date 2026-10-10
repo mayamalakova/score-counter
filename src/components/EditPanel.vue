@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { withServer } from '../scoring/doubles'
 import type { DoublesPlayer, Serve } from '../scoring/match'
 import type { Side } from './types'
+import { useMessages } from '../i18n'
 
 defineProps<{
     colorLeft: string
@@ -16,6 +17,8 @@ const emit = defineEmits<{
     'end-match': []
     rename: [player: DoublesPlayer, name: string]
 }>()
+
+const t = useMessages()
 
 const playerLeft = defineModel<string>('playerLeft', { required: true })
 const playerRight = defineModel<string>('playerRight', { required: true })
@@ -50,30 +53,32 @@ const confirmingEnd = ref(false)
             aria-labelledby="end-title"
             aria-describedby="end-message"
         >
-            <h2 id="end-title">End this match?</h2>
-            <p id="end-message">The score will be lost.</p>
+            <h2 id="end-title">{{ t.endMatchQuestion }}</h2>
+            <p id="end-message">{{ t.scoreWillBeLost }}</p>
             <div class="actions">
-                <button class="button cancel-end" type="button" @click="confirmingEnd = false">Cancel</button>
+                <button class="button cancel-end" type="button" @click="confirmingEnd = false">
+                    {{ t.cancel }}
+                </button>
                 <button class="button danger confirm-end" type="button" @click="emit('end-match')">
-                    End match
+                    {{ t.endMatch }}
                 </button>
             </div>
         </section>
-        <form v-else class="panel" aria-label="Edit players and server" @submit.prevent="emit('done')">
-            <h2>Players</h2>
+        <form v-else class="panel" :aria-label="t.editPlayers" @submit.prevent="emit('done')">
+            <h2>{{ t.players }}</h2>
             <template v-if="doublesPlayers">
                 <div v-for="row in doublesPlayers" :key="row.player.id" class="row">
                     <input
                         :value="row.name"
                         class="name-input"
-                        :aria-label="`Player ${row.player.id}`"
-                        placeholder="Player name"
+                        :aria-label="t.playerId(row.player.id)"
+                        :placeholder="t.playerName"
                         :style="{ borderColor: row.color }"
                         @input="emit('rename', row.player, ($event.target as HTMLInputElement).value)"
                     />
                     <label class="serves">
                         <input v-model="doublesServer" type="radio" name="serving" :value="row.player" />
-                        Serving
+                        {{ t.serving }}
                     </label>
                     <label class="serves">
                         <input
@@ -83,7 +88,7 @@ const confirmingEnd = ref(false)
                             :value="row.player"
                             :disabled="doublesServer !== undefined && row.player.team === doublesServer.team"
                         />
-                        Receiving
+                        {{ t.receiving }}
                     </label>
                 </div>
             </template>
@@ -92,31 +97,33 @@ const confirmingEnd = ref(false)
                     <input
                         v-model="playerLeft"
                         class="name-input"
-                        aria-label="Left player"
-                        placeholder="Player name"
+                        :aria-label="t.leftPlayer"
+                        :placeholder="t.playerName"
                         :style="{ borderColor: colorLeft }"
                     />
                     <label class="serves">
                         <input v-model="server" type="radio" name="server-now" value="left" />
-                        Serving now
+                        {{ t.servingNow }}
                     </label>
                 </div>
                 <div class="row">
                     <input
                         v-model="playerRight"
                         class="name-input"
-                        aria-label="Right player"
-                        placeholder="Player name"
+                        :aria-label="t.rightPlayer"
+                        :placeholder="t.playerName"
                         :style="{ borderColor: colorRight }"
                     />
                     <label class="serves">
                         <input v-model="server" type="radio" name="server-now" value="right" />
-                        Serving now
+                        {{ t.servingNow }}
                     </label>
                 </div>
             </template>
-            <button class="button primary done" type="submit">Done</button>
-            <button class="end-match" type="button" @click="confirmingEnd = true">End match</button>
+            <button class="button primary done" type="submit">{{ t.done }}</button>
+            <button class="end-match" type="button" @click="confirmingEnd = true">
+                {{ t.endMatch }}
+            </button>
         </form>
     </div>
 </template>
