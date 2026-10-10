@@ -20,8 +20,10 @@ export function useFullscreen() {
         try {
             if (document.fullscreenElement) await document.exitFullscreen()
             else await document.documentElement.requestFullscreen({ navigationUI: 'hide' })
-        } catch {
+        } catch (error) {
             // Refused (e.g. not from a tap): nothing changes, and the button stays as it was.
+            // Logged so the reason can be found in the browser console on the phone.
+            console.log('Full screen was refused', error)
         }
     }
 

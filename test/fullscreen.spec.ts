@@ -35,6 +35,7 @@ function restoreFullscreen() {
 afterEach(() => {
     app.wrapper.unmount()
     restoreFullscreen()
+    vi.restoreAllMocks()
 })
 
 describe('full screen', () => {
@@ -72,13 +73,16 @@ describe('full screen', () => {
         expect(app.fullscreenLabel).toBe('Full screen')
     })
 
-    it('stays as it was when the browser refuses', async () => {
+    it('stays as it was when the browser refuses, and logs why', async () => {
+        const log = vi.spyOn(console, 'log').mockImplementation(() => {})
         supportFullscreen()
-        document.documentElement.requestFullscreen = vi.fn(() => Promise.reject(new TypeError('denied')))
+        const denied = new TypeError('denied')
+        document.documentElement.requestFullscreen = vi.fn(() => Promise.reject(denied))
         app = new AppDriver()
         await app.start()
 
         await app.toggleFullscreen()
         expect(app.fullscreenLabel).toBe('Full screen')
+        expect(log).toHaveBeenCalledWith('Full screen was refused', denied)
     })
 })
