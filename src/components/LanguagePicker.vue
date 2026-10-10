@@ -20,6 +20,13 @@ function close(returnFocus = true) {
     if (returnFocus) toggleButton.value?.focus()
 }
 
+// Escape closes an open menu, and stops there so it doesn't also close whatever holds the picker.
+function onEscape(event: KeyboardEvent) {
+    if (!open.value) return
+    event.stopPropagation()
+    close()
+}
+
 // A tap anywhere else closes the menu, without taking the focus back to the button.
 function onPointerDown(event: PointerEvent) {
     if (!root.value?.contains(event.target as Node)) close(false)
@@ -55,7 +62,7 @@ onUnmounted(() => document.removeEventListener('pointerdown', onPointerDown))
 </script>
 
 <template>
-    <div ref="root" class="language-picker" @keydown.escape="open && close()">
+    <div ref="root" class="language-picker" @keydown.escape="onEscape">
         <button
             ref="toggleButton"
             class="toggle"
@@ -98,8 +105,9 @@ onUnmounted(() => document.removeEventListener('pointerdown', onPointerDown))
     align-items: center;
     gap: 6px;
     padding: 8px 8px 8px 10px;
-    /* Light on the blue set-up screen, dark on the white edit panel. */
-    border: 2px solid color-mix(in srgb, currentColor 65%, transparent);
+    /* Light on the blue set-up screen, dark on the white edit panel; solid where color-mix is missing. */
+    border: 2px solid currentColor;
+    border-color: color-mix(in srgb, currentColor 65%, transparent);
     border-radius: var(--radius);
     background: none;
     font-size: 1.1rem;
