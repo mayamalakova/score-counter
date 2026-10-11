@@ -32,7 +32,7 @@ describe('languages', () => {
         expect(document.title).toBe('Počítadlo stolního tenisu')
 
         await app.start({ bestOf: 5 })
-        expect(info()).toBe('Set 1 · 3 z 5 setů')
+        expect(info()).toBe('Set 1 · 3 z 5')
         expect(app.wrapper.find('.point').attributes('aria-label')).toBe('Bod pro: Ana')
     })
 
@@ -41,7 +41,7 @@ describe('languages', () => {
         await app.chooseLanguage('bg')
         expect(heading()).toBe('Нов мач')
         await app.start({ bestOf: 1, doubles: {} })
-        expect(info()).toBe('Гейм 1 · 1 гейм · двойки')
+        expect(info()).toBe('Гейм 1 · 1 от 1 · двойки')
     })
 
     it('remembers the choice on this phone', async () => {
@@ -86,7 +86,7 @@ describe('languages', () => {
         await app.chooseLanguage('bg')
         expect(app.wrapper.find('.panel h2').text()).toBe('Играчи')
         await app.closeEdit()
-        expect(info()).toBe('Гейм 1 · 3 от 5 гейма')
+        expect(info()).toBe('Гейм 1 · 3 от 5')
         expect(app.scores).toEqual(['3', '0'])
     })
 

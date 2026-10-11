@@ -23,8 +23,8 @@ export const cs: Messages = {
 
     // Match settings
     gameNumber: number => `Set ${number}`,
-    // "3 z 5 setů": short enough for the games box on a phone.
-    bestOfGames: bestOf => (bestOf === 1 ? '1 set' : `${(bestOf + 1) / 2} z ${bestOf} setů`),
+    // "3 z 5": short enough for the games box, where "Set 2" above it names the unit.
+    bestOfGames: bestOf => `${(bestOf + 1) / 2} z ${bestOf}`,
     toPoints: points => `do ${points}`,
     doublesShort: 'čtyřhra',
 
