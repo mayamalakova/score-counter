@@ -114,7 +114,8 @@ const emit = defineEmits<{
 }
 
 .name {
-    max-width: 80%;
+    /* Clear of the corner buttons: 44px wide, 10px from the edge, plus a little air. */
+    max-width: min(80%, calc(100% - 2 * (10px + 44px + 8px)));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -176,8 +177,9 @@ const emit = defineEmits<{
     top: 16px;
 }
 
+/* Above the games box at the foot of the net, which can reach into both halves. */
 .court.near {
-    bottom: 16px;
+    bottom: 64px;
 }
 
 .serve-dot {

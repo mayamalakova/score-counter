@@ -43,6 +43,14 @@ describe('the scoreboard', () => {
         expect(app.servingHalf).toBe('right')
     })
 
+    it('reads out who serves, by name', async () => {
+        await app.start()
+        const ball = () => app.wrapper.find('.ball-position').attributes('aria-label')
+        expect(ball()).toBe(`${app.names[0]} serves`)
+        await app.point('left', 2)
+        expect(ball()).toBe(`${app.names[1]} serves`)
+    })
+
     it('keeps restart off the board, in the menu', async () => {
         await app.start()
         expect(app.wrapper.find('.board [aria-label="Restart game"]').exists()).toBe(false)

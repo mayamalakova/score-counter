@@ -32,6 +32,12 @@ const emit = defineEmits<{
 
 const t = useMessages()
 
+/** Who serves, for screen readers: in doubles the player on the serving pair's right half-court. */
+const serverName = computed(() => {
+    const player = props.server === 'left' ? props.left : props.right
+    return player.courts ? player.courts.right : player.name
+})
+
 /** The match settings under the game number, e.g. "best of 5 · to 11". */
 const settings = computed(() =>
     [
@@ -60,7 +66,7 @@ const settings = computed(() =>
             @increase="emit('increase-right')"
             @decrease="emit('decrease-right')"
         />
-        <ServerBall :side="server" />
+        <ServerBall :side="server" :label="t.serves(serverName)" />
 
         <!-- Games won sit at the bottom end of the net, each in its player's colour. -->
         <div class="match-score">
@@ -124,10 +130,12 @@ const settings = computed(() =>
     background: #fff;
     color: var(--ink);
     box-shadow: 0 -2px 8px rgb(0 0 0 / 0.25);
-    white-space: nowrap;
+    /* Clear of the minus buttons in the bottom corners (up to 60px, 12px from the edge). */
+    max-width: calc(100% - 2 * (60px + 12px + 8px));
 }
 
 .games-won {
+    flex: none;
     min-width: 2.2rem;
     display: flex;
     align-items: center;
@@ -145,9 +153,11 @@ const settings = computed(() =>
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-width: 0;
     padding: 4px 12px;
     font-size: 0.75rem;
     line-height: 1.25;
+    text-align: center;
 }
 
 .info strong {

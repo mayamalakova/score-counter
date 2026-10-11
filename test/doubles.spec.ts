@@ -53,6 +53,7 @@ describe('the doubles board', () => {
         await app.point('left', 2)
         expect(app.servingPlayer).toBe('Ben')
         expect(app.servingHalf).toBe('right')
+        expect(app.wrapper.find('.ball-position').attributes('aria-label')).toBe('Ben serves')
     })
 
     it('starts game 2 with the first receiver serving to the first server', async () => {

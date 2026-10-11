@@ -4,6 +4,8 @@ import type { Side } from './types'
 
 const props = defineProps<{
     side: Side
+    /** Read out instead of the picture, e.g. "Ana serves". */
+    label: string
 }>()
 
 // Changing the key restarts the hop animation on every change of service.
@@ -15,7 +17,7 @@ watch(
 </script>
 
 <template>
-    <div class="ball-position" :class="side" role="img" :aria-label="`${side} player serves`">
+    <div class="ball-position" :class="side" role="img" :aria-label="label">
         <span :key="hops" class="ball" :class="{ hop: hops > 0 }"></span>
     </div>
 </template>

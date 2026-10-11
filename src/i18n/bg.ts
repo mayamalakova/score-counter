@@ -38,6 +38,7 @@ export const bg: Messages = {
     exitFullScreen: 'Изход от цял екран',
     pointFor: name => `Точка за ${name}`,
     takePointFrom: name => `Отнеми точка от ${name}`,
+    serves: name => `${name} сервира`,
     gamesWon: games => `геймове ${games}`,
     winsGame: game => `печели гейм ${game}`,
     undo: 'Отмени',

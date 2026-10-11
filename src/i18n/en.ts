@@ -33,6 +33,7 @@ export const en = {
     exitFullScreen: 'Exit full screen',
     pointFor: (name: string) => `Point for ${name}`,
     takePointFrom: (name: string) => `Take a point from ${name}`,
+    serves: (name: string) => `${name} serves`,
     gamesWon: (games: number) => `games ${games}`,
     winsGame: (game: number) => `wins game ${game}`,
     undo: 'Undo',

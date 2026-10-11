@@ -38,6 +38,7 @@ export const cs: Messages = {
     exitFullScreen: 'Zrušit celou obrazovku',
     pointFor: name => `Bod pro: ${name}`,
     takePointFrom: name => `Odebrat bod: ${name}`,
+    serves: name => `Podává ${name}`,
     gamesWon: games => `sety ${games}`,
     winsGame: game => `vyhrává ${game}. set`,
     undo: 'Zpět',
