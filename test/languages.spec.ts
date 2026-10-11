@@ -14,7 +14,7 @@ afterEach(() => {
 
 const heading = () => app.wrapper.find('h1').text()
 const startButton = () => app.wrapper.find('button.start').text()
-const info = () => app.wrapper.find('.info').text()
+const info = () => app.info
 
 describe('languages', () => {
     it('starts in English', () => {
@@ -55,7 +55,7 @@ describe('languages', () => {
         app = new AppDriver()
         await app.chooseLanguage('bg')
         await app.start()
-        await app.wrapper.find('[aria-label="Промени играчите и сервиса"]').trigger('click')
+        await app.wrapper.find('[aria-label="Меню на мача"]').trigger('click')
         await app.endMatch()
         expect(heading()).toBe('Нов мач')
     })

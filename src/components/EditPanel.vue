@@ -4,9 +4,12 @@ import { withServer } from '../scoring/doubles'
 import type { DoublesPlayer, Serve } from '../scoring/match'
 import type { Side } from './types'
 import { useMessages, type Language } from '../i18n'
+import Icon from './Icon.vue'
 import LanguagePicker from './LanguagePicker.vue'
 
 defineProps<{
+    /** The game a restart would clear, for the confirmation. */
+    gameNumber: number
     colorLeft: string
     colorRight: string
     /** Doubles: the four players, left team first. */
@@ -16,6 +19,7 @@ defineProps<{
 const emit = defineEmits<{
     done: []
     'end-match': []
+    restart: []
     rename: [player: DoublesPlayer, name: string]
 }>()
 
@@ -43,13 +47,14 @@ const doublesReceiver = computed({
 })
 
 // Ending a match throws the score away, so it takes a second, deliberate tap.
-const confirmingEnd = ref(false)
+// Restarting the game throws its points away too, so it asks the same way.
+const confirming = ref<'end' | 'restart' | null>(null)
 </script>
 
 <template>
     <div class="backdrop">
         <section
-            v-if="confirmingEnd"
+            v-if="confirming === 'end'"
             class="panel"
             role="alertdialog"
             aria-labelledby="end-title"
@@ -58,11 +63,29 @@ const confirmingEnd = ref(false)
             <h2 id="end-title">{{ t.endMatchQuestion }}</h2>
             <p id="end-message">{{ t.scoreWillBeLost }}</p>
             <div class="actions">
-                <button class="button cancel-end" type="button" @click="confirmingEnd = false">
+                <button class="button cancel-end" type="button" @click="confirming = null">
                     {{ t.cancel }}
                 </button>
                 <button class="button danger confirm-end" type="button" @click="emit('end-match')">
                     {{ t.endMatch }}
+                </button>
+            </div>
+        </section>
+        <section
+            v-else-if="confirming === 'restart'"
+            class="panel"
+            role="alertdialog"
+            aria-labelledby="restart-title"
+            aria-describedby="restart-message"
+        >
+            <h2 id="restart-title">{{ t.restartGameQuestion(gameNumber) }}</h2>
+            <p id="restart-message">{{ t.restartGameHint }}</p>
+            <div class="actions">
+                <button class="button cancel-restart" type="button" @click="confirming = null">
+                    {{ t.cancel }}
+                </button>
+                <button class="button danger confirm-restart" type="button" @click="emit('restart')">
+                    <Icon name="restart" /> {{ t.restartGame }}
                 </button>
             </div>
         </section>
@@ -126,8 +149,12 @@ const confirmingEnd = ref(false)
                     </label>
                 </div>
             </template>
+            <!-- Restart lives here rather than on the board, where a stray tap would cost a game. -->
+            <button class="button restart" type="button" @click="confirming = 'restart'">
+                <Icon name="restart" /> {{ t.restartGame }}
+            </button>
             <button class="button primary done" type="submit">{{ t.done }}</button>
-            <button class="end-match" type="button" @click="confirmingEnd = true">
+            <button class="end-match" type="button" @click="confirming = 'end'">
                 {{ t.endMatch }}
             </button>
         </form>
@@ -204,6 +231,7 @@ h2 {
     font-size: 0.9rem;
 }
 
+.restart,
 .done {
     width: 100%;
     justify-content: center;

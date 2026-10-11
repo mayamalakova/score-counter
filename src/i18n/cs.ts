@@ -31,6 +31,7 @@ export const cs: Messages = {
     doublesShort: 'čtyřhra',
 
     // Scoreboard
+    matchMenu: 'Nabídka zápasu',
     restartGame: 'Začít set znovu',
     editPlayers: 'Upravit hráče a podání',
     fullScreen: 'Celá obrazovka',
@@ -53,6 +54,8 @@ export const cs: Messages = {
     endMatch: 'Ukončit zápas',
     endMatchQuestion: 'Ukončit tento zápas?',
     scoreWillBeLost: 'Skóre se ztratí.',
+    restartGameQuestion: game => `Začít ${game}. set znovu?`,
+    restartGameHint: 'Skóre tohoto setu se vrátí na 0:0. Předchozí sety zůstanou.',
     cancel: 'Zrušit',
 
     // Result

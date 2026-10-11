@@ -252,7 +252,12 @@ function rename(player: DoublesPlayer, name: string) {
     else partners.value = { ...partners.value, [player.team]: name }
 }
 
+/**
+ * Restart comes from the menu. It closes the panel without applying its server choice,
+ * which was read before the restart and may no longer match the game's start.
+ */
 function restart() {
+    editMode.value = false
     match.value = scoring.restart(match.value)
 }
 
@@ -293,8 +298,7 @@ function undo() {
             @decrease-left="decreaseLeft"
             @increase-right="increaseRight"
             @decrease-right="decreaseRight"
-            @toggle-edit="toggleEdit"
-            @restart="restart"
+            @open-menu="toggleEdit"
             @undo="undo"
             @next-game="nextGame"
         />
@@ -318,10 +322,12 @@ function undo() {
             v-model:serve="newServe"
             v-model:language="language"
             :doubles-players="doublesPlayers"
+            :game-number="gameNumber"
             :color-left="left.color"
             :color-right="right.color"
             @done="toggleEdit"
             @end-match="endMatch"
+            @restart="restart"
             @rename="rename"
         />
 

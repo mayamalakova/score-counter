@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // A handful of stroke icons, inline so they need no icon font.
 const paths = {
+    menu: ['M4 6h16', 'M4 12h16', 'M4 18h16'],
     restart: ['M3 12a9 9 0 1 0 3-6.7L3 8', 'M3 3v5h5'],
     edit: ['M12 20h9', 'M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'],
     next: ['M5 12h14', 'm12 5 7 7-7 7'],

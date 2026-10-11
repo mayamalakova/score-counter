@@ -25,17 +25,16 @@ const emit = defineEmits<{
     'decrease-left': []
     'increase-right': []
     'decrease-right': []
-    'toggle-edit': []
-    restart: []
+    'open-menu': []
     undo: []
     'next-game': []
 }>()
 
 const t = useMessages()
 
-const info = computed(() =>
+/** The match settings under the game number, e.g. "best of 5 · to 11". */
+const settings = computed(() =>
     [
-        t.value.gameNumber(props.gameNumber),
         t.value.bestOfGames(props.bestOf),
         t.value.toPoints(props.pointsToWin),
         props.doubles && t.value.doublesShort
@@ -47,155 +46,143 @@ const info = computed(() =>
 
 <template>
     <div class="board">
-        <header class="top-bar">
-            <button class="icon-button" type="button" :aria-label="t.restartGame" @click="emit('restart')">
-                <Icon name="restart" />
-            </button>
-            <span class="info">{{ info }}</span>
-            <div class="actions">
-                <!-- The class lands on the button (its only root), so this file's .icon-button style applies. -->
-                <FullscreenButton class="icon-button" />
-                <button
-                    class="icon-button"
-                    type="button"
-                    :aria-label="t.editPlayers"
-                    @click="emit('toggle-edit')"
-                >
-                    <Icon name="edit" />
-                </button>
-            </div>
-        </header>
+        <PlayerHalf
+            side="left"
+            :player="left"
+            :serving="server === 'left'"
+            @increase="emit('increase-left')"
+            @decrease="emit('decrease-left')"
+        />
+        <PlayerHalf
+            side="right"
+            :player="right"
+            :serving="server === 'right'"
+            @increase="emit('increase-right')"
+            @decrease="emit('decrease-right')"
+        />
+        <ServerBall :side="server" />
 
-        <div class="table">
-            <PlayerHalf
-                side="left"
-                :player="left"
-                @increase="emit('increase-left')"
-                @decrease="emit('decrease-left')"
-            />
-            <PlayerHalf
-                side="right"
-                :player="right"
-                @increase="emit('increase-right')"
-                @decrease="emit('decrease-right')"
-            />
-            <div v-if="doubles" class="centre-line" aria-hidden="true"></div>
-            <div class="net" aria-hidden="true"></div>
-            <ServerBall :side="server" :doubles="doubles" />
-            <GameWonBar
-                v-if="gameWinner"
-                :winner="gameWinner"
-                :game-number="gameNumber"
-                @undo="emit('undo')"
-                @next-game="emit('next-game')"
-            />
+        <!-- Games won sit at the bottom end of the net, each in its player's colour. -->
+        <div class="match-score">
+            <span
+                class="games-won"
+                role="img"
+                :aria-label="`${left.name}: ${t.gamesWon(left.games)}`"
+                :style="{ background: left.color }"
+                >{{ left.games }}</span
+            >
+            <span class="info">
+                <strong>{{ t.gameNumber(gameNumber) }}</strong>
+                <span>{{ settings }}</span>
+            </span>
+            <span
+                class="games-won"
+                role="img"
+                :aria-label="`${right.name}: ${t.gamesWon(right.games)}`"
+                :style="{ background: right.color }"
+                >{{ right.games }}</span
+            >
         </div>
+
+        <button class="corner-button menu" type="button" :aria-label="t.matchMenu" @click="emit('open-menu')">
+            <Icon name="menu" />
+        </button>
+        <!-- The class lands on the button (its only root), so this file's .corner-button style applies. -->
+        <FullscreenButton class="corner-button fullscreen" />
+
+        <GameWonBar
+            v-if="gameWinner"
+            :winner="gameWinner"
+            :game-number="gameNumber"
+            @undo="emit('undo')"
+            @next-game="emit('next-game')"
+        />
     </div>
 </template>
 
 <style scoped>
+/* Each half fills its side of the screen; the white net between them is the only line. */
 .board {
+    --net: 6px;
+    position: relative;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 8px 12px 12px;
-    gap: 8px;
-}
-
-/* Sideways the net runs down the middle: equal outer columns keep the info centred over it. */
-.top-bar {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--net);
+    background: var(--line);
 }
 
-.actions {
+.match-score {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    justify-content: flex-end;
-    gap: 8px;
+    align-items: stretch;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 -2px 8px rgb(0 0 0 / 0.25);
+    white-space: nowrap;
 }
 
-.info {
-    font-size: clamp(0.8rem, 2.8vmin, 1.1rem);
-    opacity: 0.9;
-    text-align: center;
-}
-
-.icon-button {
-    width: 40px;
-    height: 40px;
+.games-won {
+    min-width: 2.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid rgb(255 255 255 / 0.7);
+    padding: 0 0.3rem;
+    color: #fff;
+    font-family: var(--font-score);
+    font-weight: 900;
+    font-size: clamp(1.6rem, 7vmin, 2.3rem);
+    font-variant-numeric: tabular-nums;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    line-height: 1.25;
+}
+
+.info strong {
+    font-size: 0.9rem;
+}
+
+.corner-button {
+    position: absolute;
+    top: 10px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
     border-radius: var(--radius);
-    background: none;
+    background: rgb(0 0 0 / 0.22);
+    z-index: 2;
 }
 
-.table {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border: 4px solid var(--line);
-    border-radius: 6px;
+.menu {
+    left: 10px;
 }
 
-.net {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 4px;
-    margin-left: -2px;
-    background: var(--line);
-    pointer-events: none;
+.fullscreen {
+    right: 10px;
 }
 
-/* Doubles: the centre line splits each end into two half-courts. */
-.centre-line {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 2px;
-    margin-top: -1px;
-    background: rgb(255 255 255 / 0.75);
-    pointer-events: none;
-}
-
+/* Upright the halves stack and the net runs across the middle. */
 @media (orientation: portrait) {
-    /* Upright the net runs across, so the info takes all the room between the buttons instead. */
-    .top-bar {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .centre-line {
-        top: 0;
-        bottom: 0;
-        left: 50%;
-        right: auto;
-        width: 2px;
-        height: auto;
-        margin: 0 0 0 -1px;
-    }
-
-    .table {
+    .board {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr;
-    }
-
-    .net {
-        top: 50%;
-        bottom: auto;
-        left: 0;
-        right: 0;
-        width: auto;
-        height: 4px;
-        margin: -2px 0 0;
+        column-gap: 0;
+        row-gap: var(--net);
     }
 }
 </style>

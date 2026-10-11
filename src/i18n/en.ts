@@ -26,6 +26,7 @@ export const en = {
     doublesShort: 'doubles',
 
     // Scoreboard
+    matchMenu: 'Match menu',
     restartGame: 'Restart game',
     editPlayers: 'Edit players and server',
     fullScreen: 'Full screen',
@@ -48,6 +49,8 @@ export const en = {
     endMatch: 'End match',
     endMatchQuestion: 'End this match?',
     scoreWillBeLost: 'The score will be lost.',
+    restartGameQuestion: (game: number) => `Restart game ${game}?`,
+    restartGameHint: 'The score of this game goes back to 0–0. Earlier games stay.',
     cancel: 'Cancel',
 
     // Result

@@ -46,6 +46,15 @@ describe('the doubles board', () => {
         expect(app.server).toBe('right')
     })
 
+    it("marks the server's own name tag, since the ball only shows the serving pair", async () => {
+        await app.start({ doubles: { server: 'A1' } })
+        expect(app.servingPlayer).toBe('Ana')
+        expect(app.servingHalf).toBe('left')
+        await app.point('left', 2)
+        expect(app.servingPlayer).toBe('Ben')
+        expect(app.servingHalf).toBe('right')
+    })
+
     it('starts game 2 with the first receiver serving to the first server', async () => {
         await app.start({ doubles: { server: 'A1' } })
         await app.winGame('left')

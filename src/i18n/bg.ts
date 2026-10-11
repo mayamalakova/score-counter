@@ -31,6 +31,7 @@ export const bg: Messages = {
     doublesShort: 'двойки',
 
     // Scoreboard
+    matchMenu: 'Меню на мача',
     restartGame: 'Започни гейма отначало',
     editPlayers: 'Промени играчите и сервиса',
     fullScreen: 'Цял екран',
@@ -53,6 +54,8 @@ export const bg: Messages = {
     endMatch: 'Край на мача',
     endMatchQuestion: 'Да приключи ли мачът?',
     scoreWillBeLost: 'Резултатът ще се изгуби.',
+    restartGameQuestion: game => `Да започне ли гейм ${game} отначало?`,
+    restartGameHint: 'Резултатът в този гейм се връща на 0:0. Предишните геймове остават.',
     cancel: 'Отказ',
 
     // Result
