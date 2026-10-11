@@ -56,6 +56,22 @@ button {
     outline-offset: 2px;
 }
 
+/* A white card on the table blue: a result, a shared result's QR code, an unreadable link. */
+.card {
+    max-width: 100%;
+    padding: 16px 20px 20px;
+    border-radius: 14px;
+    background: #fff;
+    color: var(--ink);
+}
+
+/* Room for a best of 7 in a result table on a small phone. */
+@media (max-width: 420px) {
+    .card {
+        padding-inline: 12px;
+    }
+}
+
 /* Buttons on white cards and bars. */
 .button {
     display: inline-flex;
