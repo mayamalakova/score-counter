@@ -3,6 +3,9 @@ import { computed, onUnmounted, ref, watch, type Ref } from 'vue'
 /** No tap for this long and the phone may dim and sleep as usual, e.g. a match left running. */
 export const IDLE_AFTER_MS = 5 * 60 * 1000
 
+/** A lock taken back sooner than this isn't asked for again until the next tap. */
+const QUICK_RELEASE_MS = 10 * 1000
+
 /**
  * Keeps the screen on while `wanted` is true, where the browser supports it (the
  * Screen Wake Lock API), unless nobody has touched the screen for IDLE_AFTER_MS: then
@@ -15,6 +18,7 @@ export const IDLE_AFTER_MS = 5 * 60 * 1000
 export function useWakeLock(wanted: Ref<boolean>) {
     let lock: WakeLockSentinel | null = null
     let requesting = false
+    let acquiredAt = 0
 
     const idle = ref(false)
     let idleTimer: ReturnType<typeof setTimeout> | undefined
@@ -24,6 +28,15 @@ export function useWakeLock(wanted: Ref<boolean>) {
         idle.value = false
         clearTimeout(idleTimer)
         idleTimer = setTimeout(() => (idle.value = true), IDLE_AFTER_MS)
+        sync()
+    }
+
+    // Asked for again when the browser lets go (e.g. battery saver), unless it took the lock
+    // back straight away: some do that every time, and asking at once would loop. The next
+    // tap asks again instead.
+    function onReleased() {
+        if (Date.now() - acquiredAt < QUICK_RELEASE_MS) return
+        sync()
     }
 
     async function acquire() {
@@ -32,7 +45,8 @@ export function useWakeLock(wanted: Ref<boolean>) {
         requesting = true
         try {
             lock = await navigator.wakeLock.request('screen')
-            lock.addEventListener('release', sync)
+            acquiredAt = Date.now()
+            lock.addEventListener('release', onReleased)
             // Play may have ended, or gone idle, while the browser was answering.
             if (!keepOn.value) await release()
         } catch (error) {
@@ -61,7 +75,7 @@ export function useWakeLock(wanted: Ref<boolean>) {
     // Coming back to the page (e.g. after unlocking the phone) counts as activity too.
     function onVisibilityChange() {
         if (document.visibilityState === 'visible') onActivity()
-        sync()
+        else sync()
     }
 
     onActivity()

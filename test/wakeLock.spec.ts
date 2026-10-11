@@ -14,16 +14,19 @@ let request: ReturnType<typeof vi.fn>
 /** Gives the page a working Wake Lock API, as on Android Chrome or iOS Safari. */
 function supportWakeLock() {
     held = null
-    request = vi.fn(async () => {
-        const lock = Object.assign(new EventTarget(), {
-            released: false,
-            release: vi.fn(async () => browserReleases(lock))
-        })
-        held = lock
-        return lock
-    })
+    request = vi.fn(async () => grantLock())
     Object.defineProperty(navigator, 'wakeLock', { configurable: true, value: { request } })
     Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => visibility })
+}
+
+/** A lock as the browser hands it out, remembered as the one held. */
+function grantLock() {
+    const lock = Object.assign(new EventTarget(), {
+        released: false,
+        release: vi.fn(async () => browserReleases(lock))
+    })
+    held = lock
+    return lock
 }
 
 /** What the browser does when a lock ends, whoever ended it. */
@@ -161,15 +164,50 @@ describe('keeping the screen on', () => {
     })
 
     it('asks again when the browser lets go during play, e.g. on battery saver', async () => {
+        vi.useFakeTimers({ toFake: ['Date'] })
         supportWakeLock()
         app = new AppDriver()
         await app.start()
         await flushPromises()
 
+        vi.setSystemTime(Date.now() + 60 * 1000)
         browserReleases(held!)
         await flushPromises()
         expect(request).toHaveBeenCalledTimes(2)
         expect(screenOn()).toBe(true)
+        vi.useRealTimers()
+    })
+
+    it("doesn't keep asking when the browser takes the lock straight back, but asks at the next tap", async () => {
+        supportWakeLock()
+        app = new AppDriver({ attachTo: document.body })
+        await app.start()
+        await flushPromises()
+
+        browserReleases(held!)
+        await flushPromises()
+        expect(request).toHaveBeenCalledTimes(1)
+        expect(screenOn()).toBe(false)
+
+        await app.wrapper.find('button.point').trigger('pointerdown')
+        await flushPromises()
+        expect(request).toHaveBeenCalledTimes(2)
+        expect(screenOn()).toBe(true)
+    })
+
+    it('lets go of a lock that arrives after play has ended', async () => {
+        supportWakeLock()
+        let grant: () => void = () => {}
+        request.mockImplementationOnce(() => new Promise(resolve => (grant = () => resolve(grantLock()))))
+        app = new AppDriver()
+        await app.start()
+        // The match ends while the browser is still answering.
+        await app.openEdit()
+        await app.endMatch()
+        grant()
+        await flushPromises()
+        expect(held).not.toBeNull()
+        expect(screenOn()).toBe(false)
     })
 })
 
