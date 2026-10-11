@@ -122,10 +122,10 @@ watch(
     /*
      * Only left, so the ball glides across in doubles rather than jumping. It keeps clear
      * of the upper player's minus button, which sits at the net's left end (12px from the
-     * edge, as wide as PlayerHalf's .minus); the bottom end mirrors it.
+     * edge, --minus-size wide); the bottom end mirrors it.
      */
     .ball-position.doubles {
-        --inset: calc(12px + clamp(44px, 10vmin, 60px) + 12px);
+        --inset: calc(12px + var(--minus-size) + 12px);
         right: auto;
         left: calc(100% - var(--inset) - var(--ball-size));
     }

@@ -99,8 +99,9 @@ now being modernized.
    - Name tags in the player colour with a white border; games won in a box at the foot of
      the net (with the game number and settings); no earlier-game scores during play,
      since the summary has them.
-   - The serve marker is just the orange ball at the top of the net on the server's side,
-     hopping across when service changes. No "2/2": the score already tells which serve.
+   - The serve marker is just the orange ball by the net on the server's side (singles:
+     at the top end; doubles: in the server's half-court, see below), hopping across when
+     service changes. No "2/2": the score already tells which serve.
    - A menu button (top left) opens the match menu: players and serve, language, Restart
      game and End match, both confirmed. Restart is no longer a one-tap button.
 
