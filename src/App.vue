@@ -23,6 +23,7 @@ import type {
 import { resultFromHash, resultLink, type SharedResult } from './sharing/result'
 import { loadLanguage, provideMessages, saveLanguage, type Language } from './i18n'
 import { DEFAULT_DOUBLES_ORDER, load, save } from './storage'
+import { useWakeLock } from './wakeLock'
 
 // A reload goes straight back to where it was: set-up, mid-game or the summary.
 const saved = load()
@@ -110,6 +111,9 @@ const server = computed<Side>(() => (servingPair.value === ends.value.left ? 'le
 const gameWinner = computed(() => currentGame.value.winner)
 const matchWinner = computed(() => scoring.matchWinner(match.value))
 const gameNumber = computed(() => scoring.games(match.value).length)
+
+// The screen stays on while a match is being scored, not on set-up, the summary or a received result.
+useWakeLock(computed(() => gameStarted.value && !matchWinner.value && received.value.status === 'none'))
 
 function doublesName(player: DoublesPlayer): string {
     const name = player.position === 1 ? names.value[player.team] : partners.value[player.team]

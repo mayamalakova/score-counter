@@ -81,7 +81,7 @@ now being modernized.
 5. **Repo hygiene (done).** Component tests for the main flows, contributor docs.
 6. **Features, one PR each (current).** Doubles (done, see below), board redesign "C3" (see
    below), keyboard shortcuts (moved from Phase 3), screen wake lock
-   during play and installable offline PWA (both moved from Phase 4), match history and
+   during play (done) and installable offline PWA (both moved from Phase 4), match history and
    rematch, timeouts, optional spoken score, second-screen display mode.
 
    Context for features: the app is used for Czech amateur league nights (4–5 players a
@@ -184,6 +184,9 @@ now being modernized.
   them with `useMessages()`. Add a text to all three files (TypeScript enforces the same
   keys). In Czech a game is a "set" and a match a "zápas"; in Bulgarian "гейм" and "мач".
   The app starts in English; the chosen language is stored apart from the match.
+- `src/wakeLock.ts` keeps the screen on during play (Screen Wake Lock API), but lets the
+  phone sleep after 5 minutes without a tap, so a forgotten phone doesn't stay lit. That
+  limit is intended, not a bug.
 - `src/storage.ts` saves the app state to localStorage after every change and restores it
   on start. The save is versioned: bump `VERSION` when its shape changes, and older saves
   are ignored. Tests clear localStorage in `test/setup.ts`.
