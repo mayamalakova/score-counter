@@ -7,6 +7,10 @@
 
 :root {
     --table: #1d4e89;
+    /* The serving player's half, a shade lighter so the server shows from across the room. */
+    --table-serving: #2a62a8;
+    /* The round minus buttons; the doubles ball keeps clear of them upright. */
+    --minus-size: clamp(44px, 10vmin, 60px);
     --line: #fff;
     --ink: #16325a;
     --player-a: #2e6bc6;

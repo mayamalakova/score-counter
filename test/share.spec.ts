@@ -92,7 +92,7 @@ describe('opening a shared result', () => {
 
     it('shows the result on its own page', () => {
         expect(app.wrapper.find('#received-title').text()).toBe('Ana wins 3–1')
-        expect(app.wrapper.find('.details').text()).toBe('best of 5 · to 11')
+        expect(app.wrapper.find('.details').text()).toBe('of 5 · to 11')
         const rows = app.wrapper
             .findAll('tbody tr')
             .map(row => row.findAll('th, td').map(cell => cell.text()))

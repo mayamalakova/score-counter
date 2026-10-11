@@ -31,21 +31,31 @@ const t = useMessages()
 .bar {
     position: absolute;
     left: 50%;
-    bottom: 16px;
+    /* Above the games box at the foot of the net. */
+    bottom: 72px;
     transform: translateX(-50%);
+    /* One line where it fits; on a narrow phone the message wraps above the buttons. */
+    width: max-content;
+    max-width: calc(100% - 24px);
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 10px 12px;
     padding: 10px 14px;
     border-radius: 14px;
     background: #fff;
     color: var(--ink);
-    white-space: nowrap;
     z-index: 2;
 }
 
 .message {
     margin: 0;
+    text-align: center;
+}
+
+.bar .button {
+    white-space: nowrap;
 }
 
 /* Upright, the bottom edge holds the lower player's minus button: sit on the net instead. */

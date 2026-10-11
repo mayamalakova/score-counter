@@ -11,7 +11,7 @@ beforeEach(() => {
 describe('a best of 3 from set-up to the next match', () => {
     it('plays through games, changes of ends and the summary', async () => {
         await app.start({ bestOf: 3 })
-        expect(app.info).toBe('Game 1 · best of 3 · to 11')
+        expect(app.info).toBe('Game 1 · of 3')
         expect(app.names).toEqual(['Ana', 'Ben'])
         const [anaColour, benColour] = app.nameColours
 
@@ -19,7 +19,7 @@ describe('a best of 3 from set-up to the next match', () => {
         expect(app.gameWonText).toBe('Ana wins game 1 Undo Next game')
 
         await app.nextGame()
-        expect(app.info).toBe('Game 2 · best of 3 · to 11')
+        expect(app.info).toBe('Game 2 · of 3')
         expect(app.names).toEqual(['Ben', 'Ana'])
         expect(app.nameColours).toEqual([benColour, anaColour])
         expect(app.scores).toEqual(['0', '0'])

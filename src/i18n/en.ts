@@ -21,18 +21,21 @@ export const en = {
 
     // Match settings, as shown during play and on a received result
     gameNumber: (number: number) => `Game ${number}`,
-    bestOfGames: (bestOf: number) => `best of ${bestOf}`,
+    // Only the match length, "of 5": under "Game 2" in the games box it reads as "game 2 of 5".
+    bestOfGames: (bestOf: number) => `of ${bestOf}`,
     toPoints: (points: number) => `to ${points}`,
     doublesShort: 'doubles',
 
     // Scoreboard
+    matchMenu: 'Match menu',
     restartGame: 'Restart game',
-    editPlayers: 'Edit players and server',
     fullScreen: 'Full screen',
     exitFullScreen: 'Exit full screen',
     pointFor: (name: string) => `Point for ${name}`,
     takePointFrom: (name: string) => `Take a point from ${name}`,
-    gamesWon: (games: number) => `games ${games}`,
+    serves: (name: string) => `${name} serves`,
+    // Read out for the games box, e.g. "Ana has won 2 games".
+    gamesWonBy: (name: string, games: number) => `${name} has won ${games} ${games === 1 ? 'game' : 'games'}`,
     winsGame: (game: number) => `wins game ${game}`,
     undo: 'Undo',
     nextGame: 'Next game',
@@ -48,6 +51,8 @@ export const en = {
     endMatch: 'End match',
     endMatchQuestion: 'End this match?',
     scoreWillBeLost: 'The score will be lost.',
+    restartGameQuestion: (game: number) => `Restart game ${game}?`,
+    restartGameHint: 'The score of this game goes back to 0–0. Earlier games stay.',
     cancel: 'Cancel',
 
     // Result
