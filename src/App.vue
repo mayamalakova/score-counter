@@ -310,7 +310,6 @@ function undo() {
             v-if="matchWinner"
             :left="left"
             :right="right"
-            :winner="displayName(matchWinner)"
             :game-scores="gameScores"
             @undo="undo"
             @share="sharing = true"

@@ -113,6 +113,7 @@ flowchart TD
     bar["GameWonBar<br/>undo or next game"]
     full["FullscreenButton<br/>top-right corner, where the browser allows"]
     picker["LanguagePicker<br/>flag menu, on set-up and in the edit panel"]
+    card["ResultCard<br/>headline, details and game-by-game table"]
 
     storage <--> app
     app --> i18n
@@ -129,6 +130,8 @@ flowchart TD
     board --> full
     setup --> picker
     edit --> picker
+    summary --> card
+    received --> card
 ```
 
 - **One screen at a time:** `SetUp` before a match, `Scoreboard` during it.
@@ -136,6 +139,8 @@ flowchart TD
   the summary.
 - **A received result** (the app opened from a QR link) replaces everything with
   `ReceivedResult`, without touching this phone's own match; going back clears the link.
+  Both it and `MatchSummary` show the result with `ResultCard` and add only their own
+  buttons.
 - **The board** has no top bar. The menu button (top left) opens `EditPanel`, which holds
   the players and serve, the language, Restart game and End match (both confirmed). The
   games won and the match settings sit in a box at the foot of the net, the ball sits at
