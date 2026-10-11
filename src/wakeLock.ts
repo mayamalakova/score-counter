@@ -1,8 +1,13 @@
-import { onUnmounted, watch, type Ref } from 'vue'
+import { computed, onUnmounted, ref, watch, type Ref } from 'vue'
+
+/** No tap for this long and the phone may dim and sleep as usual, e.g. a match left running. */
+export const IDLE_AFTER_MS = 5 * 60 * 1000
 
 /**
  * Keeps the screen on while `wanted` is true, where the browser supports it (the
- * Screen Wake Lock API). Browsers drop the lock whenever the page is hidden (another
+ * Screen Wake Lock API), unless nobody has touched the screen for IDLE_AFTER_MS: then
+ * the phone dims and sleeps on its own timer, and the next tap (or coming back to the
+ * page) keeps it on again. Browsers drop the lock whenever the page is hidden (another
  * app, the phone locked), and some drop it on battery saver, so it's asked for again
  * whenever it's released while still wanted and the page is visible.
  * Without the API the phone just dims as usual.
@@ -11,6 +16,16 @@ export function useWakeLock(wanted: Ref<boolean>) {
     let lock: WakeLockSentinel | null = null
     let requesting = false
 
+    const idle = ref(false)
+    let idleTimer: ReturnType<typeof setTimeout> | undefined
+    const keepOn = computed(() => wanted.value && !idle.value)
+
+    function onActivity() {
+        idle.value = false
+        clearTimeout(idleTimer)
+        idleTimer = setTimeout(() => (idle.value = true), IDLE_AFTER_MS)
+    }
+
     async function acquire() {
         if ((lock && !lock.released) || requesting) return
         if (!('wakeLock' in navigator) || document.visibilityState !== 'visible') return
@@ -18,8 +33,8 @@ export function useWakeLock(wanted: Ref<boolean>) {
         try {
             lock = await navigator.wakeLock.request('screen')
             lock.addEventListener('release', sync)
-            // Play may have ended while the browser was answering.
-            if (!wanted.value) await release()
+            // Play may have ended, or gone idle, while the browser was answering.
+            if (!keepOn.value) await release()
         } catch (error) {
             // Refused (e.g. battery saver): the phone dims as usual. Logged for debugging on the phone.
             console.log('Keeping the screen on was refused', error)
@@ -39,14 +54,26 @@ export function useWakeLock(wanted: Ref<boolean>) {
     }
 
     function sync() {
-        if (wanted.value) void acquire()
+        if (keepOn.value) void acquire()
         else void release()
     }
 
-    watch(wanted, sync, { immediate: true })
-    document.addEventListener('visibilitychange', sync)
+    // Coming back to the page (e.g. after unlocking the phone) counts as activity too.
+    function onVisibilityChange() {
+        if (document.visibilityState === 'visible') onActivity()
+        sync()
+    }
+
+    onActivity()
+    watch(keepOn, sync, { immediate: true })
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    document.addEventListener('pointerdown', onActivity)
+    document.addEventListener('keydown', onActivity)
     onUnmounted(() => {
-        document.removeEventListener('visibilitychange', sync)
+        clearTimeout(idleTimer)
+        document.removeEventListener('visibilitychange', onVisibilityChange)
+        document.removeEventListener('pointerdown', onActivity)
+        document.removeEventListener('keydown', onActivity)
         void release()
     })
 }

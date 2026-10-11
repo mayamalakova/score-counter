@@ -3,6 +3,7 @@
 import { flushPromises } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { encodeResult } from '../src/sharing/result'
+import { IDLE_AFTER_MS } from '../src/wakeLock'
 import { AppDriver } from './driver'
 
 let app: AppDriver | undefined
@@ -168,6 +169,62 @@ describe('keeping the screen on', () => {
         browserReleases(held!)
         await flushPromises()
         expect(request).toHaveBeenCalledTimes(2)
+        expect(screenOn()).toBe(true)
+    })
+})
+
+describe('when nobody touches the screen for a while', () => {
+    // Only timeouts are faked: flushPromises still runs on setImmediate.
+    const minutes = (n: number) => n * 60 * 1000
+    const tap = () => app!.wrapper.find('button.point').trigger('pointerdown')
+
+    afterEach(() => {
+        vi.useRealTimers()
+    })
+
+    async function playOn() {
+        vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+        supportWakeLock()
+        app = new AppDriver({ attachTo: document.body })
+        await app.start()
+        await flushPromises()
+    }
+
+    it('lets the phone sleep after 5 minutes without a tap', async () => {
+        await playOn()
+        expect(IDLE_AFTER_MS).toBe(minutes(5))
+        vi.advanceTimersByTime(minutes(5) - 1000)
+        await flushPromises()
+        expect(screenOn()).toBe(true)
+
+        vi.advanceTimersByTime(1000)
+        await flushPromises()
+        expect(screenOn()).toBe(false)
+    })
+
+    it('keeps the screen on again at the next tap', async () => {
+        await playOn()
+        vi.advanceTimersByTime(minutes(5))
+        await flushPromises()
+        await tap()
+        await flushPromises()
+        expect(screenOn()).toBe(true)
+    })
+
+    it('starts the 5 minutes again at every tap', async () => {
+        await playOn()
+        vi.advanceTimersByTime(minutes(4))
+        await tap()
+        vi.advanceTimersByTime(minutes(4))
+        await flushPromises()
+        expect(screenOn()).toBe(true)
+    })
+
+    it('keeps the screen on again when someone comes back to the page', async () => {
+        await playOn()
+        vi.advanceTimersByTime(minutes(5))
+        await setVisibility('hidden')
+        await setVisibility('visible')
         expect(screenOn()).toBe(true)
     })
 })
