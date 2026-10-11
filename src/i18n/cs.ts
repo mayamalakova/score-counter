@@ -23,12 +23,8 @@ export const cs: Messages = {
 
     // Match settings
     gameNumber: number => `Set ${number}`,
-    // Sets needed to win, "na 3 vítězné": short, and unlike "3 z 5" it can't be read as a
-    // set number under "Set 2" in the games box.
-    bestOfGames: bestOf => {
-        const toWin = (bestOf + 1) / 2
-        return `na ${toWin} ${toWin === 1 ? 'vítězný' : 'vítězné'}`
-    },
+    // Only the match length, "z 5": under "Set 2" in the games box it reads as "set 2 of 5".
+    bestOfGames: bestOf => `z ${bestOf}`,
     toPoints: points => `do ${points}`,
     doublesShort: 'čtyřhra',
 
