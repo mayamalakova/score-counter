@@ -36,6 +36,23 @@ describe('languages', () => {
         expect(app.wrapper.find('.point').attributes('aria-label')).toBe('Bod pro: Ana')
     })
 
+    it('reads out games won with Czech plurals', async () => {
+        app = new AppDriver()
+        await app.chooseLanguage('cs')
+        await app.start({ bestOf: 7 })
+        const readOut = () => app.wrapper.findAll('.games-won').map(games => games.attributes('aria-label'))
+        expect(readOut()[0]).toBe('Ana: 0 vyhraných setů')
+        // The driver's Next game helper looks for the English label, so tap it by class.
+        const winGame = async (side: 'left' | 'right') => {
+            await app.point(side, 11)
+            await app.wrapper.find('.next-game').trigger('click')
+        }
+        await winGame('left')
+        expect(readOut()[1]).toBe('Ana: 1 vyhraný set')
+        await winGame('right')
+        expect(readOut()[0]).toBe('Ana: 2 vyhrané sety')
+    })
+
     it('switches to Bulgarian', async () => {
         app = new AppDriver()
         await app.chooseLanguage('bg')

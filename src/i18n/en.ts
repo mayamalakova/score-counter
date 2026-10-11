@@ -28,13 +28,13 @@ export const en = {
     // Scoreboard
     matchMenu: 'Match menu',
     restartGame: 'Restart game',
-    editPlayers: 'Edit players and server',
     fullScreen: 'Full screen',
     exitFullScreen: 'Exit full screen',
     pointFor: (name: string) => `Point for ${name}`,
     takePointFrom: (name: string) => `Take a point from ${name}`,
     serves: (name: string) => `${name} serves`,
-    gamesWon: (games: number) => `games ${games}`,
+    // Read out for the games box, e.g. "Ana has won 2 games".
+    gamesWonBy: (name: string, games: number) => `${name} has won ${games} ${games === 1 ? 'game' : 'games'}`,
     winsGame: (game: number) => `wins game ${game}`,
     undo: 'Undo',
     nextGame: 'Next game',

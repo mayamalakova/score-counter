@@ -51,6 +51,21 @@ describe('the scoreboard', () => {
         expect(ball()).toBe(`${app.names[1]} serves`)
     })
 
+    it('reads out games won as a sentence', async () => {
+        await app.start()
+        const readOut = () => app.wrapper.findAll('.games-won').map(games => games.attributes('aria-label'))
+        expect(readOut()).toEqual(['Ana has won 0 games', 'Ben has won 0 games'])
+        await app.winGame('left')
+        expect(readOut()).toEqual(['Ben has won 0 games', 'Ana has won 1 game'])
+    })
+
+    it('gives the menu the same name as the button that opens it', async () => {
+        await app.start()
+        expect(app.wrapper.find('button.menu').attributes('aria-label')).toBe('Match menu')
+        await app.openEdit()
+        expect(app.wrapper.find('form.panel').attributes('aria-label')).toBe('Match menu')
+    })
+
     it('keeps restart off the board, in the menu', async () => {
         await app.start()
         expect(app.wrapper.find('.board [aria-label="Restart game"]').exists()).toBe(false)

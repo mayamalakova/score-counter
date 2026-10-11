@@ -89,7 +89,7 @@ const confirming = ref<'end' | 'restart' | null>(null)
                 </button>
             </div>
         </section>
-        <form v-else class="panel" :aria-label="t.editPlayers" @submit.prevent="emit('done')">
+        <form v-else class="panel" :aria-label="t.matchMenu" @submit.prevent="emit('done')">
             <!-- The language can change mid-match, e.g. when a new umpire takes over. -->
             <div class="heading">
                 <h2>{{ t.players }}</h2>

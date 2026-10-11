@@ -31,13 +31,13 @@ export const cs: Messages = {
     // Scoreboard
     matchMenu: 'Nabídka zápasu',
     restartGame: 'Začít set znovu',
-    editPlayers: 'Upravit hráče a podání',
     fullScreen: 'Celá obrazovka',
     exitFullScreen: 'Zrušit celou obrazovku',
     pointFor: name => `Bod pro: ${name}`,
     takePointFrom: name => `Odebrat bod: ${name}`,
     serves: name => `Podává ${name}`,
-    gamesWon: games => `sety ${games}`,
+    gamesWonBy: (name, games) =>
+        `${name}: ${games} ${games === 1 ? 'vyhraný set' : games >= 2 && games <= 4 ? 'vyhrané sety' : 'vyhraných setů'}`,
     winsGame: game => `vyhrává ${game}. set`,
     undo: 'Zpět',
     nextGame: 'Další set',

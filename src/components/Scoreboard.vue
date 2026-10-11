@@ -69,7 +69,7 @@ const settings = computed(() =>
             <span
                 class="games-won"
                 role="img"
-                :aria-label="`${left.name}: ${t.gamesWon(left.games)}`"
+                :aria-label="t.gamesWonBy(left.name, left.games)"
                 :style="{ background: left.color }"
                 >{{ left.games }}</span
             >
@@ -80,7 +80,7 @@ const settings = computed(() =>
             <span
                 class="games-won"
                 role="img"
-                :aria-label="`${right.name}: ${t.gamesWon(right.games)}`"
+                :aria-label="t.gamesWonBy(right.name, right.games)"
                 :style="{ background: right.color }"
                 >{{ right.games }}</span
             >
