@@ -14,7 +14,7 @@ afterEach(() => {
 
 const heading = () => app.wrapper.find('h1').text()
 const startButton = () => app.wrapper.find('button.start').text()
-const info = () => app.wrapper.find('.info').text()
+const info = () => app.info
 
 describe('languages', () => {
     it('starts in English', () => {
@@ -32,8 +32,25 @@ describe('languages', () => {
         expect(document.title).toBe('Počítadlo stolního tenisu')
 
         await app.start({ bestOf: 5 })
-        expect(info()).toBe('Set 1 · na 3 vítězné sety · do 11')
+        expect(info()).toBe('Set 1 · z 5')
         expect(app.wrapper.find('.point').attributes('aria-label')).toBe('Bod pro: Ana')
+    })
+
+    it('reads out games won with Czech plurals', async () => {
+        app = new AppDriver()
+        await app.chooseLanguage('cs')
+        await app.start({ bestOf: 7 })
+        const readOut = () => app.wrapper.findAll('.games-won').map(games => games.attributes('aria-label'))
+        expect(readOut()[0]).toBe('Ana: 0 vyhraných setů')
+        // The driver's Next game helper looks for the English label, so tap it by class.
+        const winGame = async (side: 'left' | 'right') => {
+            await app.point(side, 11)
+            await app.wrapper.find('.next-game').trigger('click')
+        }
+        await winGame('left')
+        expect(readOut()[1]).toBe('Ana: 1 vyhraný set')
+        await winGame('right')
+        expect(readOut()[0]).toBe('Ana: 2 vyhrané sety')
     })
 
     it('switches to Bulgarian', async () => {
@@ -41,7 +58,7 @@ describe('languages', () => {
         await app.chooseLanguage('bg')
         expect(heading()).toBe('Нов мач')
         await app.start({ bestOf: 1, doubles: {} })
-        expect(info()).toBe('Гейм 1 · до 1 спечелен гейм · до 11 · двойки')
+        expect(info()).toBe('Гейм 1 · от 1 · двойки')
     })
 
     it('remembers the choice on this phone', async () => {
@@ -55,7 +72,7 @@ describe('languages', () => {
         app = new AppDriver()
         await app.chooseLanguage('bg')
         await app.start()
-        await app.wrapper.find('[aria-label="Промени играчите и сервиса"]').trigger('click')
+        await app.wrapper.find('[aria-label="Меню на мача"]').trigger('click')
         await app.endMatch()
         expect(heading()).toBe('Нов мач')
     })
@@ -86,7 +103,7 @@ describe('languages', () => {
         await app.chooseLanguage('bg')
         expect(app.wrapper.find('.panel h2').text()).toBe('Играчи')
         await app.closeEdit()
-        expect(info()).toBe('Гейм 1 · до 3 спечелени гейма · до 11')
+        expect(info()).toBe('Гейм 1 · от 5')
         expect(app.scores).toEqual(['3', '0'])
     })
 

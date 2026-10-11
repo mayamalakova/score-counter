@@ -4,8 +4,8 @@ import type { Side } from './types'
 
 const props = defineProps<{
     side: Side
-    /** Doubles: the ball sits in the server's right half-court instead of at the net's far end. */
-    doubles?: boolean
+    /** Read out instead of the picture, e.g. "Ana serves". */
+    label: string
 }>()
 
 // Changing the key restarts the hop animation on every change of service.
@@ -17,82 +17,73 @@ watch(
 </script>
 
 <template>
-    <div class="ball-position" :class="[side, { doubles }]" role="img" :aria-label="`${side} player serves`">
+    <div class="ball-position" :class="side" role="img" :aria-label="label">
         <span :key="hops" class="ball" :class="{ hop: hops > 0 }"></span>
     </div>
 </template>
 
 <style scoped>
+/*
+ * The ball sits at the top end of the net, on the serving side (in doubles, the serving
+ * pair's side). It's the only serve marker on the net, so it's kept plain: which serve
+ * of the two it is can be read from the score.
+ */
 .ball-position {
-    --ball-size: clamp(18px, 4vmin, 30px);
+    --ball-size: clamp(22px, 6vmin, 32px);
+    --gap: 14px;
     position: absolute;
-    top: 16px;
-    left: calc(50% - 48px);
+    top: var(--gap);
+    left: calc(50% - var(--gap) - var(--ball-size));
     transition:
         left 0.45s ease-in-out,
         top 0.45s ease-in-out;
     pointer-events: none;
+    z-index: 1;
 }
 
 .ball-position.right {
-    left: calc(50% + 24px);
-}
-
-/* Doubles: the left end's right half-court is the near (bottom) half; the right end's is the far half. */
-.ball-position.doubles.left {
-    top: calc(100% - 16px - var(--ball-size));
+    left: calc(50% + var(--gap));
 }
 
 .ball {
     display: block;
     width: var(--ball-size);
     height: var(--ball-size);
-    border: 2px solid #fff;
     border-radius: 50%;
     background: var(--ball);
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.35);
 }
 
+/* The ball is at the top edge, so it arcs down and back while it crosses the net. */
 .hop {
     animation: hop 0.45s ease-out;
 }
 
 @keyframes hop {
     50% {
-        transform: translateY(-40px);
+        transform: translateY(28px) scale(1.15);
     }
 }
 
-/* Upright, the upper player's minus button is at the left end of the net, so the ball uses the right end. */
+/* Upright the net runs across the middle: the ball sits at its right end, above or below it. */
 @media (orientation: portrait) {
     .ball-position,
     .ball-position.right {
         left: auto;
-        right: 16px;
+        right: var(--gap);
     }
 
     .ball-position {
-        top: calc(50% - 48px);
+        top: calc(50% - var(--gap) - var(--ball-size));
     }
 
     .ball-position.right {
-        top: calc(50% + 24px);
-    }
-
-    /* Doubles upright: the top end's right half-court is on the left, the bottom end's on the right. */
-    .ball-position.doubles.left {
-        left: 16px;
-        right: auto;
-        top: calc(50% - 48px);
-    }
-
-    .ball-position.doubles.right {
-        left: calc(100% - 16px - var(--ball-size));
-        right: auto;
+        top: calc(50% + var(--gap));
     }
 
     @keyframes hop {
         50% {
-            transform: translateX(-40px) scale(1.2);
+            transform: translateX(-28px) scale(1.15);
         }
     }
 }

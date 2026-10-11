@@ -7,6 +7,8 @@
 
 :root {
     --table: #1d4e89;
+    /* The serving player's half, a shade lighter so the server shows from across the room. */
+    --table-serving: #2a62a8;
     --line: #fff;
     --ink: #16325a;
     --player-a: #2e6bc6;

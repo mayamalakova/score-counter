@@ -23,21 +23,20 @@ export const bg: Messages = {
 
     // Match settings
     gameNumber: number => `Гейм ${number}`,
-    bestOfGames: bestOf => {
-        const toWin = (bestOf + 1) / 2
-        return `до ${toWin} ${toWin === 1 ? 'спечелен гейм' : 'спечелени гейма'}`
-    },
+    // Only the match length, "от 5": under "Гейм 2" in the games box it reads as "game 2 of 5".
+    bestOfGames: bestOf => `от ${bestOf}`,
     toPoints: points => `до ${points}`,
     doublesShort: 'двойки',
 
     // Scoreboard
+    matchMenu: 'Меню на мача',
     restartGame: 'Започни гейма отначало',
-    editPlayers: 'Промени играчите и сервиса',
     fullScreen: 'Цял екран',
     exitFullScreen: 'Изход от цял екран',
     pointFor: name => `Точка за ${name}`,
     takePointFrom: name => `Отнеми точка от ${name}`,
-    gamesWon: games => `геймове ${games}`,
+    serves: name => `${name} сервира`,
+    gamesWonBy: (name, games) => `${name}: ${games} ${games === 1 ? 'спечелен гейм' : 'спечелени гейма'}`,
     winsGame: game => `печели гейм ${game}`,
     undo: 'Отмени',
     nextGame: 'Следващ гейм',
@@ -53,6 +52,8 @@ export const bg: Messages = {
     endMatch: 'Край на мача',
     endMatchQuestion: 'Да приключи ли мачът?',
     scoreWillBeLost: 'Резултатът ще се изгуби.',
+    restartGameQuestion: game => `Да започне ли гейм ${game} отначало?`,
+    restartGameHint: 'Резултатът в този гейм се връща на 0:0. Предишните геймове остават.',
     cancel: 'Отказ',
 
     // Result

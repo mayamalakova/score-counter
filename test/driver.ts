@@ -56,8 +56,11 @@ export class AppDriver {
         if (rightServesFirst !== undefined) {
             await this.wrapper.find(`input[name="first-server"][value="${rightServesFirst}"]`).setValue()
         }
-        if (pointsToWin)
+        if (pointsToWin) {
             await this.wrapper.find(`input[name="points-to-win"][value="${pointsToWin}"]`).setValue()
+            // Set-up remembers the choice for the next match, and so does the driver.
+            this.matchPointsToWin = pointsToWin
+        }
         if (bestOf) await this.wrapper.find(`input[name="best-of"][value="${bestOf}"]`).setValue()
     }
 
@@ -111,8 +114,11 @@ export class AppDriver {
         await this.button('Next game').trigger('click')
     }
 
+    /** Restarts the game from the menu, confirming it. */
     async restart() {
-        await this.wrapper.find('[aria-label="Restart game"]').trigger('click')
+        await this.openEdit()
+        await this.wrapper.find('.panel .restart').trigger('click')
+        await this.wrapper.find('.confirm-restart').trigger('click')
     }
 
     async undo() {
@@ -151,8 +157,30 @@ export class AppDriver {
         return this.wrapper.find('.ball-position').classes('left') ? 'left' : 'right'
     }
 
+    /** The half drawn as the serving one, which should always agree with the ball. */
+    get servingHalf(): Side | null {
+        const half = this.wrapper.find('.half.serving')
+        if (!half.exists()) return null
+        return half.classes('left') ? 'left' : 'right'
+    }
+
+    /** Doubles: the name on the tag that carries the serve dot. */
+    get servingPlayer(): string | null {
+        const tag = this.wrapper.find('.court.serves')
+        return tag.exists() ? tag.text() : null
+    }
+
+    /** Games won, left then right, from the box at the foot of the net. */
+    get games(): string[] {
+        return this.wrapper.findAll('.games-won').map(games => games.text())
+    }
+
+    /** The game number and the match settings, e.g. "Game 1 · of 5". */
     get info(): string {
-        return this.wrapper.find('.info').text()
+        return this.wrapper
+            .findAll('.info > *')
+            .map(part => part.text())
+            .join(' · ')
     }
 
     get gameWon(): boolean {
@@ -170,8 +198,9 @@ export class AppDriver {
 
     // --- Edit panel ---
 
+    /** Opens the match menu: players and serve, language, restart and end match. */
     async openEdit() {
-        await this.wrapper.find('[aria-label="Edit players and server"]').trigger('click')
+        await this.wrapper.find('button.menu').trigger('click')
     }
 
     async editNames(left: string, right: string) {
@@ -243,7 +272,10 @@ export class AppDriver {
         await nextTick()
     }
 
+    /** Points per game, as chosen on set-up. The board doesn't show it. */
+    private matchPointsToWin = 11
+
     private get pointsToWin(): number {
-        return this.info.includes('to 21') ? 21 : 11
+        return this.matchPointsToWin
     }
 }

@@ -31,7 +31,7 @@ describe('setting up doubles', () => {
 describe('the doubles board', () => {
     it('shows the pairs, the format and where everyone stands for the first serve', async () => {
         await app.start({ doubles: { server: 'A1' } })
-        expect(app.info).toBe('Game 1 · best of 5 · to 11 · doubles')
+        expect(app.info).toBe('Game 1 · of 5 · doubles')
         // Ana serves from her right half-court (near, at the left end) to Ben in his (far, at the right end).
         expect(app.courts).toEqual({ leftFar: 'Eva', leftNear: 'Ana', rightFar: 'Ben', rightNear: 'Jan' })
         expect(app.server).toBe('left')
@@ -44,6 +44,16 @@ describe('the doubles board', () => {
         // Ben serves to Eva: Eva moves into her right half-court.
         expect(app.courts).toEqual({ leftFar: 'Ana', leftNear: 'Eva', rightFar: 'Ben', rightNear: 'Jan' })
         expect(app.server).toBe('right')
+    })
+
+    it("marks the server's own name tag, since the ball only shows the serving pair", async () => {
+        await app.start({ doubles: { server: 'A1' } })
+        expect(app.servingPlayer).toBe('Ana')
+        expect(app.servingHalf).toBe('left')
+        await app.point('left', 2)
+        expect(app.servingPlayer).toBe('Ben')
+        expect(app.servingHalf).toBe('right')
+        expect(app.wrapper.find('.ball-position').attributes('aria-label')).toBe('Ben serves')
     })
 
     it('starts game 2 with the first receiver serving to the first server', async () => {

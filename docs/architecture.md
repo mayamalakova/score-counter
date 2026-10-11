@@ -104,14 +104,14 @@ flowchart TD
     setup["SetUp<br/>before a match"]
     board["Scoreboard<br/>during play"]
     summary["MatchSummary<br/>over the board when the match is won"]
-    edit["EditPanel<br/>over the board, from the pencil"]
+    edit["EditPanel<br/>the match menu, over the board"]
     share["ShareResult<br/>QR code of the result, from the summary"]
     received["ReceivedResult<br/>a result opened from a QR link"]
 
     half["PlayerHalf ×2<br/>score, minus, names or half-courts"]
-    ball["ServerBall<br/>the ball by the net"]
+    ball["ServerBall<br/>the ball at the top of the net"]
     bar["GameWonBar<br/>undo or next game"]
-    full["FullscreenButton<br/>top bar, where the browser allows"]
+    full["FullscreenButton<br/>top-right corner, where the browser allows"]
     picker["LanguagePicker<br/>flag menu, on set-up and in the edit panel"]
 
     storage <--> app
@@ -136,9 +136,13 @@ flowchart TD
   the summary.
 - **A received result** (the app opened from a QR link) replaces everything with
   `ReceivedResult`, without touching this phone's own match; going back clears the link.
+- **The board** has no top bar. The menu button (top left) opens `EditPanel`, which holds
+  the players and serve, the language, Restart game and End match (both confirmed). The
+  games won and the match settings sit in a box at the foot of the net, the ball sits at
+  the top of the net on the server's side, and the server's half is a shade lighter.
 - **Doubles adds no screens.** It's extra data in the same props: each `PlayerHalf` shows
-  who stands in which half-court, the ball sits in the server's half-court, and the edit
-  panel lists four players.
+  who stands in which half-court, the ball marks the serving pair's side, a dot on a name
+  tag marks the server, and the edit panel lists four players.
 - **Full screen is the browser's state, not the match's.** `FullscreenButton` asks the
   browser through `src/fullscreen.ts` and follows its events, so it needs nothing from
   `App.vue`. It isn't shown where pages can't go full screen (iPhones).

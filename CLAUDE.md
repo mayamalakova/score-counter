@@ -79,7 +79,8 @@ now being modernized.
    plus an "End match" action (with confirmation) to abandon a match, since reloading no
    longer does. Wake lock and the PWA moved to Phase 6.
 5. **Repo hygiene (done).** Component tests for the main flows, contributor docs.
-6. **Features, one PR each (current).** Doubles (done, see below), keyboard shortcuts (moved from Phase 3), screen wake lock
+6. **Features, one PR each (current).** Doubles (done, see below), board redesign "C3" (see
+   below), keyboard shortcuts (moved from Phase 3), screen wake lock
    during play and installable offline PWA (both moved from Phase 4), match history and
    rematch, timeouts, optional spoken score, second-screen display mode.
 
@@ -92,9 +93,21 @@ now being modernized.
    for copying onto the paper sheet), and a Czech UI (done: English, Czech and Bulgarian,
    switched from a flag menu on set-up or mid-match in the edit panel).
 
+   **Board redesign "C3" (decided, from the design review mockups):**
+   - No top bar and no table edge lines: each half fills its side, the white net is the
+     only line, and the serving player's (or pair's) half is a shade lighter.
+   - Name tags in the player colour with a white border; games won in a box at the foot of
+     the net (with the game number and settings); no earlier-game scores during play,
+     since the summary has them.
+   - The serve marker is just the orange ball at the top of the net on the server's side,
+     hopping across when service changes. No "2/2": the score already tells which serve.
+   - A menu button (top left) opens the match menu: players and serve, language, Restart
+     game and End match, both confirmed. Restart is no longer a one-tap button.
+
    **Doubles (decided):**
-   - Board: centre line, four name tags in their half-courts (same style, pair colour),
-     the ball marks the server. No line or highlight for the receiver.
+   - Board: centre line, four name tags in their half-courts (same style, pair colour).
+     The ball marks the serving pair's side of the net and a small orange dot on the
+     server's tag marks the server. No line or highlight for the receiver.
    - Positions assume the phone is always on the same long side of the table: the screen's
      bottom edge is the table edge nearest the phone (upright, the picture is turned a
      quarter turn). So a player's right half-court is the bottom half at the left end and
@@ -144,6 +157,11 @@ now being modernized.
 - ~~Missing rules: no deciding-game change of ends; 11 points and best of 5 are hardcoded.~~
   Fixed in Phase 2: the engine changes ends in the deciding game, and set-up offers 11
   or 21 points and best of 1/3/5/7.
+- ~~Upright on a 390px-wide phone, the game-won bar is wider than the screen and its
+  message and Next game button are cut off.~~ Found and fixed with the C3 board: the bar
+  wraps onto two lines.
+- Upright, the game-won bar sits on the net and covers the upper player's minus button,
+  so the winning point can only be corrected with Undo there. Found with the C3 board.
 
 ## Code notes
 

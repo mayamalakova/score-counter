@@ -23,21 +23,21 @@ export const cs: Messages = {
 
     // Match settings
     gameNumber: number => `Set ${number}`,
-    bestOfGames: bestOf => {
-        const toWin = (bestOf + 1) / 2
-        return `na ${toWin} ${toWin === 1 ? 'vítězný set' : 'vítězné sety'}`
-    },
+    // Only the match length, "z 5": under "Set 2" in the games box it reads as "set 2 of 5".
+    bestOfGames: bestOf => `z ${bestOf}`,
     toPoints: points => `do ${points}`,
     doublesShort: 'čtyřhra',
 
     // Scoreboard
+    matchMenu: 'Nabídka zápasu',
     restartGame: 'Začít set znovu',
-    editPlayers: 'Upravit hráče a podání',
     fullScreen: 'Celá obrazovka',
     exitFullScreen: 'Zrušit celou obrazovku',
     pointFor: name => `Bod pro: ${name}`,
     takePointFrom: name => `Odebrat bod: ${name}`,
-    gamesWon: games => `sety ${games}`,
+    serves: name => `Podává ${name}`,
+    gamesWonBy: (name, games) =>
+        `${name}: ${games} ${games === 1 ? 'vyhraný set' : games >= 2 && games <= 4 ? 'vyhrané sety' : 'vyhraných setů'}`,
     winsGame: game => `vyhrává ${game}. set`,
     undo: 'Zpět',
     nextGame: 'Další set',
@@ -53,6 +53,8 @@ export const cs: Messages = {
     endMatch: 'Ukončit zápas',
     endMatchQuestion: 'Ukončit tento zápas?',
     scoreWillBeLost: 'Skóre se ztratí.',
+    restartGameQuestion: game => `Začít ${game}. set znovu?`,
+    restartGameHint: 'Skóre tohoto setu se vrátí na 0:0. Předchozí sety zůstanou.',
     cancel: 'Zrušit',
 
     // Result

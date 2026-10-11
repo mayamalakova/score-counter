@@ -26,6 +26,78 @@ describe('the scoreboard', () => {
         await app.winGame('left')
         expect(app.nameColours).toEqual([ben, ana])
     })
+
+    it('shows games won at the foot of the net, following the players when they change ends', async () => {
+        await app.start()
+        expect(app.games).toEqual(['0', '0'])
+        await app.winGame('left')
+        // Ana won game 1 and is now on the right.
+        expect(app.games).toEqual(['0', '1'])
+    })
+
+    it("lights up the server's half, on the same side as the ball", async () => {
+        await app.start()
+        expect(app.servingHalf).toBe('left')
+        await app.point('left', 2)
+        expect(app.server).toBe('right')
+        expect(app.servingHalf).toBe('right')
+    })
+
+    it('reads out who serves, by name', async () => {
+        await app.start()
+        const ball = () => app.wrapper.find('.ball-position').attributes('aria-label')
+        expect(ball()).toBe(`${app.names[0]} serves`)
+        await app.point('left', 2)
+        expect(ball()).toBe(`${app.names[1]} serves`)
+    })
+
+    it('reads out games won as a sentence', async () => {
+        await app.start()
+        const readOut = () => app.wrapper.findAll('.games-won').map(games => games.attributes('aria-label'))
+        expect(readOut()).toEqual(['Ana has won 0 games', 'Ben has won 0 games'])
+        await app.winGame('left')
+        expect(readOut()).toEqual(['Ben has won 0 games', 'Ana has won 1 game'])
+    })
+
+    it('gives the menu the same name as the button that opens it', async () => {
+        await app.start()
+        expect(app.wrapper.find('button.menu').attributes('aria-label')).toBe('Match menu')
+        await app.openEdit()
+        expect(app.wrapper.find('form.panel').attributes('aria-label')).toBe('Match menu')
+    })
+
+    it('keeps restart off the board, in the menu', async () => {
+        await app.start()
+        expect(app.wrapper.find('.board [aria-label="Restart game"]').exists()).toBe(false)
+        await app.openEdit()
+        expect(app.wrapper.find('.panel .restart').exists()).toBe(true)
+    })
+})
+
+describe('restarting a game from the menu', () => {
+    beforeEach(async () => {
+        await app.start()
+        await app.point('left', 3)
+        await app.openEdit()
+        await app.wrapper.find('.panel .restart').trigger('click')
+    })
+
+    it('asks first, naming the game', () => {
+        expect(app.wrapper.find('#restart-title').text()).toBe('Restart game 1?')
+        expect(app.scores).toEqual(['3', '0'])
+    })
+
+    it('keeps the score when cancelled', async () => {
+        await app.wrapper.find('.cancel-restart').trigger('click')
+        await app.closeEdit()
+        expect(app.scores).toEqual(['3', '0'])
+    })
+
+    it('clears the game and closes the menu when confirmed', async () => {
+        await app.wrapper.find('.confirm-restart').trigger('click')
+        expect(app.editOpen).toBe(false)
+        expect(app.scores).toEqual(['0', '0'])
+    })
 })
 
 describe('when a game is won', () => {
