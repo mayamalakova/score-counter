@@ -42,14 +42,10 @@ const qrCode = computed(() => renderSVG(props.link, { ecc: 'M', border: 2 }))
     z-index: 20;
 }
 
+/* The white card itself is the global .card. */
 .card {
-    max-width: 100%;
     max-height: 100%;
     overflow-y: auto;
-    padding: 16px 20px 20px;
-    border-radius: 14px;
-    background: #fff;
-    color: var(--ink);
     text-align: center;
 }
 

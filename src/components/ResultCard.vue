@@ -46,14 +46,6 @@ const title = computed(() => {
 </template>
 
 <style scoped>
-.card {
-    max-width: 100%;
-    padding: 16px 20px 20px;
-    border-radius: 14px;
-    background: #fff;
-    color: var(--ink);
-}
-
 .heading {
     margin-bottom: 8px;
 }
@@ -77,12 +69,5 @@ const title = computed(() => {
 .details {
     margin: 0;
     font-size: 0.95rem;
-}
-
-/* Room for a best of 7 in the result table on a small phone. */
-@media (max-width: 420px) {
-    .card {
-        padding-inline: 12px;
-    }
 }
 </style>

@@ -71,14 +71,6 @@ function describe(result: SharedResult) {
     padding: 16px;
 }
 
-.card {
-    max-width: 100%;
-    padding: 16px 20px 20px;
-    border-radius: 14px;
-    background: #fff;
-    color: var(--ink);
-}
-
 /* The card for a link that couldn't be read; a readable one uses ResultCard. */
 h1 {
     margin: 0;
