@@ -56,8 +56,11 @@ export class AppDriver {
         if (rightServesFirst !== undefined) {
             await this.wrapper.find(`input[name="first-server"][value="${rightServesFirst}"]`).setValue()
         }
-        if (pointsToWin)
+        if (pointsToWin) {
             await this.wrapper.find(`input[name="points-to-win"][value="${pointsToWin}"]`).setValue()
+            // Set-up remembers the choice for the next match, and so does the driver.
+            this.matchPointsToWin = pointsToWin
+        }
         if (bestOf) await this.wrapper.find(`input[name="best-of"][value="${bestOf}"]`).setValue()
     }
 
@@ -172,7 +175,7 @@ export class AppDriver {
         return this.wrapper.findAll('.games-won').map(games => games.text())
     }
 
-    /** The game number and the match settings, e.g. "Game 1 · best of 5 · to 11". */
+    /** The game number and the match settings, e.g. "Game 1 · best of 5". */
     get info(): string {
         return this.wrapper
             .findAll('.info > *')
@@ -269,7 +272,10 @@ export class AppDriver {
         await nextTick()
     }
 
+    /** Points per game, as chosen on set-up. The board doesn't show it. */
+    private matchPointsToWin = 11
+
     private get pointsToWin(): number {
-        return this.info.includes('to 21') ? 21 : 11
+        return this.matchPointsToWin
     }
 }

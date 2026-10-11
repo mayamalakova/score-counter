@@ -14,7 +14,6 @@ const props = defineProps<{
     server: Side
     gameNumber: number
     bestOf: number
-    pointsToWin: number
     doubles: boolean
     /** Name of the player who just won the game, while waiting for the next one. */
     gameWinner: string | null
@@ -38,15 +37,12 @@ const serverName = computed(() => {
     return player.courts ? player.courts.right : player.name
 })
 
-/** The match settings under the game number, e.g. "best of 5 · to 11". */
+/**
+ * The match settings under the game number, e.g. "best of 5". Points per game are left
+ * out: nearly every match is to 11, and players don't need reminding during play.
+ */
 const settings = computed(() =>
-    [
-        t.value.bestOfGames(props.bestOf),
-        t.value.toPoints(props.pointsToWin),
-        props.doubles && t.value.doublesShort
-    ]
-        .filter(Boolean)
-        .join(' · ')
+    [t.value.bestOfGames(props.bestOf), props.doubles && t.value.doublesShort].filter(Boolean).join(' · ')
 )
 </script>
 

@@ -291,7 +291,6 @@ function undo() {
             :server="server"
             :game-number="gameNumber"
             :best-of="match.settings.bestOf"
-            :points-to-win="match.settings.pointsToWin"
             :doubles="isDoubles"
             :game-winner="gameWinner && !matchWinner ? displayName(gameWinner) : null"
             @increase-left="increaseLeft"

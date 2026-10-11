@@ -34,7 +34,10 @@ describe('after a reload', () => {
         await app.start({ pointsToWin: 21, bestOf: 3 })
         await app.reload()
 
-        expect(app.info).toContain('best of 3 · to 21')
+        expect(app.info).toBe('Game 1 · best of 3')
+        // Still to 21: 11 points don't win the game.
+        await app.point('left', 11)
+        expect(app.gameWon).toBe(false)
     })
 
     it('shows the game-won bar if a game was just won', async () => {
