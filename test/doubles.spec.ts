@@ -31,7 +31,7 @@ describe('setting up doubles', () => {
 describe('the doubles board', () => {
     it('shows the pairs, the format and where everyone stands for the first serve', async () => {
         await app.start({ doubles: { server: 'A1' } })
-        expect(app.info).toBe('Game 1 · best of 5 · doubles')
+        expect(app.info).toBe('Game 1 · of 5 · doubles')
         // Ana serves from her right half-court (near, at the left end) to Ben in his (far, at the right end).
         expect(app.courts).toEqual({ leftFar: 'Eva', leftNear: 'Ana', rightFar: 'Ben', rightNear: 'Jan' })
         expect(app.server).toBe('left')

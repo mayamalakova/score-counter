@@ -21,7 +21,8 @@ export const en = {
 
     // Match settings, as shown during play and on a received result
     gameNumber: (number: number) => `Game ${number}`,
-    bestOfGames: (bestOf: number) => `best of ${bestOf}`,
+    // Only the match length, "of 5": under "Game 2" in the games box it reads as "game 2 of 5".
+    bestOfGames: (bestOf: number) => `of ${bestOf}`,
     toPoints: (points: number) => `to ${points}`,
     doublesShort: 'doubles',
 

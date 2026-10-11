@@ -34,7 +34,7 @@ describe('after a reload', () => {
         await app.start({ pointsToWin: 21, bestOf: 3 })
         await app.reload()
 
-        expect(app.info).toBe('Game 1 · best of 3')
+        expect(app.info).toBe('Game 1 · of 3')
         // Still to 21: 11 points don't win the game.
         await app.point('left', 11)
         expect(app.gameWon).toBe(false)

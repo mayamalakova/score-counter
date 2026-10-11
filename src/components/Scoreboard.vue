@@ -38,7 +38,7 @@ const serverName = computed(() => {
 })
 
 /**
- * The match settings under the game number, e.g. "best of 5". Points per game are left
+ * The match settings under the game number, e.g. "of 5". Points per game are left
  * out: nearly every match is to 11, and players don't need reminding during play.
  */
 const settings = computed(() =>

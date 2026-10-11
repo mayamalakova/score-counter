@@ -175,7 +175,7 @@ export class AppDriver {
         return this.wrapper.findAll('.games-won').map(games => games.text())
     }
 
-    /** The game number and the match settings, e.g. "Game 1 · best of 5". */
+    /** The game number and the match settings, e.g. "Game 1 · of 5". */
     get info(): string {
         return this.wrapper
             .findAll('.info > *')
