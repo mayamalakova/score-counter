@@ -144,8 +144,8 @@ const emit = defineEmits<{
 .minus {
     position: absolute;
     bottom: 12px;
-    width: clamp(44px, 10vmin, 60px);
-    height: clamp(44px, 10vmin, 60px);
+    width: var(--minus-size);
+    height: var(--minus-size);
     display: flex;
     align-items: center;
     justify-content: center;

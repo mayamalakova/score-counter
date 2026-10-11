@@ -99,15 +99,17 @@ now being modernized.
    - Name tags in the player colour with a white border; games won in a box at the foot of
      the net (with the game number and settings); no earlier-game scores during play,
      since the summary has them.
-   - The serve marker is just the orange ball at the top of the net on the server's side,
-     hopping across when service changes. No "2/2": the score already tells which serve.
+   - The serve marker is just the orange ball by the net on the server's side (singles:
+     at the top end; doubles: in the server's half-court, see below), hopping across when
+     service changes. No "2/2": the score already tells which serve.
    - A menu button (top left) opens the match menu: players and serve, language, Restart
      game and End match, both confirmed. Restart is no longer a one-tap button.
 
    **Doubles (decided):**
    - Board: centre line, four name tags in their half-courts (same style, pair colour).
-     The ball marks the serving pair's side of the net and a small orange dot on the
-     server's tag marks the server. No line or highlight for the receiver.
+     The ball sits by the net in the server's own half-court (their pair's right
+     half-court), so the half-court with the ball is the server's, and a small orange
+     dot on the server's tag marks them too. No line or highlight for the receiver.
    - Positions assume the phone is always on the same long side of the table: the screen's
      bottom edge is the table edge nearest the phone (upright, the picture is turned a
      quarter turn). So a player's right half-court is the bottom half at the left end and

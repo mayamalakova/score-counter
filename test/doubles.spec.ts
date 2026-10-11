@@ -56,6 +56,21 @@ describe('the doubles board', () => {
         expect(app.wrapper.find('.ball-position').attributes('aria-label')).toBe('Ben serves')
     })
 
+    // jsdom doesn't lay out the page, so this checks what the ball's place is drawn from:
+    // its doubles class puts it in the near half at the left end and the far half at the right.
+    it("puts the ball in the server's half-court, not their partner's", async () => {
+        await app.start({ doubles: { server: 'A1' } })
+        const ball = app.wrapper.find('.ball-position')
+        expect(ball.classes()).toEqual(expect.arrayContaining(['doubles', 'left']))
+        expect(app.courts.leftNear).toBe('Ana')
+        expect(app.servingPlayer).toBe('Ana')
+
+        await app.point('left', 2)
+        expect(ball.classes()).toEqual(expect.arrayContaining(['doubles', 'right']))
+        expect(app.courts.rightFar).toBe('Ben')
+        expect(app.servingPlayer).toBe('Ben')
+    })
+
     it('starts game 2 with the first receiver serving to the first server', async () => {
         await app.start({ doubles: { server: 'A1' } })
         await app.winGame('left')

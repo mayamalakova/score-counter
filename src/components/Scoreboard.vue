@@ -62,7 +62,7 @@ const settings = computed(() =>
             @increase="emit('increase-right')"
             @decrease="emit('decrease-right')"
         />
-        <ServerBall :side="server" :label="t.serves(serverName)" />
+        <ServerBall :side="server" :doubles="doubles" :label="t.serves(serverName)" />
 
         <!-- Games won sit at the bottom end of the net, each in its player's colour. -->
         <div class="match-score">
