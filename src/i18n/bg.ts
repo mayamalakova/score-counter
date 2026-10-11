@@ -23,8 +23,12 @@ export const bg: Messages = {
 
     // Match settings
     gameNumber: number => `Гейм ${number}`,
-    // "3 от 5": short enough for the games box, where "Гейм 2" above it names the unit.
-    bestOfGames: bestOf => `${(bestOf + 1) / 2} от ${bestOf}`,
+    // Wins needed, "до 3 победи": short, and unlike "3 от 5" it can't be read as a game
+    // number under "Гейм 2" in the games box.
+    bestOfGames: bestOf => {
+        const toWin = (bestOf + 1) / 2
+        return `до ${toWin} ${toWin === 1 ? 'победа' : 'победи'}`
+    },
     toPoints: points => `до ${points}`,
     doublesShort: 'двойки',
 
