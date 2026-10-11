@@ -106,8 +106,9 @@ now being modernized.
 
    **Doubles (decided):**
    - Board: centre line, four name tags in their half-courts (same style, pair colour).
-     The ball marks the serving pair's side of the net and a small orange dot on the
-     server's tag marks the server. No line or highlight for the receiver.
+     The ball sits by the net in the server's own half-court (their pair's right
+     half-court), so the half-court with the ball is the server's, and a small orange
+     dot on the server's tag marks them too. No line or highlight for the receiver.
    - Positions assume the phone is always on the same long side of the table: the screen's
      bottom edge is the table edge nearest the phone (upright, the picture is turned a
      quarter turn). So a player's right half-court is the bottom half at the left end and

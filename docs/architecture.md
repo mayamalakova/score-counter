@@ -109,7 +109,7 @@ flowchart TD
     received["ReceivedResult<br/>a result opened from a QR link"]
 
     half["PlayerHalf ×2<br/>score, minus, names or half-courts"]
-    ball["ServerBall<br/>the ball at the top of the net"]
+    ball["ServerBall<br/>the ball by the net, on the server's side"]
     bar["GameWonBar<br/>undo or next game"]
     full["FullscreenButton<br/>top-right corner, where the browser allows"]
     picker["LanguagePicker<br/>flag menu, on set-up and in the edit panel"]
@@ -141,7 +141,7 @@ flowchart TD
   games won and the match settings sit in a box at the foot of the net, the ball sits at
   the top of the net on the server's side, and the server's half is a shade lighter.
 - **Doubles adds no screens.** It's extra data in the same props: each `PlayerHalf` shows
-  who stands in which half-court, the ball marks the serving pair's side, a dot on a name
+  who stands in which half-court, the ball sits in the server's half-court, a dot on a name
   tag marks the server, and the edit panel lists four players.
 - **Full screen is the browser's state, not the match's.** `FullscreenButton` asks the
   browser through `src/fullscreen.ts` and follows its events, so it needs nothing from
